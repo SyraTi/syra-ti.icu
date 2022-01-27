@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"syra-ti.icu","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="0.概念说明一切开始的开始 先说明一些概念  物理卷（Physical Volume）即PV：  物理卷就是指硬盘分区或从逻辑上与磁盘分区具有同样功能的设备(如RAID)，是LVM的基本存储逻辑块，但和基本的物理存储介质（如分区、磁盘等）比较，却包含有与LVM相关的管理参数。卷组（Volume Group）即VG： LVM卷组类似于非LVM系统中的物理硬盘，其由物理卷组成。可以在卷组上创建一个或多">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu扩展根目录空间（扩展原有分区）">
+<meta property="og:url" content="https://syra-ti.icu/2021/12/01/Ubuntu%E6%89%A9%E5%B1%95%E6%A0%B9%E7%9B%AE%E5%BD%95%E7%A9%BA%E9%97%B4%EF%BC%88%E6%89%A9%E5%B1%95%E5%8E%9F%E6%9C%89%E5%88%86%E5%8C%BA%EF%BC%89.html">
+<meta property="og:site_name" content="SyraTi.ICU">
+<meta property="og:description" content="0.概念说明一切开始的开始 先说明一些概念  物理卷（Physical Volume）即PV：  物理卷就是指硬盘分区或从逻辑上与磁盘分区具有同样功能的设备(如RAID)，是LVM的基本存储逻辑块，但和基本的物理存储介质（如分区、磁盘等）比较，却包含有与LVM相关的管理参数。卷组（Volume Group）即VG： LVM卷组类似于非LVM系统中的物理硬盘，其由物理卷组成。可以在卷组上创建一个或多">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/6bcae82012ad45d6afcd2a9a55bda7a4.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16">
+<meta property="article:published_time" content="2021-12-01T06:39:43.000Z">
+<meta property="article:modified_time" content="2022-01-27T13:21:04.914Z">
+<meta property="article:author" content="白茶SyraTi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/6bcae82012ad45d6afcd2a9a55bda7a4.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16">
+
+
+<link rel="canonical" href="https://syra-ti.icu/2021/12/01/Ubuntu%E6%89%A9%E5%B1%95%E6%A0%B9%E7%9B%AE%E5%BD%95%E7%A9%BA%E9%97%B4%EF%BC%88%E6%89%A9%E5%B1%95%E5%8E%9F%E6%9C%89%E5%88%86%E5%8C%BA%EF%BC%89.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://syra-ti.icu/2021/12/01/Ubuntu%E6%89%A9%E5%B1%95%E6%A0%B9%E7%9B%AE%E5%BD%95%E7%A9%BA%E9%97%B4%EF%BC%88%E6%89%A9%E5%B1%95%E5%8E%9F%E6%9C%89%E5%88%86%E5%8C%BA%EF%BC%89.html","path":"2021/12/01/Ubuntu扩展根目录空间（扩展原有分区）.html","title":"Ubuntu扩展根目录空间（扩展原有分区）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Ubuntu扩展根目录空间（扩展原有分区） | SyraTi.ICU</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SyraTi.ICU</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0-%E6%A6%82%E5%BF%B5%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">0.概念说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-VM%E6%B7%BB%E5%8A%A0%E7%A9%BA%E9%97%B4"><span class="nav-number">2.</span> <span class="nav-text">1.VM添加空间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8fdisk%E6%89%A9%E5%B1%95%E5%8E%9F%E6%9C%89%E5%88%86%E5%8C%BA"><span class="nav-number">3.</span> <span class="nav-text">2.使用fdisk扩展原有分区</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%88%B7%E6%96%B0PV%E7%A9%BA%E9%97%B4"><span class="nav-number">4.</span> <span class="nav-text">3.刷新PV空间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E4%B8%BALV%E5%A2%9E%E5%8A%A0%E7%A9%BA%E9%97%B4"><span class="nav-number">5.</span> <span class="nav-text">4.为LV增加空间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E6%89%A9%E5%B1%95%E6%A0%B9%E7%9B%AE%E5%BD%95%E7%A9%BA%E9%97%B4"><span class="nav-number">6.</span> <span class="nav-text">5.扩展根目录空间</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">白茶SyraTi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/2021/12/01/Ubuntu%E6%89%A9%E5%B1%95%E6%A0%B9%E7%9B%AE%E5%BD%95%E7%A9%BA%E9%97%B4%EF%BC%88%E6%89%A9%E5%B1%95%E5%8E%9F%E6%9C%89%E5%88%86%E5%8C%BA%EF%BC%89.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="白茶SyraTi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SyraTi.ICU">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ubuntu扩展根目录空间（扩展原有分区）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-12-01 14:39:43" itemprop="dateCreated datePublished" datetime="2021-12-01T14:39:43+08:00">2021-12-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-01-27 21:21:04" itemprop="dateModified" datetime="2022-01-27T21:21:04+08:00">2022-01-27</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="0-概念说明"><a href="#0-概念说明" class="headerlink" title="0.概念说明"></a>0.概念说明</h1><p>一切开始的开始 先说明一些概念</p>
+<blockquote>
+<p><strong>物理卷（Physical Volume）即PV：</strong>  物理卷就是指硬盘分区或从逻辑上与磁盘分区具有同样功能的设备(如RAID)，是LVM的基本存储逻辑块，但和基本的物理存储介质（如分区、磁盘等）比较，却包含有与LVM相关的管理参数。<br><strong>卷组（Volume Group）即VG：</strong> LVM卷组类似于非LVM系统中的物理硬盘，其由物理卷组成。可以在卷组上创建一个或多个“LVM分区”（逻辑卷），LVM卷组由一个或多个物理卷组成。<br><strong>逻辑卷（Logical Volume）即LV：</strong> LVM的逻辑卷类似于非LVM系统中的硬盘分区，在逻辑卷之上可以建立文件系统(比如/home或者/usr等)。</p>
+</blockquote>
+<p>总之 LV建立在VG之上，VG建立在PV之上，是PV的集合，PV即物理卷。</p>
+<p><strong>本文的总体思路为： 扩容PV-&gt; 扩容LV -&gt; 扩容根目录空间</strong></p>
+<h1 id="1-VM添加空间"><a href="#1-VM添加空间" class="headerlink" title="1.VM添加空间"></a>1.VM添加空间</h1><p>使用vmware增加空间 ↓<br><img src="https://img-blog.csdnimg.cn/6bcae82012ad45d6afcd2a9a55bda7a4.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
+<h1 id="2-使用fdisk扩展原有分区"><a href="#2-使用fdisk扩展原有分区" class="headerlink" title="2.使用fdisk扩展原有分区"></a>2.使用fdisk扩展原有分区</h1><p>此处参考了<a target="_blank" rel="noopener" href="https://www.linuxprobe.com/linux-fdisk-size.html">Linux下使用fdisk扩展分区容量</a>，原文关键部分摘录如下</p>
+<blockquote>
+<p>对/dev/sda4进行扩容</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">[root@linuxprobe ~]: fdisk /dev/sda #对/dev/sda进行操作</span><br><span class="line"></span><br><span class="line">WARNING: DOS-compatible mode is deprecated. It&#x27;s strongly recommended to</span><br><span class="line">         switch off the mode (command &#x27;c&#x27;) and change display units to</span><br><span class="line">         sectors (command &#x27;u&#x27;).</span><br><span class="line"></span><br><span class="line">Command (m for help): p        #查看分区表信息</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line">/dev/sda4            1497        2611     8952832   83  Linux</span><br><span class="line"></span><br><span class="line">Command (m for help): d           #删除分区</span><br><span class="line">Partition number (1-4): 4         #删除需要扩容的分区（这里为sda4）</span><br><span class="line"></span><br><span class="line">Command (m for help): p       #再次查看分区信息，/dev/sda4已被删除</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line"></span><br><span class="line">Command (m for help): n      #创建新的分区</span><br><span class="line">Command action</span><br><span class="line">   e   extended</span><br><span class="line">   p   primary partition (1-4)</span><br><span class="line">p             #创建为主分区</span><br><span class="line">Selected partition 4</span><br><span class="line">First cylinder (1497-3916, default 1497):          #经对比，正好和上一个磁盘柱一致，默认即可</span><br><span class="line">Using default value 1497</span><br><span class="line">Last cylinder, +cylinders or +size&#123;K,M,G&#125; (1497-3916, default 3916): </span><br><span class="line">Using default value 3916              #直接默认就可以</span><br><span class="line"></span><br><span class="line">Command (m for help): p               #查看分区表信息</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line">/dev/sda4            1497        3916    19436582   83  Linux</span><br><span class="line"></span><br><span class="line">Command (m for help): wp       #保存并退出，如果创建有误，直接退出不要保存即可</span><br><span class="line">The partition table has been altered!</span><br><span class="line"></span><br><span class="line">Calling ioctl() to re-read partition table.</span><br><span class="line"></span><br><span class="line">WARNING: Re-reading the partition table failed with error 16: Device or resource busy.</span><br><span class="line">The kernel still uses the old table. The new table will be used at</span><br><span class="line">the next reboot or after you run partprobe(8) or kpartx(8)</span><br><span class="line">Syncing disks.</span><br></pre></td></tr></table></figure>
+<h1 id="3-刷新PV空间"><a href="#3-刷新PV空间" class="headerlink" title="3.刷新PV空间"></a>3.刷新PV空间</h1><p>对分区扩容完成后，会发现空间依旧没有增加，此时需要先刷新pv大小，使用<code>pvresize</code>:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: pvdisplay #先列出pv</span><br><span class="line">  --- Physical volume ---</span><br><span class="line">  PV Name               /dev/sda4</span><br><span class="line">  VG Name               ubuntu-vg</span><br><span class="line">  PV Size               &lt;19.00 GiB / not usable 16.50 KiB</span><br><span class="line">  Allocatable           yes (but full)</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              9983</span><br><span class="line">  Free PE               0</span><br><span class="line">  Allocated PE          9983</span><br><span class="line">  PV UUID               2CF0fb-auL8-N1Xk-Lpo1-pdzo-MLN5-R0QAIX</span><br><span class="line">  </span><br><span class="line">[root@syra-ti_ubuntu~]: pvresize /dev/sda4 #调用pvresize进行刷新</span><br><span class="line">  Physical volume &quot;/dev/sda3&quot; changed</span><br><span class="line">  1 physical volume(s) resized / 0 physical volume(s) not resized</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: pvdisplay #再次查看pv大小 发现pv大小已经正常</span><br><span class="line">  --- Physical volume ---</span><br><span class="line">  PV Name               /dev/sda4</span><br><span class="line">  VG Name               ubuntu-vg</span><br><span class="line">  PV Size               &lt;39.00 GiB / not usable 16.50 KiB</span><br><span class="line">  Allocatable           yes (but full)</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              9983</span><br><span class="line">  Free PE               0</span><br><span class="line">  Allocated PE          9983</span><br><span class="line">  PV UUID               2CF0fb-auL8-N1Xk-Lpo1-pdzo-MLN5-R0QAIX</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+<h1 id="4-为LV增加空间"><a href="#4-为LV增加空间" class="headerlink" title="4.为LV增加空间"></a>4.为LV增加空间</h1><p>对pv扩容完成后，会发现lv的空间依旧没有增加，此时需要扩展lv大小，使用<code>lvextend</code>:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: lvdisplay #列出lv信息 发现lv空间没有增加</span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Path                /dev/ubuntu-vg/ubuntu-lv</span><br><span class="line">  LV Name                ubuntu-lv</span><br><span class="line">  VG Name                ubuntu-vg</span><br><span class="line">  LV UUID                3THGqb-Me9D-KFEK-QxT5-dP8Y-hUqa-knbAa3</span><br><span class="line">  LV Write Access        read/write</span><br><span class="line">  LV Creation host, time ubuntu-server, 2021-10-12 06:49:31 +0000</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta">  #</span><span class="bash"> open                 1</span></span><br><span class="line">  LV Size                &lt;19.00 GiB</span><br><span class="line">  Current LE             9983</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:0</span><br><span class="line">[root@syra-ti_ubuntu~]: lvextend -L +20G /dev/ubuntu-vg/ubuntu-lv /dev/sda4 #调用lvextend进行扩容</span><br><span class="line">[root@syra-ti_ubuntu~]: lvdisplay #再次列出lv信息 发现lv空间已经增加</span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Path                /dev/ubuntu-vg/ubuntu-lv</span><br><span class="line">  LV Name                ubuntu-lv</span><br><span class="line">  VG Name                ubuntu-vg</span><br><span class="line">  LV UUID                3THGqb-Me9D-KFEK-QxT5-dP8Y-hUqa-knbAa3</span><br><span class="line">  LV Write Access        read/write</span><br><span class="line">  LV Creation host, time ubuntu-server, 2021-10-12 06:49:31 +0000</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta">  #</span><span class="bash"> open                 1</span></span><br><span class="line">  LV Size                &lt;39.00 GiB</span><br><span class="line">  Current LE             9983</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="5-扩展根目录空间"><a href="#5-扩展根目录空间" class="headerlink" title="5.扩展根目录空间"></a>5.扩展根目录空间</h1><p>对lv扩容完成后，会发现根目录的空间依旧没有增加，此时需要刷新根目录大小，使用<code>resize2fs</code>:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: df -h #发现/根目录空间还是没有增加</span><br><span class="line">Filesystem                         Size  Used Avail Use% Mounted on</span><br><span class="line">udev                               1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs                              393M  1.8M  391M   1% /run</span><br><span class="line">/dev/mapper/ubuntu--vg-ubuntu--lv   19G   18G   19G  99% /</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs                              5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">/dev/loop0                          56M   56M     0 100% /snap/core18/2128</span><br><span class="line">/dev/loop1                          56M   56M     0 100% /snap/core18/2253</span><br><span class="line">/dev/loop3                          43M   43M     0 100% /snap/snapd/14066</span><br><span class="line">/dev/loop2                         117M  117M     0 100% /snap/docker/1125</span><br><span class="line">/dev/loop4                          33M   33M     0 100% /snap/snapd/13270</span><br><span class="line">/dev/sda2                          976M  150M  759M  17% /boot</span><br><span class="line">tmpfs                              393M     0  393M   0% /run/user/0</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv #使用resize2fs进行刷新</span><br><span class="line">resize2fs 1.44.1 (24-Mar-2018)</span><br><span class="line">Filesystem at /dev/mapper/ubuntu--vg-ubuntu--lv is mounted on /; on-line resizing required</span><br><span class="line">old_desc_blocks = 3, new_desc_blocks = 5</span><br><span class="line">The filesystem on /dev/mapper/ubuntu--vg-ubuntu--lv is now 10222592 (4k) blocks long.</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: df -h #再次查看，发现/根目录空间已经增加</span><br><span class="line">Filesystem                         Size  Used Avail Use% Mounted on</span><br><span class="line">udev                               1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs                              393M  1.8M  391M   1% /run</span><br><span class="line">/dev/mapper/ubuntu--vg-ubuntu--lv   39G   18G   19G  49% /</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs                              5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">/dev/loop0                          56M   56M     0 100% /snap/core18/2128</span><br><span class="line">/dev/loop1                          56M   56M     0 100% /snap/core18/2253</span><br><span class="line">/dev/loop3                          43M   43M     0 100% /snap/snapd/14066</span><br><span class="line">/dev/loop2                         117M  117M     0 100% /snap/docker/1125</span><br><span class="line">/dev/loop4                          33M   33M     0 100% /snap/snapd/13270</span><br><span class="line">/dev/sda2                          976M  150M  759M  17% /boot</span><br><span class="line">tmpfs                              393M     0  393M   0% /run/user/0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>以上！まいど～</p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/10/26/%E5%85%B3%E4%BA%8Evue-cli4%E6%97%A0%E6%B3%95%E9%85%8D%E7%BD%AE%E8%87%AA%E5%AE%9A%E4%B9%89devtool%E9%80%89%E9%A1%B9%E7%9A%84%E9%97%AE%E9%A2%98.html" rel="prev" title="关于vue-cli4无法配置自定义devtool选项的问题">
+                  <i class="fa fa-chevron-left"></i> 关于vue-cli4无法配置自定义devtool选项的问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/01/20/openwrt%E9%83%A8%E7%BD%B2openvpn-server%E4%BB%A5%E5%8F%8A%E7%BE%A4%E6%99%96%E8%BF%9E%E6%8E%A5%EF%BC%88DSM7%EF%BC%89%E5%AE%8C%E6%88%90%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F.html" rel="next" title="openwrt部署openvpn server以及群晖连接（DSM7）完成内网穿透">
+                  openwrt部署openvpn server以及群晖连接（DSM7）完成内网穿透 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">白茶SyraTi</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

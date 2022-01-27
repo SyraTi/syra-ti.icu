@@ -7,8 +7,8 @@ title: SyraTi.ICU powered by Hexo
 subtitle: ''
 description: ''
 keywords:
-author: CodeName.SyraTi
-language: zh
+author: CODENAME.SYRA_TI
+language: zh-CN
 timezone: 'Asia/Shanghai'
 
 # URL
@@ -97,7 +97,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment

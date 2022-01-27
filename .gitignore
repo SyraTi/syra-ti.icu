@@ -1,3 +1,10 @@
+# hexo
+.DS_Store
+Thumbs.db
+db.json
+public/
+.deploy*/
+
 # Logs
 logs
 *.log

@@ -22,7 +22,7 @@ ___
 > **1. 准备**
 如果需要请先设置DDNS客户端。 安装依赖包. 指定一些临时的环境变量
 
-```shell
+```bash
 # 安装包
 opkg update
 opkg install openvpn-openssl openvpn-easy-rsa
@@ -52,7 +52,7 @@ fi
 ```
 >**2. 秘钥管理**
 使用 EasyRSA 管理 PKI. 必要时使用私钥密码保护.
-```shell
+```bash
 # 配置环境变量
 export EASYRSA_PKI="${OVPN_PKI}"
 export EASYRSA_REQ_CN="ovpnca"
@@ -85,7 +85,7 @@ openvpn --genkey --secret ${OVPN_PKI}/tc.pem
 >**3. 防火墙**
 将VPN网络视为私有网络，将VPN接口分配到LAN区域，以减少防火墙的设置。允许从WAN区域访问VPN服务器。
 
-```shell
+```bash
 # 配置防火墙
 uci rename firewall.@zone[0]="lan"
 uci rename firewall.@zone[1]="wan"
@@ -103,7 +103,7 @@ uci commit firewall
 ```
 >**4. VPN服务**
 配置VPN服务，生成客户端配置文件。
-```shell
+```bash
 # 配置环境变量
 OVPN_DH="$(cat ${OVPN_PKI}/dh.pem)"
 OVPN_TC="$(sed -e "/^#/d;/^\w/N;s/\n//" ${OVPN_PKI}/tc.pem)"
@@ -185,25 +185,25 @@ ls ${OVPN_DIR}/*.ovpn
 需要完成openvpn客户端的ip固定，我们需要在server配置中添加规则。
 
 **编辑服务端配置**
-```shell
+```bash
 vim ${OVPN_DIR}/server.ovpn
 ```
 **添加下面这一行，用来指定客户端config文件夹**
-```shell
+```bash
 # 这里的文件夹路径可以自定
 client-config-dir /etc/openvpn/ccd
 ```
 **保存后新增客户端config 注意这里的“client”需要和.ovpn文件名相符，也就是easyrsa创建客户端秘钥时的名字**
-```shell
+```bash
 vim /etc/openvpn/ccd/client
 ```
 **添加下面这一行，来绑定ip**
-```shell
+```bash
 # 这里的192.168.8.108 即为你想要绑定的ip
 ifconfig-push 192.168.8.108 255.255.255.0
 ```
 **保存后重启openvpn**
-```shell
+```bash
 /etc/init.d/openvpn restart
 ```
 ___

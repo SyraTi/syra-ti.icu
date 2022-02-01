@@ -19,7 +19,7 @@ tags:
 ## 解决方案
 - 方案一：将```~/.bash_profile```中的逻辑移至```~/.profile```，并删除```~/.bash_profile```。
 - 方案二：在```~/.bash_profile```中添加以下代码保证```~/.profile```中的代码运行。
- ```shell
+ ```bash
  source ~/.profile
  ```
 

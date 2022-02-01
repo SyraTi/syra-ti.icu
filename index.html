@@ -109,6 +109,8 @@
 
         <div class="site-overview-wrap sidebar-panel">
           <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="白茶SyraTi"
+      src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">白茶SyraTi</p>
   <div class="site-description" itemprop="description"></div>
 </div>
@@ -158,7 +160,7 @@
     <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/2022/01/20/openwrt%E9%83%A8%E7%BD%B2openvpn-server%E4%BB%A5%E5%8F%8A%E7%BE%A4%E6%99%96%E8%BF%9E%E6%8E%A5%EF%BC%88DSM7%EF%BC%89%E5%AE%8C%E6%88%90%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="白茶SyraTi">
       <meta itemprop="description" content="">
     </span>
@@ -186,7 +188,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:25:58" itemprop="dateModified" datetime="2022-01-27T21:25:58+08:00">2022-01-27</time>
+      <time title="修改时间：2022-02-01 14:25:07" itemprop="dateModified" datetime="2022-02-01T14:25:07+08:00">2022-02-01</time>
     </span>
 
   
@@ -214,20 +216,20 @@
 <blockquote>
 <p><strong>1. 准备</strong><br>如果需要请先设置DDNS客户端。 安装依赖包. 指定一些临时的环境变量</p>
 </blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 安装包</span></span><br><span class="line">opkg update</span><br><span class="line">opkg install openvpn-openssl openvpn-easy-rsa</span><br><span class="line"><span class="meta"> </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 配置环境变量</span></span><br><span class="line">OVPN_DIR=&quot;/etc/openvpn&quot;</span><br><span class="line">OVPN_PKI=&quot;/etc/easy-rsa/pki&quot;</span><br><span class="line">OVPN_PORT=&quot;1194&quot;</span><br><span class="line">OVPN_PROTO=&quot;udp&quot;</span><br><span class="line">OVPN_POOL=&quot;192.168.8.0 255.255.255.0&quot;  # 注：这里可以指定openvpn的网段</span><br><span class="line">OVPN_DNS=&quot;$&#123;OVPN_POOL%.* *&#125;.1&quot;</span><br><span class="line">OVPN_DOMAIN=&quot;$(uci get dhcp.@dnsmasq[0].domain)&quot;</span><br><span class="line"><span class="meta"> </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 拿到外网ip作为外网地址</span></span><br><span class="line">. /lib/functions/network.sh</span><br><span class="line">network_flush_cache</span><br><span class="line">network_find_wan NET_IF</span><br><span class="line">network_get_ipaddr NET_ADDR &quot;$&#123;NET_IF&#125;&quot;</span><br><span class="line">OVPN_SERV=&quot;$&#123;NET_ADDR&#125;&quot;</span><br><span class="line"><span class="meta"> </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果有ddns 则从ddns拿到全域名(FQDN)作为外网地址</span></span><br><span class="line">NET_FQDN=&quot;$(uci -q get ddns.@service[0].lookup_host)&quot;</span><br><span class="line">if [ -n &quot;$&#123;NET_FQDN&#125;&quot; ]</span><br><span class="line">then OVPN_SERV=&quot;$&#123;NET_FQDN&#125;&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装包</span></span><br><span class="line">opkg update</span><br><span class="line">opkg install openvpn-openssl openvpn-easy-rsa</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">OVPN_DIR=<span class="string">&quot;/etc/openvpn&quot;</span></span><br><span class="line">OVPN_PKI=<span class="string">&quot;/etc/easy-rsa/pki&quot;</span></span><br><span class="line">OVPN_PORT=<span class="string">&quot;1194&quot;</span></span><br><span class="line">OVPN_PROTO=<span class="string">&quot;udp&quot;</span></span><br><span class="line">OVPN_POOL=<span class="string">&quot;192.168.8.0 255.255.255.0&quot;</span>  <span class="comment"># 注：这里可以指定openvpn的网段</span></span><br><span class="line">OVPN_DNS=<span class="string">&quot;<span class="variable">$&#123;OVPN_POOL%.* *&#125;</span>.1&quot;</span></span><br><span class="line">OVPN_DOMAIN=<span class="string">&quot;<span class="subst">$(uci get dhcp.@dnsmasq[0].domain)</span>&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 拿到外网ip作为外网地址</span></span><br><span class="line">. /lib/<span class="built_in">functions</span>/network.sh</span><br><span class="line">network_flush_cache</span><br><span class="line">network_find_wan NET_IF</span><br><span class="line">network_get_ipaddr NET_ADDR <span class="string">&quot;<span class="variable">$&#123;NET_IF&#125;</span>&quot;</span></span><br><span class="line">OVPN_SERV=<span class="string">&quot;<span class="variable">$&#123;NET_ADDR&#125;</span>&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 如果有ddns 则从ddns拿到全域名(FQDN)作为外网地址</span></span><br><span class="line">NET_FQDN=<span class="string">&quot;<span class="subst">$(uci -q get ddns.@service[0].lookup_host)</span>&quot;</span></span><br><span class="line"><span class="keyword">if</span> [ -n <span class="string">&quot;<span class="variable">$&#123;NET_FQDN&#125;</span>&quot;</span> ]</span><br><span class="line"><span class="keyword">then</span> OVPN_SERV=<span class="string">&quot;<span class="variable">$&#123;NET_FQDN&#125;</span>&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <blockquote>
 <p><strong>2. 秘钥管理</strong><br>使用 EasyRSA 管理 PKI. 必要时使用私钥密码保护.</p>
 </blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 配置环境变量</span></span><br><span class="line">export EASYRSA_PKI=&quot;$&#123;OVPN_PKI&#125;&quot;</span><br><span class="line">export EASYRSA_REQ_CN=&quot;ovpnca&quot;</span><br><span class="line">export EASYRSA_BATCH=&quot;1&quot;</span><br><span class="line"><span class="meta"> </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 移除并且重新初始化pki目录</span></span><br><span class="line">easyrsa init-pki</span><br><span class="line"><span class="meta"> </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成DH变量</span></span><br><span class="line">easyrsa gen-dh</span><br><span class="line"><span class="meta"> </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建新的CA</span></span><br><span class="line">easyrsa build-ca nopass</span><br><span class="line"><span class="meta"> </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 为服务端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-server-full server nopass</span><br><span class="line"><span class="meta"> </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 为客户端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-client-full client nopass  </span><br><span class="line"><span class="meta">#</span><span class="bash">注：此处为生成客户端配置必要，如果需要多个客户端的，可以多次运行本行 只需要更改“client”, 如：</span></span><br><span class="line"><span class="meta">#</span><span class="bash">easyrsa build-client-full client1 nopass</span> </span><br><span class="line"><span class="meta">#</span><span class="bash">easyrsa build-client-full client2 nopass</span> </span><br><span class="line"><span class="meta">#</span><span class="bash">easyrsa build-client-full client-dsm nopass</span></span><br><span class="line"><span class="meta">#</span><span class="bash">注：更改后的名称会作为生成后配置文件的名称</span> </span><br><span class="line"><span class="meta"> </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成TLS PSK</span></span><br><span class="line">openvpn --genkey --secret $&#123;OVPN_PKI&#125;/tc.pem</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_PKI=<span class="string">&quot;<span class="variable">$&#123;OVPN_PKI&#125;</span>&quot;</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_REQ_CN=<span class="string">&quot;ovpnca&quot;</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_BATCH=<span class="string">&quot;1&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 移除并且重新初始化pki目录</span></span><br><span class="line">easyrsa init-pki</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 生成DH变量</span></span><br><span class="line">easyrsa gen-dh</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 创建新的CA</span></span><br><span class="line">easyrsa build-ca nopass</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 为服务端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-server-full server nopass</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 为客户端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-client-full client nopass  </span><br><span class="line"><span class="comment">#注：此处为生成客户端配置必要，如果需要多个客户端的，可以多次运行本行 只需要更改“client”, 如：</span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client1 nopass </span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client2 nopass </span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client-dsm nopass</span></span><br><span class="line"><span class="comment">#注：更改后的名称会作为生成后配置文件的名称 </span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 生成TLS PSK</span></span><br><span class="line">openvpn --genkey --secret <span class="variable">$&#123;OVPN_PKI&#125;</span>/tc.pem</span><br></pre></td></tr></table></figure>
 
 <blockquote>
 <p><strong>3. 防火墙</strong><br>将VPN网络视为私有网络，将VPN接口分配到LAN区域，以减少防火墙的设置。允许从WAN区域访问VPN服务器。</p>
 </blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 配置防火墙</span></span><br><span class="line">uci rename firewall.@zone[0]=&quot;lan&quot;</span><br><span class="line">uci rename firewall.@zone[1]=&quot;wan&quot;</span><br><span class="line">uci del_list firewall.lan.device=&quot;tun+&quot;</span><br><span class="line">uci add_list firewall.lan.device=&quot;tun+&quot;</span><br><span class="line">uci -q delete firewall.ovpn</span><br><span class="line">uci set firewall.ovpn=&quot;rule&quot;</span><br><span class="line">uci set firewall.ovpn.name=&quot;Allow-OpenVPN&quot;</span><br><span class="line">uci set firewall.ovpn.src=&quot;wan&quot;</span><br><span class="line">uci set firewall.ovpn.dest_port=&quot;$&#123;OVPN_PORT&#125;&quot;</span><br><span class="line">uci set firewall.ovpn.proto=&quot;$&#123;OVPN_PROTO&#125;&quot;</span><br><span class="line">uci set firewall.ovpn.target=&quot;ACCEPT&quot;</span><br><span class="line">uci commit firewall</span><br><span class="line">/etc/init.d/firewall restart</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置防火墙</span></span><br><span class="line">uci rename firewall.@zone[0]=<span class="string">&quot;lan&quot;</span></span><br><span class="line">uci rename firewall.@zone[1]=<span class="string">&quot;wan&quot;</span></span><br><span class="line">uci del_list firewall.lan.device=<span class="string">&quot;tun+&quot;</span></span><br><span class="line">uci add_list firewall.lan.device=<span class="string">&quot;tun+&quot;</span></span><br><span class="line">uci -q delete firewall.ovpn</span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn=<span class="string">&quot;rule&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.name=<span class="string">&quot;Allow-OpenVPN&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.src=<span class="string">&quot;wan&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.dest_port=<span class="string">&quot;<span class="variable">$&#123;OVPN_PORT&#125;</span>&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.proto=<span class="string">&quot;<span class="variable">$&#123;OVPN_PROTO&#125;</span>&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.target=<span class="string">&quot;ACCEPT&quot;</span></span><br><span class="line">uci commit firewall</span><br><span class="line">/etc/init.d/firewall restart</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p><strong>4. VPN服务</strong><br>配置VPN服务，生成客户端配置文件。</p>
 </blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 配置环境变量</span></span><br><span class="line">OVPN_DH=&quot;$(cat $&#123;OVPN_PKI&#125;/dh.pem)&quot;</span><br><span class="line">OVPN_TC=&quot;$(sed -e &quot;/^#/d;/^\w/N;s/\n//&quot; $&#123;OVPN_PKI&#125;/tc.pem)&quot;</span><br><span class="line">OVPN_CA=&quot;$(openssl x509 -in $&#123;OVPN_PKI&#125;/ca.crt)&quot;</span><br><span class="line">NL=$&#x27;\n&#x27;</span><br><span class="line"><span class="meta"> </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 配置VPN服务，生成客户端配置文件。</span> </span><br><span class="line"><span class="meta">#</span><span class="bash">注：如果你清楚的知道你在做什么，可以更改下方ovpn配置相关的代码，可以省掉后续多个客户端单独修改配置的工作量</span></span><br><span class="line">umask go=</span><br><span class="line">ls $&#123;OVPN_PKI&#125;/issued \</span><br><span class="line">| sed -e &quot;s/\.\w*$//&quot; \</span><br><span class="line">| while read -r OVPN_ID</span><br><span class="line">do</span><br><span class="line">OVPN_KEY=&quot;$(cat $&#123;OVPN_PKI&#125;/private/$&#123;OVPN_ID&#125;.key)&quot;</span><br><span class="line">OVPN_CERT=&quot;$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt)&quot;</span><br><span class="line">OVPN_EKU=&quot;$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt -purpose)&quot;</span><br><span class="line">case $&#123;OVPN_EKU&#125; in</span><br><span class="line">(*&quot;SSL server : Yes&quot;*)</span><br><span class="line">OVPN_CONF=&quot;\</span><br><span class="line">port $&#123;OVPN_PORT&#125;</span><br><span class="line">proto $&#123;OVPN_PROTO&#125;</span><br><span class="line">server $&#123;OVPN_POOL&#125;</span><br><span class="line">topology subnet</span><br><span class="line">client-to-client</span><br><span class="line">keepalive 10 60</span><br><span class="line">persist-tun</span><br><span class="line">persist-key</span><br><span class="line">push \&quot;dhcp-option DNS $&#123;OVPN_DNS&#125;\&quot;</span><br><span class="line">push \&quot;dhcp-option DOMAIN $&#123;OVPN_DOMAIN&#125;\&quot;</span><br><span class="line">push \&quot;redirect-gateway def1\&quot;</span><br><span class="line">push \&quot;persist-tun\&quot;</span><br><span class="line">push \&quot;persist-key\&quot;</span><br><span class="line">&lt;dh&gt;$&#123;NL&#125;$&#123;OVPN_DH&#125;$&#123;NL&#125;&lt;/dh&gt;&quot;</span><br><span class="line">OVPN_EXT=&quot;conf&quot; ;;</span><br><span class="line">(*&quot;SSL client : Yes&quot;*)</span><br><span class="line">OVPN_CONF=&quot;\</span><br><span class="line">nobind</span><br><span class="line">client</span><br><span class="line">remote $&#123;OVPN_SERV&#125; $&#123;OVPN_PORT&#125; $&#123;OVPN_PROTO&#125;</span><br><span class="line">auth-nocache</span><br><span class="line">remote-cert-tls server&quot;</span><br><span class="line">OVPN_EXT=&quot;ovpn&quot; ;;</span><br><span class="line">esac</span><br><span class="line">cat &lt;&lt; EOF &gt; $&#123;OVPN_DIR&#125;/$&#123;OVPN_ID&#125;.$&#123;OVPN_EXT&#125;</span><br><span class="line">user nobody</span><br><span class="line">group nogroup</span><br><span class="line">dev tun</span><br><span class="line"><span class="meta">$</span><span class="bash">&#123;OVPN_CONF&#125;</span></span><br><span class="line">&lt;tls-crypt&gt;$&#123;NL&#125;$&#123;OVPN_TC&#125;$&#123;NL&#125;&lt;/tls-crypt&gt;</span><br><span class="line">&lt;key&gt;$&#123;NL&#125;$&#123;OVPN_KEY&#125;$&#123;NL&#125;&lt;/key&gt;</span><br><span class="line">&lt;cert&gt;$&#123;NL&#125;$&#123;OVPN_CERT&#125;$&#123;NL&#125;&lt;/cert&gt;</span><br><span class="line">&lt;ca&gt;$&#123;NL&#125;$&#123;OVPN_CA&#125;$&#123;NL&#125;&lt;/ca&gt;</span><br><span class="line">EOF</span><br><span class="line">done</span><br><span class="line">/etc/init.d/openvpn restart</span><br><span class="line"><span class="meta">#</span><span class="bash"> 此处就能够看到client.ovpn 把这个文件通过openwrt的备份功能导出来，上传到群晖即可</span></span><br><span class="line">ls $&#123;OVPN_DIR&#125;/*.ovpn</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">OVPN_DH=<span class="string">&quot;<span class="subst">$(cat $&#123;OVPN_PKI&#125;/dh.pem)</span>&quot;</span></span><br><span class="line">OVPN_TC=<span class="string">&quot;<span class="subst">$(sed -e <span class="string">&quot;/^#/d;/^\w/N;s/\n//&quot;</span> $&#123;OVPN_PKI&#125;/tc.pem)</span>&quot;</span></span><br><span class="line">OVPN_CA=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/ca.crt)</span>&quot;</span></span><br><span class="line">NL=$<span class="string">&#x27;\n&#x27;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 配置VPN服务，生成客户端配置文件。 </span></span><br><span class="line"><span class="comment">#注：如果你清楚的知道你在做什么，可以更改下方ovpn配置相关的代码，可以省掉后续多个客户端单独修改配置的工作量</span></span><br><span class="line"><span class="built_in">umask</span> go=</span><br><span class="line">ls <span class="variable">$&#123;OVPN_PKI&#125;</span>/issued \</span><br><span class="line">| sed -e <span class="string">&quot;s/\.\w*$//&quot;</span> \</span><br><span class="line">| <span class="keyword">while</span> <span class="built_in">read</span> -r OVPN_ID</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">OVPN_KEY=<span class="string">&quot;<span class="subst">$(cat $&#123;OVPN_PKI&#125;/private/$&#123;OVPN_ID&#125;.key)</span>&quot;</span></span><br><span class="line">OVPN_CERT=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt)</span>&quot;</span></span><br><span class="line">OVPN_EKU=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt -purpose)</span>&quot;</span></span><br><span class="line"><span class="keyword">case</span> <span class="variable">$&#123;OVPN_EKU&#125;</span> <span class="keyword">in</span></span><br><span class="line">(*<span class="string">&quot;SSL server : Yes&quot;</span>*)</span><br><span class="line">OVPN_CONF=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">port <span class="variable">$&#123;OVPN_PORT&#125;</span></span></span><br><span class="line"><span class="string">proto <span class="variable">$&#123;OVPN_PROTO&#125;</span></span></span><br><span class="line"><span class="string">server <span class="variable">$&#123;OVPN_POOL&#125;</span></span></span><br><span class="line"><span class="string">topology subnet</span></span><br><span class="line"><span class="string">client-to-client</span></span><br><span class="line"><span class="string">keepalive 10 60</span></span><br><span class="line"><span class="string">persist-tun</span></span><br><span class="line"><span class="string">persist-key</span></span><br><span class="line"><span class="string">push \&quot;dhcp-option DNS <span class="variable">$&#123;OVPN_DNS&#125;</span>\&quot;</span></span><br><span class="line"><span class="string">push \&quot;dhcp-option DOMAIN <span class="variable">$&#123;OVPN_DOMAIN&#125;</span>\&quot;</span></span><br><span class="line"><span class="string">push \&quot;redirect-gateway def1\&quot;</span></span><br><span class="line"><span class="string">push \&quot;persist-tun\&quot;</span></span><br><span class="line"><span class="string">push \&quot;persist-key\&quot;</span></span><br><span class="line"><span class="string">&lt;dh&gt;<span class="variable">$&#123;NL&#125;</span><span class="variable">$&#123;OVPN_DH&#125;</span><span class="variable">$&#123;NL&#125;</span>&lt;/dh&gt;&quot;</span></span><br><span class="line">OVPN_EXT=<span class="string">&quot;conf&quot;</span> ;;</span><br><span class="line">(*<span class="string">&quot;SSL client : Yes&quot;</span>*)</span><br><span class="line">OVPN_CONF=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">nobind</span></span><br><span class="line"><span class="string">client</span></span><br><span class="line"><span class="string">remote <span class="variable">$&#123;OVPN_SERV&#125;</span> <span class="variable">$&#123;OVPN_PORT&#125;</span> <span class="variable">$&#123;OVPN_PROTO&#125;</span></span></span><br><span class="line"><span class="string">auth-nocache</span></span><br><span class="line"><span class="string">remote-cert-tls server&quot;</span></span><br><span class="line">OVPN_EXT=<span class="string">&quot;ovpn&quot;</span> ;;</span><br><span class="line"><span class="keyword">esac</span></span><br><span class="line">cat &lt;&lt; <span class="string">EOF &gt; $&#123;OVPN_DIR&#125;/$&#123;OVPN_ID&#125;.$&#123;OVPN_EXT&#125;</span></span><br><span class="line"><span class="string">user nobody</span></span><br><span class="line"><span class="string">group nogroup</span></span><br><span class="line"><span class="string">dev tun</span></span><br><span class="line"><span class="string">$&#123;OVPN_CONF&#125;</span></span><br><span class="line"><span class="string">&lt;tls-crypt&gt;$&#123;NL&#125;$&#123;OVPN_TC&#125;$&#123;NL&#125;&lt;/tls-crypt&gt;</span></span><br><span class="line"><span class="string">&lt;key&gt;$&#123;NL&#125;$&#123;OVPN_KEY&#125;$&#123;NL&#125;&lt;/key&gt;</span></span><br><span class="line"><span class="string">&lt;cert&gt;$&#123;NL&#125;$&#123;OVPN_CERT&#125;$&#123;NL&#125;&lt;/cert&gt;</span></span><br><span class="line"><span class="string">&lt;ca&gt;$&#123;NL&#125;$&#123;OVPN_CA&#125;$&#123;NL&#125;&lt;/ca&gt;</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">/etc/init.d/openvpn restart</span><br><span class="line"><span class="comment"># 此处就能够看到client.ovpn 把这个文件通过openwrt的备份功能导出来，上传到群晖即可</span></span><br><span class="line">ls <span class="variable">$&#123;OVPN_DIR&#125;</span>/*.ovpn</span><br></pre></td></tr></table></figure>
 <p>到这里openwrt的openvpn服务端配置完毕，可以使用openvpn的备份功能（<code>System -&gt; Backup/Flash Firmware</code>）. 从备份包导出客户端的配置文件。</p>
 <hr>
 <h2 id="2-群晖连接openvpn"><a href="#2-群晖连接openvpn" class="headerlink" title="2. 群晖连接openvpn"></a>2. 群晖连接openvpn</h2><p>到了群晖这一步就比较简单，按照官网的流程，打开 <code>控制面板-&gt;网络-&gt;网络界面-&gt;新增-&gt;创建VPN配置文件</code>，把刚才导出的client.ovpn上传即可</p>
@@ -238,15 +240,15 @@
 <hr>
 <h2 id="3-配置端口转发"><a href="#3-配置端口转发" class="headerlink" title="3.配置端口转发"></a>3.配置端口转发</h2><p>需要完成端口转发，首先我们得先把群晖的ip固定下来，否则ip一变动，端口转发规则就失效了。<br>需要完成openvpn客户端的ip固定，我们需要在server配置中添加规则。</p>
 <p><strong>编辑服务端配置</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim $&#123;OVPN_DIR&#125;/server.ovpn</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim <span class="variable">$&#123;OVPN_DIR&#125;</span>/server.ovpn</span><br></pre></td></tr></table></figure>
 <p><strong>添加下面这一行，用来指定客户端config文件夹</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 这里的文件夹路径可以自定</span></span><br><span class="line">client-config-dir /etc/openvpn/ccd</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里的文件夹路径可以自定</span></span><br><span class="line">client-config-dir /etc/openvpn/ccd</span><br></pre></td></tr></table></figure>
 <p><strong>保存后新增客户端config 注意这里的“client”需要和.ovpn文件名相符，也就是easyrsa创建客户端秘钥时的名字</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/openvpn/ccd/client</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/openvpn/ccd/client</span><br></pre></td></tr></table></figure>
 <p><strong>添加下面这一行，来绑定ip</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 这里的192.168.8.108 即为你想要绑定的ip</span></span><br><span class="line">ifconfig-push 192.168.8.108 255.255.255.0</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里的192.168.8.108 即为你想要绑定的ip</span></span><br><span class="line">ifconfig-push 192.168.8.108 255.255.255.0</span><br></pre></td></tr></table></figure>
 <p><strong>保存后重启openvpn</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/openvpn restart</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/openvpn restart</span><br></pre></td></tr></table></figure>
 <hr>
 <p>接下来正式开始配置端口转发，进入openwrt,  菜单选择 <code>Network-&gt;Firewall-&gt;Port Forwards</code><br><img src="https://img-blog.csdnimg.cn/b76d34e11f01421aaf38f7c9a4c6c0cb.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>新增一条端口转发，按照下图填写<br><img src="https://img-blog.csdnimg.cn/2df447f9ae0a470c8d3a3f65c98dba4a.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>至此，应该就能够使用openwrt的端口转发达到内网穿透的目的了。</p>
 <p>以上！まいど～</p>
@@ -280,7 +282,7 @@
     <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/2021/12/01/Ubuntu%E6%89%A9%E5%B1%95%E6%A0%B9%E7%9B%AE%E5%BD%95%E7%A9%BA%E9%97%B4%EF%BC%88%E6%89%A9%E5%B1%95%E5%8E%9F%E6%9C%89%E5%88%86%E5%8C%BA%EF%BC%89.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="白茶SyraTi">
       <meta itemprop="description" content="">
     </span>
@@ -308,7 +310,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:25:58" itemprop="dateModified" datetime="2022-01-27T21:25:58+08:00">2022-01-27</time>
+      <time title="修改时间：2022-02-01 14:25:07" itemprop="dateModified" datetime="2022-02-01T14:25:07+08:00">2022-02-01</time>
     </span>
 
   
@@ -371,7 +373,7 @@
     <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/2021/10/26/%E5%85%B3%E4%BA%8Evue-cli4%E6%97%A0%E6%B3%95%E9%85%8D%E7%BD%AE%E8%87%AA%E5%AE%9A%E4%B9%89devtool%E9%80%89%E9%A1%B9%E7%9A%84%E9%97%AE%E9%A2%98.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="白茶SyraTi">
       <meta itemprop="description" content="">
     </span>
@@ -399,7 +401,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:25:58" itemprop="dateModified" datetime="2022-01-27T21:25:58+08:00">2022-01-27</time>
+      <time title="修改时间：2022-02-01 14:25:07" itemprop="dateModified" datetime="2022-02-01T14:25:07+08:00">2022-02-01</time>
     </span>
 
   
@@ -456,7 +458,7 @@
     <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/2021/10/25/Windows-%E4%BD%BF%E7%94%A8-ssh-agent-%E6%B7%BB%E5%8A%A0%E5%A4%9A%E4%B8%AAssh-key%E5%90%8E%EF%BC%8Cgit%E4%BE%9D%E6%97%A7%E6%97%A0%E6%9D%83%E9%99%90%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="白茶SyraTi">
       <meta itemprop="description" content="">
     </span>
@@ -484,7 +486,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:25:58" itemprop="dateModified" datetime="2022-01-27T21:25:58+08:00">2022-01-27</time>
+      <time title="修改时间：2022-02-01 14:25:07" itemprop="dateModified" datetime="2022-02-01T14:25:07+08:00">2022-02-01</time>
     </span>
 
   
@@ -535,7 +537,7 @@
     <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/2021/09/29/%E6%B7%BB%E5%8A%A0%E4%BA%86-bash-profile%E4%B9%8B%E5%90%8E%EF%BC%8C-bashrc%E5%A4%B1%E6%95%88%E4%BB%A5%E5%8F%8Abash%E5%A4%B1%E5%8E%BB%E9%AB%98%E4%BA%AE%E7%9A%84%E5%8E%9F%E5%9B%A0%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="白茶SyraTi">
       <meta itemprop="description" content="">
     </span>
@@ -563,7 +565,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:25:58" itemprop="dateModified" datetime="2022-01-27T21:25:58+08:00">2022-01-27</time>
+      <time title="修改时间：2022-02-01 14:25:07" itemprop="dateModified" datetime="2022-02-01T14:25:07+08:00">2022-02-01</time>
     </span>
 
   
@@ -578,7 +580,7 @@
     <div class="post-body" itemprop="articleBody">
           <h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>添加<code>~/.bash_profile</code>之后，bash失去高亮，<code>~/.bashrc</code>中的逻辑不运行。<br><img src="https://img-blog.csdnimg.cn/b49d241eeab14f43b53edb783eb9d8f1.png" alt="添加前"><br>添加前↑<br><img src="https://img-blog.csdnimg.cn/fd0ce34e0824462fb70387c80a53c57f.png" alt="添加后"><br>添加后↑</p>
 <h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>在添加<code>~/.bash_profile</code>之后，<code>~/.profile</code>会被覆盖不再运行，而load bashrc的逻辑在<code>~/.profile</code>中，导致<code>~/.bashrc</code>也一并失效。<br><img src="https://img-blog.csdnimg.cn/50f8cda872f34b57a3f9f7e7b3d1f48c.png" alt="~/.profile中加载bashrc的逻辑"></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 解决方案</span><br><span class="line">- 方案一：将```~/.bash_profile```中的逻辑移至```~/.profile```，并删除```~/.bash_profile```。</span><br><span class="line">- 方案二：在```~/.bash_profile```中添加以下代码保证```~/.profile```中的代码运行。</span><br><span class="line"> ```shell</span><br><span class="line"> source ~/.profile</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 解决方案</span><br><span class="line">- 方案一：将```~/.bash_profile```中的逻辑移至```~/.profile```，并删除```~/.bash_profile```。</span><br><span class="line">- 方案二：在```~/.bash_profile```中添加以下代码保证```~/.profile```中的代码运行。</span><br><span class="line"> ```bash</span><br><span class="line"> source ~/.profile</span><br></pre></td></tr></table></figure>
 
 
 <br>
@@ -614,7 +616,7 @@
     <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/2021/08/11/apt-get%E4%B8%B4%E6%97%B6%E8%AE%BE%E7%BD%AE%E4%BB%A3%E7%90%86%E6%96%B9%E5%BC%8F.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="白茶SyraTi">
       <meta itemprop="description" content="">
     </span>
@@ -642,7 +644,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:25:58" itemprop="dateModified" datetime="2022-01-27T21:25:58+08:00">2022-01-27</time>
+      <time title="修改时间：2022-02-01 14:25:07" itemprop="dateModified" datetime="2022-02-01T14:25:07+08:00">2022-02-01</time>
     </span>
 
   
@@ -685,7 +687,7 @@
     <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/2021/01/28/Vue%E7%BB%91%E5%AE%9A-audio-video-%E6%A0%87%E8%AE%B0%E7%9A%84muted%E5%B1%9E%E6%80%A7%E6%97%A0%E6%95%88%E9%97%AE%E9%A2%98%E9%9A%8F%E8%AE%B0.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="白茶SyraTi">
       <meta itemprop="description" content="">
     </span>
@@ -713,7 +715,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:25:58" itemprop="dateModified" datetime="2022-01-27T21:25:58+08:00">2022-01-27</time>
+      <time title="修改时间：2022-02-01 14:25:07" itemprop="dateModified" datetime="2022-02-01T14:25:07+08:00">2022-02-01</time>
     </span>
 
   
@@ -763,7 +765,7 @@
     <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/2020/09/07/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8-before-content-url-%E2%80%98xxx%E2%80%98-%E8%AE%BE%E7%BD%AE%E5%9B%BE%E6%A0%87.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="白茶SyraTi">
       <meta itemprop="description" content="">
     </span>
@@ -791,7 +793,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:25:58" itemprop="dateModified" datetime="2022-01-27T21:25:58+08:00">2022-01-27</time>
+      <time title="修改时间：2022-02-01 14:25:07" itemprop="dateModified" datetime="2022-02-01T14:25:07+08:00">2022-02-01</time>
     </span>
 
   
@@ -835,7 +837,7 @@
     <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/2020/06/03/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%AE%A1%E7%AE%97%E7%B2%BE%E5%BA%A6%E8%AF%AF%E5%B7%AE%E5%8E%9F%E7%90%86%E9%9A%8F%E8%AE%B0.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="白茶SyraTi">
       <meta itemprop="description" content="">
     </span>
@@ -863,7 +865,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:25:58" itemprop="dateModified" datetime="2022-01-27T21:25:58+08:00">2022-01-27</time>
+      <time title="修改时间：2022-02-01 14:25:07" itemprop="dateModified" datetime="2022-02-01T14:25:07+08:00">2022-02-01</time>
     </span>
 
   
@@ -912,7 +914,7 @@
     <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/2020/03/26/%E5%85%B3%E4%BA%8ECSS%E9%80%89%E6%8B%A9%E5%99%A8%E4%B9%A6%E5%86%99%E6%AD%A3%E7%A1%AE%E6%B5%8F%E8%A7%88%E5%99%A8%E5%8D%B4%E4%B8%8D%E8%AE%A4%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8E%9F%E5%9B%A0.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="白茶SyraTi">
       <meta itemprop="description" content="">
     </span>
@@ -940,7 +942,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:25:58" itemprop="dateModified" datetime="2022-01-27T21:25:58+08:00">2022-01-27</time>
+      <time title="修改时间：2022-02-01 14:25:07" itemprop="dateModified" datetime="2022-02-01T14:25:07+08:00">2022-02-01</time>
     </span>
 
   

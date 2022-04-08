@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/f052cca3f5e3eee8bb5117452a8b5264.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/5b554afc825dfce4c6cf9f2cc824b8f7.png">
 <meta property="article:published_time" content="2017-12-07T08:27:37.000Z">
-<meta property="article:modified_time" content="2022-02-01T06:25:07.595Z">
+<meta property="article:modified_time" content="2022-04-08T03:00:18.619Z">
 <meta property="article:author" content="白茶SyraTi">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/img_convert/d953d2f1c93ba21043d2bb65adfcd32b.png">
@@ -114,7 +114,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%94%E2%80%94-%E5%9B%A0%E4%B8%BA%E7%99%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE%E6%9E%81%E9%80%9F%E7%89%88%E8%B2%8C%E4%BC%BC%E6%AD%A3%E5%9C%A8%E5%85%B3%E9%97%AD%E5%B9%B6%E4%B8%94%E5%81%9C%E6%AD%A2%E7%BB%B4%E6%8A%A4%E4%BA%86-%E6%96%87%E6%A1%A3%E9%A1%B5%E9%9D%A2%E5%92%8C%E4%BB%8B%E7%BB%8D%E9%A1%B5%E9%9D%A2%E9%83%BD%E8%B7%B3%E8%BD%AC%E5%88%B0%E4%BA%86%E6%AD%A3%E5%BC%8F%E7%89%88%E7%9A%84API%EF%BC%8C%E7%84%B6%E8%80%8C%E6%9E%81%E9%80%9F%E7%89%88%E4%B8%AD%E9%9D%9E%E5%B8%B8%E5%A5%BD%E7%94%A8%E7%9A%84-routeSearch-routeCall-%E6%B2%A1%E4%BA%86-%E4%BA%8E%E6%98%AF%E4%B9%8E%E5%BC%80%E5%A7%8B%E6%89%BE%E4%BB%A3%E6%9B%BF%E6%96%B9%E6%A1%88"><span class="nav-number">1.</span> <span class="nav-text">—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#A-Few-Minutes-Later%E2%80%A6"><span class="nav-number"></span> <span class="nav-text">A Few Minutes Later…..</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E6%83%85%E5%B9%B6%E6%B2%A1%E6%9C%89%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95-%E2%80%94%E2%80%94-%E4%BD%BF%E7%94%A8DrivingRoute"><span class="nav-number"></span> <span class="nav-text">事情并没有那么简单  —— 使用DrivingRoute</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fine-%E4%B8%8D%E5%BC%80%E8%BD%A6%E6%88%91%E8%B5%B0%E8%B7%AF%E8%A1%8C%E4%BA%86%E5%90%A7-%E2%80%94%E2%80%94-%E4%BD%BF%E7%94%A8WalkingRoute"><span class="nav-number"></span> <span class="nav-text">Fine 不开车我走路行了吧  —— 使用WalkingRoute!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%A6%E5%A5%BD%E5%90%A7%E4%B8%8B%E4%B8%8B%E7%AD%96-%E5%9D%90%E5%85%AC%E4%BA%A4%E5%90%A7-%D0%B7%E3%80%8D%E2%88%A0-%E2%80%94%E2%80%94-%E4%BD%BF%E7%94%A8TransitRoute"><span class="nav-number"></span> <span class="nav-text">…好吧下下策  坐公交吧_(:з」∠)_ —— 使用TransitRoute</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OK-%E5%86%B7%E9%9D%99-%E6%88%91%E4%BB%AC%E6%9D%A5%E5%88%86%E6%9E%90%E4%B8%80%E4%B8%8B%E5%85%AC%E4%BA%A4%E7%9A%84%E9%93%BE%E6%8E%A5%E2%80%A6"><span class="nav-number"></span> <span class="nav-text">OK 冷静 我们来分析一下公交的链接…</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Magic%EF%BC%81%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Driving%E6%A8%A1%E5%BC%8F%E5%92%8CWalking%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%8F%98%E9%80%9A%E6%96%B9%E5%BC%8F"><span class="nav-number"></span> <span class="nav-text">Magic！——使用Driving模式和Walking模式的变通方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2018-5-3-%E6%9B%B4%E6%96%B0"><span class="nav-number">1.</span> <span class="nav-text">2018&#x2F;5&#x2F;3 更新</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%94%E2%80%94-%E5%9B%A0%E4%B8%BA%E7%99%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE%E6%9E%81%E9%80%9F%E7%89%88%E8%B2%8C%E4%BC%BC%E6%AD%A3%E5%9C%A8%E5%85%B3%E9%97%AD%E5%B9%B6%E4%B8%94%E5%81%9C%E6%AD%A2%E7%BB%B4%E6%8A%A4%E4%BA%86-%E6%96%87%E6%A1%A3%E9%A1%B5%E9%9D%A2%E5%92%8C%E4%BB%8B%E7%BB%8D%E9%A1%B5%E9%9D%A2%E9%83%BD%E8%B7%B3%E8%BD%AC%E5%88%B0%E4%BA%86%E6%AD%A3%E5%BC%8F%E7%89%88%E7%9A%84API%EF%BC%8C%E7%84%B6%E8%80%8C%E6%9E%81%E9%80%9F%E7%89%88%E4%B8%AD%E9%9D%9E%E5%B8%B8%E5%A5%BD%E7%94%A8%E7%9A%84-routeSearch-routeCall-%E6%B2%A1%E4%BA%86-%E4%BA%8E%E6%98%AF%E4%B9%8E%E5%BC%80%E5%A7%8B%E6%89%BE%E4%BB%A3%E6%9B%BF%E6%96%B9%E6%A1%88"><span class="nav-number">1.</span> <span class="nav-text">—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#A-Few-Minutes-Later%E2%80%A6"><span class="nav-number"></span> <span class="nav-text">A Few Minutes Later…..</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E6%83%85%E5%B9%B6%E6%B2%A1%E6%9C%89%E9%82%A3%E4%B9%88%E7%AE%80%E5%8D%95-%E2%80%94%E2%80%94-%E4%BD%BF%E7%94%A8DrivingRoute"><span class="nav-number"></span> <span class="nav-text">事情并没有那么简单  —— 使用DrivingRoute</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fine-%E4%B8%8D%E5%BC%80%E8%BD%A6%E6%88%91%E8%B5%B0%E8%B7%AF%E8%A1%8C%E4%BA%86%E5%90%A7-%E2%80%94%E2%80%94-%E4%BD%BF%E7%94%A8WalkingRoute"><span class="nav-number"></span> <span class="nav-text">Fine 不开车我走路行了吧  —— 使用WalkingRoute!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%A6%E5%A5%BD%E5%90%A7%E4%B8%8B%E4%B8%8B%E7%AD%96-%E5%9D%90%E5%85%AC%E4%BA%A4%E5%90%A7-%D0%B7%E3%80%8D%E2%88%A0-%E2%80%94%E2%80%94-%E4%BD%BF%E7%94%A8TransitRoute"><span class="nav-number"></span> <span class="nav-text">…好吧下下策  坐公交吧_(:з」∠)_ —— 使用TransitRoute</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OK-%E5%86%B7%E9%9D%99-%E6%88%91%E4%BB%AC%E6%9D%A5%E5%88%86%E6%9E%90%E4%B8%80%E4%B8%8B%E5%85%AC%E4%BA%A4%E7%9A%84%E9%93%BE%E6%8E%A5%E2%80%A6"><span class="nav-number"></span> <span class="nav-text">OK 冷静 我们来分析一下公交的链接…</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Magic%EF%BC%81%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8Driving%E6%A8%A1%E5%BC%8F%E5%92%8CWalking%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%8F%98%E9%80%9A%E6%96%B9%E5%BC%8F"><span class="nav-number"></span> <span class="nav-text">Magic！——使用Driving模式和Walking模式的变通方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2018-x2F-5-x2F-3-%E6%9B%B4%E6%96%B0"><span class="nav-number">1.</span> <span class="nav-text">2018&#x2F;5&#x2F;3 更新</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -200,7 +200,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-02-01 14:25:07" itemprop="dateModified" datetime="2022-02-01T14:25:07+08:00">2022-02-01</time>
+      <time title="修改时间：2022-04-08 11:00:18" itemprop="dateModified" datetime="2022-04-08T11:00:18+08:00">2022-04-08</time>
     </span>
 
   
@@ -213,13 +213,13 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h4 id="——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案"><a href="#——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案" class="headerlink" title="—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案"></a>—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案</h4><h3 id="A-Few-Minutes-Later…"><a href="#A-Few-Minutes-Later…" class="headerlink" title="A Few Minutes Later….."></a><strong>A Few Minutes Later…..</strong></h3><p>经过一番Demo和文档的查找，惊喜的发现正式版中TransitRoute，WalkingRoute，以及DrivingRoute 的searchComplete回调中有个“moreResultsUrl” 打开正是百度地图的导航结果页！<br>&nbsp;</p>
+        <h4 id="——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案"><a href="#——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案" class="headerlink" title="—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案"></a>—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案</h4><h3 id="A-Few-Minutes-Later…"><a href="#A-Few-Minutes-Later…" class="headerlink" title="A Few Minutes Later….."></a><strong>A Few Minutes Later…..</strong></h3><p>经过一番Demo和文档的查找，惊喜的发现正式版中TransitRoute，WalkingRoute，以及DrivingRoute 的searchComplete回调中有个“moreResultsUrl” 打开正是百度地图的导航结果页！<br>&amp;nbsp;</p>
 <h3 id="事情并没有那么简单-——-使用DrivingRoute"><a href="#事情并没有那么简单-——-使用DrivingRoute" class="headerlink" title="事情并没有那么简单  —— 使用DrivingRoute"></a><strong>事情并没有那么简单  —— 使用DrivingRoute</strong></h3><p>当我打开DrivingRoute的moreResultsUrl 度娘很友好的向我展示了下面的界面 并且不管我如何调整参数 emmmmm 毫无变化！</p>
 <p><img src="https://img-blog.csdnimg.cn/img_convert/d953d2f1c93ba21043d2bb65adfcd32b.png" alt="DrivingRoute未能找到相应结果"></p>
-<p>&nbsp;<br>&nbsp;</p>
+<p>&amp;nbsp;<br>&amp;nbsp;</p>
 <h3 id="Fine-不开车我走路行了吧-——-使用WalkingRoute"><a href="#Fine-不开车我走路行了吧-——-使用WalkingRoute" class="headerlink" title="Fine 不开车我走路行了吧  —— 使用WalkingRoute!"></a><strong>Fine 不开车我走路行了吧  —— 使用WalkingRoute!</strong></h3><p><img src="https://img-blog.csdnimg.cn/img_convert/0576d2b2c8e66659d39bb9c500dabe9c.png" alt="ops!"></p>
 <p><img src="https://img-blog.csdnimg.cn/img_convert/0385b0475d2f8f0784130c8f3d045013.png" alt="这里写图片描述"><br>..<br>………………<br>……………………..<br>…………………………………. <img src="https://img-blog.csdnimg.cn/img_convert/f052cca3f5e3eee8bb5117452a8b5264.png" alt="这里写图片描述"></p>
-<p>*以上自行感受（崩溃）<br>&nbsp;<br>&nbsp;</p>
+<p>*以上自行感受（崩溃）<br>&amp;nbsp;<br>&amp;nbsp;</p>
 <h3 id="…好吧下下策-坐公交吧-з」∠-——-使用TransitRoute"><a href="#…好吧下下策-坐公交吧-з」∠-——-使用TransitRoute" class="headerlink" title="…好吧下下策  坐公交吧_(:з」∠)_ —— 使用TransitRoute"></a><strong>…好吧下下策  坐公交吧_(:з」∠)_ —— 使用TransitRoute</strong></h3><p>那个,出来是出来了…….</p>
 <p><img src="https://img-blog.csdnimg.cn/img_convert/5b554afc825dfce4c6cf9f2cc824b8f7.png" alt="这里写图片描述"></p>
 <p>为什么地图还要我切换选项卡才能看到啊！！！！（拿烟的手微微颤抖.jpg</p>
@@ -228,21 +228,21 @@
 </blockquote>
 <p>↓<br>↓仔细看↓<br>↓</p>
 <blockquote>
-<p>?region=city&amp;origin=30.26348989892,120.21415684874&amp;destination=30.235552,120.205199&amp;output=html&amp;mode=transit&amp;src=baidu_map_jsapi</p>
+<p>?region&#x3D;city&amp;origin&#x3D;30.26348989892,120.21415684874&amp;destination&#x3D;30.235552,120.205199&amp;output&#x3D;html&amp;mode&#x3D;transit&amp;src&#x3D;baidu_map_jsapi</p>
 </blockquote>
 <p>↓<br>↓仔细看↓<br>↓</p>
 <blockquote>
-<p>&amp;mode=transit&amp;src=baidu_map_jsapi</p>
+<p>&amp;mode&#x3D;transit&amp;src&#x3D;baidu_map_jsapi</p>
 </blockquote>
 <p>↓<br>↓仔细看↓<br>↓</p>
 <blockquote>
-<p>&amp;mode=transit</p>
+<p>&amp;mode&#x3D;transit</p>
 </blockquote>
 <p>是不是明白了什么（滑稽）？</p>
 <h3 id="Magic！——使用Driving模式和Walking模式的变通方式"><a href="#Magic！——使用Driving模式和Walking模式的变通方式" class="headerlink" title="Magic！——使用Driving模式和Walking模式的变通方式"></a><strong>Magic！——使用Driving模式和Walking模式的变通方式</strong></h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">moreResultsUrl.replace(<span class="string">&#x27;transit&#x27;</span>, <span class="string">&#x27;driving&#x27;</span>);</span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">moreResultsUrl.replace(<span class="string">&#x27;transit&#x27;</span>, <span class="string">&#x27;walking&#x27;</span>);</span><br></pre></td></tr></table></figure>
 <p>PS.希望百度早点修复吧、、、 有什么问题在下面问或者说有更好的办法请告诉我 谢谢~☆</p>
-<h4 id="2018-5-3-更新"><a href="#2018-5-3-更新" class="headerlink" title="2018/5/3 更新"></a>2018/5/3 更新</h4><p>现在似乎三种都无法获取到moreResultsUrl了替代方案为 直接传入region、origin、destination、mode 拼接下面的url然后跳转</p>
+<h4 id="2018-x2F-5-x2F-3-更新"><a href="#2018-x2F-5-x2F-3-更新" class="headerlink" title="2018&#x2F;5&#x2F;3 更新"></a>2018&#x2F;5&#x2F;3 更新</h4><p>现在似乎三种都无法获取到moreResultsUrl了替代方案为 直接传入region、origin、destination、mode 拼接下面的url然后跳转</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.location.href = <span class="string">&#x27;http://api.map.baidu.com/direction&#x27;</span>+</span><br><span class="line">							<span class="string">&#x27;?region=&#x27;</span>+region+</span><br><span class="line">							<span class="string">&#x27;&amp;origin=&#x27;</span>+origin.lat+<span class="string">&#x27;,&#x27;</span>+origin.lng+</span><br><span class="line">							<span class="string">&#x27;&amp;destination=&#x27;</span>+dest.lat+<span class="string">&#x27;,&#x27;</span>+dest.lng+</span><br><span class="line">							<span class="string">&#x27;&amp;output=html&#x27;</span>+</span><br><span class="line">							<span class="string">&#x27;&amp;mode=&#x27;</span>+transit/walking/driving+</span><br><span class="line">							<span class="string">&#x27;&amp;src=baidu_map_jsapi&#x27;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 

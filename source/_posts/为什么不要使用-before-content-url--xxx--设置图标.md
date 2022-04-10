@@ -1,5 +1,5 @@
 ---
-title: '为什么不要使用 ::before{content:url(‘xxx‘)} 设置图标'
+title: 为什么不要使用 ::before{content:url('xxx')} 设置图标
 date: 2020-09-07 16:19:22
 tags:
 ---

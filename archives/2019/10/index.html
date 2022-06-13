@@ -43,18 +43,52 @@
 
 
 
-<!--<script src="https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>-->
-<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-<!-- Live2DCubismCore -->
-<script src="https://cdn.jsdelivr.net/gh/litstronger/live2d-moc3@master/js/frame/live2dcubismcore.min.js"></script>
-<!-- Include Pixi. -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.1/pixi.min.js"></script>
-<!-- Include Cubism Components. -->
-<script src="https://cdn.jsdelivr.net/gh/litstronger/live2d-moc3@master/js/live2dcubismframework.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/litstronger/live2d-moc3@master/js/live2dcubismpixi.js"></script>
-<!-- User's Script -->
-<script src="https://cdn.jsdelivr.net/gh/litstronger/live2d-moc3@master/js/l2d.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/litstronger/live2d-moc3@master/js/main.js"></script>
+<canvas id="canvas" style=" position:fixed;background:transparent;bottom:0;z-index: 999;pointer-events: none"></canvas>
+<script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@5.3.6/dist/pixi.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/index.min.js"></script>
+<!-- 如果只需要 Cubism 4 -->
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/cubism4.min.js"></script>
+
+<script>
+  async function main() {
+
+    const app = new PIXI.Application({
+      view: document.getElementById("canvas"),
+      autoStart: true,
+      width: 300,
+      height: 300,
+      transparent: true,
+    });
+
+    const model = await PIXI.live2d.Live2DModel.from('/assets/live2d/models/object_live2d_002_101.asset/object_live2d_002_101.asset.model3.json');
+    model.scale.set(.2)
+    app.stage.addChild(model);
+    // document.getElementById('canvas').addEventListener('click', () => {
+    //
+    //   model.motion('motion');
+    // })
+
+    // 变换
+    // model.x = 100;
+    // model.y = 100;
+    // model.rotation = Math.PI;
+    // model.skew.x = Math.PI;
+    // model.scale.set(2, 2);
+    // model.anchor.set(0.5, 0.5);
+
+    //
+    // 交互
+    // model.on('hit', hitAreas => {
+    //   console.log(hitAreas);
+    //   if (hitAreas.includes('body')) {
+    //     model.motion('motion');
+    //   }
+    // });
+  }
+  main()
+</script>
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
@@ -244,21 +278,6 @@
 
 
 
-<!-- Canvas -->
-<div class="Canvas" id="L2dCanvas"></div>
-<script>
-  var config = {
-    width: window.innerWidth,
-    height: window.innerHeight,
-    left: '0px',
-    bottom: '0px',
-    basePath: '/assets/live2d/models',
-    role: 'object_live2d_002_101.asset',
-    // background: 'https://cdn.jsdelivr.net/gh/alg-wiki/AzurLaneL2DViewer@gh-pages/assets/bg/bg_church_jp.png',
-    opacity: 1,
-    mobile: false
-  };
-  var v = new Viewer(config);
-</script>
+
 </body>
 </html>

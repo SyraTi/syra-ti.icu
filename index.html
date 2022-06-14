@@ -192,7 +192,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2022-06-14 14:30:06 / 修改时间：15:18:25" itemprop="dateCreated datePublished" datetime="2022-06-14T14:30:06+08:00">2022-06-14</time>
+      <time title="创建时间：2022-06-14 14:30:06 / 修改时间：15:21:10" itemprop="dateCreated datePublished" datetime="2022-06-14T14:30:06+08:00">2022-06-14</time>
     </span>
 
   
@@ -210,7 +210,12 @@
 <h2 id="1-V8工作流程概述"><a href="#1-V8工作流程概述" class="headerlink" title="1. V8工作流程概述"></a>1. V8工作流程概述</h2><p>JavaScript是解释型的语言，解释型的语言先天就有执行效率上的不足。为此，V8引擎同时采用了解释执行和编译执行这两种方式，也就是在解释执行的同时进行编译，这种方式称为<strong>JIT (Just in Time) 即时编译</strong>。</p>
 <p><strong>解释执行</strong>：V8在执行JavaScript源码时，会先通过解析器Parser将源码解析成AST，解释器Ignition会将AST转化为字节码，一边解释一遍执行。</p>
 <p><strong>即时编译</strong>：Ignition同时会记录某一代码片段的执行次数，如果执行次数超过了某个阈值，这段代码便会被标记为热点代码(HotSpot)，同时将运行信息反馈给<strong>优化编译器TurboFan</strong>，会将这部分热点代码的字节码优化并编译，生成机器码更高效地运行。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">  源代码 --Parser--&gt; AST</span><br><span class="line">  AST --Ignition--&gt; 字节码</span><br><span class="line">  字节码 --Ignition--&gt; 逐行解释为机器码执行</span><br><span class="line">  字节码 -.Ignition高频执行.-&gt; HotSpot</span><br><span class="line">  HotSpot --TurboFan--&gt; 编译为机器码执行</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+<pre class="mermaid">graph LR
+  源代码 --Parser--> AST
+  AST --Ignition--> 字节码
+  字节码 --Ignition--> 逐行解释为机器码执行
+  字节码 -.Ignition高频执行.-> HotSpot
+  HotSpot --TurboFan--> 编译为机器码执行</pre>
 
 <h3 id="1-1-Parser-解析器-生成语法抽象树（AST）"><a href="#1-1-Parser-解析器-生成语法抽象树（AST）" class="headerlink" title="1.1 Parser 解析器 生成语法抽象树（AST）"></a>1.1 Parser 解析器 生成语法抽象树（AST）</h3><p>生成AST中的一个优化是惰性解析(Lazy Parsing)，因为源码在执行前如果全部完全解析的话，不仅执行时间过长，而且会消耗更多的内存。<br>惰性解析就是指如果遇到并不是立即执行的函数，只会对其进行预解析(Pre-Parser)，当函数被调用时，才会对其完全解析。<br>预解析时，只会验证函数的语法是否有效、解析函数声明以及确定函数作用域，并不会生成AST，这项工作由Pre-Parser预解析器完成。</p>
 <h3 id="1-2-Ignition-解释器-生成字节码及解释执行"><a href="#1-2-Ignition-解释器-生成字节码及解释执行" class="headerlink" title="1.2 Ignition 解释器 生成字节码及解释执行"></a>1.2 Ignition 解释器 生成字节码及解释执行</h3><p>Ignition 是 V8 的解释器，负责生成和执行字节码。字节码与平台无关，也就是说无论 X86 架构或 ARM 架构，同一份 JavaScript 源码生成的字节码序列是相同的，解释器逐条读取字节码并执行。</p>

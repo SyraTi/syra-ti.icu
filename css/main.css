@@ -2728,3 +2728,15 @@ ul.breadcrumb li:last-child {
     margin-bottom: 10px;
   }
 }
+.gitalk-container .gt-container .gt-header-textarea,
+.gitalk-container .gt-container .gt-header-textarea:hover,
+.gitalk-container .gt-container .gt-comment-admin .gt-comment-content,
+.gitalk-container .gt-container .gt-comment-content {
+  background-color: #3b3b3b;
+}
+.gitalk-container .gt-container .gt-comment-content:hover {
+  box-shadow: none;
+}
+.gitalk-container .gt-container .gt-comment-body {
+  color: var(--text-color) !important;
+}

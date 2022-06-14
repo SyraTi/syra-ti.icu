@@ -43,52 +43,7 @@
 
 
 
-<canvas id="canvas" style=" position:fixed;background:transparent;bottom:0;z-index: 999;pointer-events: none"></canvas>
-<script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pixi.js@5.3.6/dist/pixi.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/index.min.js"></script>
-<!-- 如果只需要 Cubism 4 -->
-<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/cubism4.min.js"></script>
 
-<script>
-  async function main() {
-
-    const app = new PIXI.Application({
-      view: document.getElementById("canvas"),
-      autoStart: true,
-      width: 300,
-      height: 300,
-      transparent: true,
-    });
-
-    const model = await PIXI.live2d.Live2DModel.from('/assets/live2d/models/object_live2d_002_101.asset/object_live2d_002_101.asset.model3.json');
-    model.scale.set(.2)
-    app.stage.addChild(model);
-    // document.getElementById('canvas').addEventListener('click', () => {
-    //
-    //   model.motion('motion');
-    // })
-
-    // 变换
-    // model.x = 100;
-    // model.y = 100;
-    // model.rotation = Math.PI;
-    // model.skew.x = Math.PI;
-    // model.scale.set(2, 2);
-    // model.anchor.set(0.5, 0.5);
-
-    //
-    // 交互
-    // model.on('hit', hitAreas => {
-    //   console.log(hitAreas);
-    //   if (hitAreas.includes('body')) {
-    //     model.motion('motion');
-    //   }
-    // });
-  }
-  main()
-</script>
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
@@ -237,7 +192,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2022-06-14 14:30:06 / 修改时间：14:34:39" itemprop="dateCreated datePublished" datetime="2022-06-14T14:30:06+08:00">2022-06-14</time>
+      <time title="创建时间：2022-06-14 14:30:06 / 修改时间：15:08:48" itemprop="dateCreated datePublished" datetime="2022-06-14T14:30:06+08:00">2022-06-14</time>
     </span>
 
   
@@ -251,10 +206,10 @@
     
     <div class="post-body" itemprop="articleBody">
           <h1 id="从V8引擎的工作流程看Javascript代码优化"><a href="#从V8引擎的工作流程看Javascript代码优化" class="headerlink" title="从V8引擎的工作流程看Javascript代码优化"></a>从V8引擎的工作流程看Javascript代码优化</h1><h2 id="0-V8介绍"><a href="#0-V8介绍" class="headerlink" title="0. V8介绍"></a>0. V8介绍</h2><p>官方文档这么介绍：V8是谷歌开源高性能JavaScript和WebAssembly引擎，用C++编写。它主要用在Chrome和Node.js中，等等。</p>
-<p>简单的来说，我们知道，JavaScript是解释型的语言，需要逐行解释执行V8则是一种C++开发的JavaScript解释器，它将JavaScript编译成可执行代码，即机器码。</p>
+<p>简单的来说，我们知道，JavaScript是解释型的语言，需要逐行解释执行<br>V8则是一种C++开发的JavaScript解释器，它将JavaScript编译成可执行代码，即机器码。</p>
 <h2 id="1-V8工作流程概述"><a href="#1-V8工作流程概述" class="headerlink" title="1. V8工作流程概述"></a>1. V8工作流程概述</h2><p>JavaScript是解释型的语言，解释型的语言先天就有执行效率上的不足。为此，V8引擎同时采用了解释执行和编译执行这两种方式，也就是在解释执行的同时进行编译，这种方式称为<strong>JIT (Just in Time) 即时编译</strong>。</p>
-<p>解释执行：V8在执行JavaScript源码时，会先通过解析器Parser将源码解析成AST，解释器Ignition会将AST转化为字节码，一边解释一遍执行。</p>
-<p>即时编译：Ignition同时会记录某一代码片段的执行次数，如果执行次数超过了某个阈值，这段代码便会被标记为热点代码(HotSpot)，同时将运行信息反馈给<strong>优化编译器TurboFan</strong>，会将这部分热点代码的字节码优化并编译，生成机器码更高效地运行。</p>
+<p><strong>解释执行</strong>：V8在执行JavaScript源码时，会先通过解析器Parser将源码解析成AST，解释器Ignition会将AST转化为字节码，一边解释一遍执行。</p>
+<p><strong>即时编译</strong>：Ignition同时会记录某一代码片段的执行次数，如果执行次数超过了某个阈值，这段代码便会被标记为热点代码(HotSpot)，同时将运行信息反馈给<strong>优化编译器TurboFan</strong>，会将这部分热点代码的字节码优化并编译，生成机器码更高效地运行。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">  源代码 --Parser--&gt; AST</span><br><span class="line">  AST --Ignition--&gt; 字节码</span><br><span class="line">  字节码 --Ignition--&gt; 逐行解释为机器码执行</span><br><span class="line">  字节码 -.Ignition高频执行.-&gt; HotSpot</span><br><span class="line">  HotSpot --TurboFan--&gt; 编译为机器码执行</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
 
 <h3 id="1-1-Parser-解析器-生成语法抽象树（AST）"><a href="#1-1-Parser-解析器-生成语法抽象树（AST）" class="headerlink" title="1.1 Parser 解析器 生成语法抽象树（AST）"></a>1.1 Parser 解析器 生成语法抽象树（AST）</h3><p>生成AST中的一个优化是惰性解析(Lazy Parsing)，因为源码在执行前如果全部完全解析的话，不仅执行时间过长，而且会消耗更多的内存。<br>惰性解析就是指如果遇到并不是立即执行的函数，只会对其进行预解析(Pre-Parser)，当函数被调用时，才会对其完全解析。<br>预解析时，只会验证函数的语法是否有效、解析函数声明以及确定函数作用域，并不会生成AST，这项工作由Pre-Parser预解析器完成。</p>
@@ -1149,6 +1104,8 @@
   
 
 
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.1.1/dist/mermaid.min.js","integrity":"sha256-8L3O8tirFUa8Va4NSTAyIbHJeLd6OnlcxgupV9F77e0="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
 
 
 
@@ -1157,6 +1114,51 @@
 
 
 
+<canvas id="canvas" style=" position:fixed;background:transparent;bottom:0;z-index: 999;pointer-events: none"></canvas>
+<script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@5.3.6/dist/pixi.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/index.min.js"></script>
+<!-- 如果只需要 Cubism 4 -->
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/cubism4.min.js"></script>
 
+<script>
+  async function main() {
+
+    const app = new PIXI.Application({
+      view: document.getElementById("canvas"),
+      autoStart: true,
+      width: 300,
+      height: 300,
+      transparent: true,
+    });
+
+    const model = await PIXI.live2d.Live2DModel.from('/assets/live2d/models/object_live2d_002_101.asset/object_live2d_002_101.asset.model3.json');
+    model.scale.set(.2)
+    app.stage.addChild(model);
+    // document.getElementById('canvas').addEventListener('click', () => {
+    //
+    //   model.motion('motion');
+    // })
+
+    // 变换
+    // model.x = 100;
+    // model.y = 100;
+    // model.rotation = Math.PI;
+    // model.skew.x = Math.PI;
+    // model.scale.set(2, 2);
+    // model.anchor.set(0.5, 0.5);
+
+    //
+    // 交互
+    // model.on('hit', hitAreas => {
+    //   console.log(hitAreas);
+    //   if (hitAreas.includes('body')) {
+    //     model.motion('motion');
+    //   }
+    // });
+  }
+  main()
+</script>
 </body>
 </html>

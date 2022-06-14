@@ -1,0 +1,1174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Chrome DevTool 行号错位问题</title>
+    <url>/2018/12/20/Chrome-DevTool-%E8%A1%8C%E5%8F%B7%E9%94%99%E4%BD%8D%E9%97%AE%E9%A2%98.html</url>
+    <content><![CDATA[<p>随手记录</p>
+<p>原因：<br>当你在一个js里面写document.write(‘&lt;script&gt;多行内容xxxx&lt;&#x2F;script&gt;’)后<br>页面上的script断点调试会错位</p>
+<p>表现就是断点打在某一行 实际停在上面几行<br>相差的行数取决于你写进文档的多行内容的行数</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>IOS/Mac/Safari无法播放MP4文件流及Http1.1 Range分段请求相关</title>
+    <url>/2019/12/25/IOS-Mac-Safari%E6%97%A0%E6%B3%95%E6%92%AD%E6%94%BEMP4%E6%96%87%E4%BB%B6%E6%B5%81%E5%8F%8AHttp1-1-Range%E5%88%86%E6%AE%B5%E8%AF%B7%E6%B1%82%E7%9B%B8%E5%85%B3.html</url>
+    <content><![CDATA[<h2 id="故事背景"><a href="#故事背景" class="headerlink" title="故事背景"></a>故事背景</h2><p>公司项目需要将多媒体文件迁移至阿里OSS，原本直接从后端静态文件的<code>&lt;img&gt;</code> <code>&lt;video&gt;</code> 等标签都要改成从OSS获取展示。</p>
+<p>于是乎拦截了所有静态链接，调用了OSS接口获取了文件流返回到前台进行展示，简单粗暴，但是也遇到了问题 —— ios的 <code>&lt;video&gt;</code> 标签全军覆没。</p>
+<p>由于项目里视频比较少，这问题还是在上线前三天发现的，那个急的，一开始还找不到是什么问题，找到老版本的代码后发现前端代码毫无区别（亏得还在前端调试了半天），最后发现使用静态文件就没什么问题。</p>
+<p>确定下来大致是文件流的缘故没跑了，百度+谷歌发现safari不支持整个文件流，服务器必须支持分段请求，也就是下面要说的Range分段请求了。</p>
+<hr>
+<h2 id="请求头-Range-和-响应头-Content-Range"><a href="#请求头-Range-和-响应头-Content-Range" class="headerlink" title="请求头 Range 和 响应头 Content-Range"></a>请求头 <code>Range</code> 和 响应头 <code>Content-Range</code></h2><p>Http协议从1.1开始支持获取文件的部分内容，这为并行下载以及断点续传提供了技术支持。该标准分为两个Header，分别为一个请求头<code>Range</code>， 和一个响应头<code>Content-Range</code> 。</p>
+<hr>
+<h2 id="请求头-Range"><a href="#请求头-Range" class="headerlink" title="请求头 Range"></a>请求头 <code>Range</code></h2><p>先来看看请求头，safari对于文件流的请求会带上这个头，服务器需要正确的对其作出响应，浏览器才能正确的展示文件。之前没法播放文件流正是因为没有正确响应这个请求头。</p>
+<ul>
+<li><p><strong>格式</strong><br>该请求头的格式为 <code>Range: bytes=开始字节-结束字节</code><br>示例: <code>Range:bytes=0-499</code> 表示请求开始的500个字节</p>
+<p><strong>除了基本格式以外，<code>Range</code>头还有可能是以下格式：</strong><br>表示第二个500字节：<code>Range:bytes=500-999</code><br>表示最后500个字节：<code>Range:bytes=-500</code><br>表示500字节以后的范围：<code>Range:bytes=500-</code><br>第一个和最后一个字节：<code>Range:bytes=0-0,-1</code><br>同时指定几个范围：<code>Range:bytes=500-600,601-999</code></p>
+</li>
+<li><p><strong>如何回复</strong><br>对于<code>Range</code>头，服务器需要作出正确的响应，返回对应的状态码来告知客户端，服务器是否支持分段请求：</p>
+<p><code>200</code>：不支持分段请求，但是能正常响应。<br><code>206</code>：支持分段请求 ，并返回分段结果，此时还需要在响应头中添加<code>Content-Range</code>头，并且返回对应的字节片段。</p>
+</li>
+</ul>
+<p><strong>即：如果我们需要正确的响应分段请求，需要做以下几步</strong></p>
+<ol>
+<li>解析<code>Range</code>请求头，获取客户端想要的文件片段范围</li>
+<li>返回<code>206</code>状态码</li>
+<li>响应头中<code>Content-Type</code>头需要填写为文件mime类型，如 <code>video/mp4</code></li>
+<li>响应头中添加<code>Content-Range</code>头，告诉客户端字节片段的信息（包含字节起止位置及文件流总大小）</li>
+<li>响应体中添加客户端所请求的字节片段</li>
+</ol>
+<hr>
+<h2 id="响应头-Content-Range"><a href="#响应头-Content-Range" class="headerlink" title="响应头 Content-Range"></a>响应头 <code>Content-Range</code></h2><p>上一步讲到我们除了需要返回<code>206</code>状态码及返回字节片段以外，还需要返回一个<code>Content-Range</code>头，来告诉客户端我们返回了哪一部分的字节片段，来看一下这个响应头相关的一些信息。</p>
+<ul>
+<li><p><strong>格式</strong><br>还是一样先来看格式，<code>Content-Range: bytes 起始字节-末尾字节/总字节数</code><br>示例：<code>Content-Range:bytes 0-499/13521</code> 表示文件总共有13521字节， 本次返回了0-499字节</p>
+<p><strong>针对不同格式的<code>Range</code>头，我们的响应内容也会有相应的变化（*注意，这里一定不是照搬<code>Range</code>头的内容）</strong><br>对于 <code>Range:bytes=500-999</code>，应该返回 <code>Content-Range:bytes 500-999/13521</code><br>对于 <code>Range:bytes=-500</code>，应该返回 <code>Content-Range:bytes 13021-13520/13521</code><br>对于 <code>Range:bytes=500-</code>，应该返回 <code>Content-Range:bytes 500-13520/13521</code></p>
+<p>对于 <code>Range:bytes=0-0,-1</code> 和 <code>Range:bytes=500-600,601-999</code> 这样的多个范围， <code>Content-Type</code> 头需要修改为<code>multipart/byteranges</code> ，并且在响应体内返回每个范围对应的多个 <code>Content-Range</code> 和 <code>Content-Type</code>，这里具体是怎样实现，由于上线比较着急，用到多个范围的场景也非常少，所以没有时间验证及研究，后面再来做补充，如果有大牛能告知这里应该怎么做的，希望能在评论区告知一下，提前谢谢啦！</p>
+</li>
+</ul>
+<hr>
+<p>代码我就不上了，每个语言每个框架都不一样，大家理解了之后按照以下步骤来书写代码，应该不会有什么大问题的。</p>
+<ol>
+<li>判断请求中是否有 <code>Range</code> 头，如果没有，就按普通请求处理，返回整个流</li>
+<li>如果有<code>Range</code>头，则解析<code>Range</code>的内容，获得所需片段的起止位置</li>
+<li>设置响应状态码为 <code>206</code></li>
+<li>设置响应头 <code>Content-Type</code>为文件mime类型</li>
+<li>设置响应头 <code>Content-Range</code>为正确格式的分段起止位置与文件流总字节数</li>
+<li>根据分段起止位置截取文件流，写入响应体</li>
+<li>结束该次请求</li>
+</ol>
+<p>有什么问题欢迎在下面评论，我会及时回复www</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>JS实现点击按钮，复制文本框中的的内容</title>
+    <url>/2017/07/28/JS%E5%AE%9E%E7%8E%B0%E7%82%B9%E5%87%BB%E6%8C%89%E9%92%AE%EF%BC%8C%E5%A4%8D%E5%88%B6%E6%96%87%E6%9C%AC%E6%A1%86%E4%B8%AD%E7%9A%84%E7%9A%84%E5%86%85%E5%AE%B9.html</url>
+    <content><![CDATA[<h3 id="Html"><a href="#Html" class="headerlink" title="Html"></a>Html</h3><hr>
+<pre><code>&lt;textarea cols=&quot;20&quot; rows=&quot;10&quot; id=&quot;anyInput&quot;&gt;用户定义的代码区域&lt;/textarea&gt;
+&lt;button type=&quot;button&quot; onClick=&quot;copy()&quot; value=&quot;点击复制代码&quot; /&gt;
+</code></pre>
+<h3 id="JS"><a href="#JS" class="headerlink" title="JS"></a>JS</h3><hr>
+<pre><code>function copyUrl2()
+&#123;
+    var target=document.getElementById(&quot;anyInput&quot;);
+    target.select(); // 选择文本
+    document.execCommand(&quot;Copy&quot;); // 执行浏览器复制命令
+    alert(&quot;已复制好，可贴粘。&quot;);
+&#125;
+</code></pre>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>Jquery的each里用return true或false代替break或continue</title>
+    <url>/2017/11/30/Jquery%E7%9A%84each%E9%87%8C%E7%94%A8return-true%E6%88%96false%E4%BB%A3%E6%9B%BFbreak%E6%88%96continue.html</url>
+    <content><![CDATA[<h2 id="在each代码块内不能使用break和continue-要实现break和continue的功能的话，要使用return-true-x2F-false"><a href="#在each代码块内不能使用break和continue-要实现break和continue的功能的话，要使用return-true-x2F-false" class="headerlink" title="在each代码块内不能使用break和continue,要实现break和continue的功能的话，要使用return true&#x2F;false"></a>在each代码块内不能使用break和continue,要实现break和continue的功能的话，要使用return true&#x2F;false</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$(<span class="variable constant_">DOM</span>).<span class="title function_">each</span>(<span class="keyword">function</span>(<span class="params">index,el</span>)&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>; <span class="comment">//break </span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>; <span class="comment">//continue </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>Property(prop)和Attribute(attr)的区别</title>
+    <url>/2017/07/29/Property-prop-%E5%92%8CAttribute-attr-%E7%9A%84%E5%8C%BA%E5%88%AB.html</url>
+    <content><![CDATA[<h1 id="举例来讲"><a href="#举例来讲" class="headerlink" title="举例来讲"></a>举例来讲</h1><h3 id="我们现在有一个input-demo"><a href="#我们现在有一个input-demo" class="headerlink" title="我们现在有一个input#demo"></a>我们现在有一个input#demo</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;demo&quot;</span> <span class="attr">value</span>=<span class="string">&quot;attr&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="Attribute和Property都被翻译成“属性”"><a href="#Attribute和Property都被翻译成“属性”" class="headerlink" title="- Attribute和Property都被翻译成“属性”"></a>- Attribute和Property都被翻译成“属性”</h4><h4 id="“value”就是input-demo的属性之一"><a href="#“value”就是input-demo的属性之一" class="headerlink" title="- “value”就是input#demo的属性之一"></a>- “value”就是input#demo的属性之一</h4><h4 id="也就是说，没错，就像你想的一样"><a href="#也就是说，没错，就像你想的一样" class="headerlink" title="- 也就是说，没错，就像你想的一样"></a>- 也就是说，没错，就像你想的一样</h4><h4 id="input-demo的-Attribute-“value”值为”attr”"><a href="#input-demo的-Attribute-“value”值为”attr”" class="headerlink" title="- input#demo的 Attribute “value”值为”attr”"></a>- input#demo的 Attribute “value”值为”attr”</h4><h4 id="input-demo的-Property-“value”值同为”attr”"><a href="#input-demo的-Property-“value”值同为”attr”" class="headerlink" title="- input#demo的 Property “value”值同为”attr”"></a>- input#demo的 Property “value”值同为”attr”</h4><hr>
+<h3 id="这时候你可能会问了-什么时候他们不一样？"><a href="#这时候你可能会问了-什么时候他们不一样？" class="headerlink" title="这时候你可能会问了:什么时候他们不一样？"></a>这时候你可能会问了:<strong>什么时候他们不一样？</strong></h3><hr>
+<h4 id="wendehao！"><a href="#wendehao！" class="headerlink" title="wendehao！"></a><strong>wendehao！</strong></h4><blockquote>
+<h4 id="当我们使用如下js代码对input-demo进行操作后"><a href="#当我们使用如下js代码对input-demo进行操作后" class="headerlink" title="当我们使用如下js代码对input#demo进行操作后"></a>当我们使用如下js代码对input#demo进行操作后</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt;<span class="variable language_">document</span>.<span class="title function_">getElementbyId</span>(<span class="string">&#x27;demo&#x27;</span>).<span class="property">value</span>=<span class="string">&#x27;changed&#x27;</span>;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h4 id="此时打开你浏览器的F12（Chrome的Devtool，FireFox的Firebug等等）"><a href="#此时打开你浏览器的F12（Chrome的Devtool，FireFox的Firebug等等）" class="headerlink" title="此时打开你浏览器的F12（Chrome的Devtool，FireFox的Firebug等等）"></a>此时打开你浏览器的F12（Chrome的Devtool，FireFox的Firebug等等）</h4><blockquote>
+<h4 id="你会发现"><a href="#你会发现" class="headerlink" title="你会发现:"></a>你会发现:</h4><h5 id="修改前是这样的"><a href="#修改前是这样的" class="headerlink" title="修改前是这样的"></a>修改前是这样的</h5><p><img src="https://img-blog.csdnimg.cn/img_convert/ba2166bd302da631d802b86d7fed8271.png" alt="这里写图片描述"></p>
+<h5 id="修改后是这样的"><a href="#修改后是这样的" class="headerlink" title="修改后是这样的"></a>修改后是这样的</h5><p><img src="https://img-blog.csdnimg.cn/img_convert/ba2166bd302da631d802b86d7fed8271.png" alt="这里写图片描述"></p>
+</blockquote>
+<h2 id="你在逗我呢吧"><a href="#你在逗我呢吧" class="headerlink" title="??????????????你在逗我呢吧"></a>??????????????你在逗我呢吧</h2><h4 id="慌-不要慌-且看页面"><a href="#慌-不要慌-且看页面" class="headerlink" title="慌 不要慌 且看页面"></a>慌 不要慌 且看页面</h4><blockquote>
+<h5 id="修改前是这样的-1"><a href="#修改前是这样的-1" class="headerlink" title="修改前是这样的"></a>修改前是这样的</h5><p><img src="https://img-blog.csdnimg.cn/img_convert/895b15a482e4505be7bd88820d54ba64.png" alt="这里写图片描述"></p>
+<h5 id="修改后是这样的-1"><a href="#修改后是这样的-1" class="headerlink" title="修改后是这样的"></a>修改后是这样的</h5><p><img src="https://img-blog.csdnimg.cn/img_convert/ded827f92ef89f4609d4c29dc60d9748.png" alt="这里写图片描述"></p>
+</blockquote>
+<hr>
+<h3 id="没错-聪明的你可能已经想到了"><a href="#没错-聪明的你可能已经想到了" class="headerlink" title="没错 聪明的你可能已经想到了"></a>没错 聪明的你可能已经想到了</h3><h3 id="value-39-changed-39-只修改了Attr与Prop之中的一个"><a href="#value-39-changed-39-只修改了Attr与Prop之中的一个" class="headerlink" title=".value = &#39;changed&#39;只修改了Attr与Prop之中的一个"></a><strong><code>.value = &#39;changed&#39;</code>只修改了Attr与Prop之中的一个</strong></h3><hr>
+<h2 id="value方法修改的是input-demo的Property"><a href="#value方法修改的是input-demo的Property" class="headerlink" title=".value方法修改的是input#demo的Property"></a><code>.value</code>方法修改的是input#demo的Property</h2><blockquote>
+<h4 id="而当我们使用如下js代码时"><a href="#而当我们使用如下js代码时" class="headerlink" title="而当我们使用如下js代码时"></a>而当我们使用如下js代码时</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt;<span class="variable language_">document</span>.<span class="title function_">getElementbyId</span>(<span class="string">&#x27;demo&#x27;</span>).<span class="title function_">setAttribute</span>(<span class="string">&#x27;value&#x27;</span>,<span class="string">&#x27;changed&#x27;</span>);</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="此时你会发现更诡异的事情是"><a href="#此时你会发现更诡异的事情是" class="headerlink" title="此时你会发现更诡异的事情是"></a>此时你会发现更诡异的事情是</h3><blockquote>
+<h4 id="页面的值并没有发生改变"><a href="#页面的值并没有发生改变" class="headerlink" title="页面的值并没有发生改变"></a>页面的值并没有发生改变</h4><p><img src="https://img-blog.csdnimg.cn/img_convert/895b15a482e4505be7bd88820d54ba64.png" alt="这里写图片描述"></p>
+<h4 id="但是打开你的F12，你会发现value值发生了变化"><a href="#但是打开你的F12，你会发现value值发生了变化" class="headerlink" title="但是打开你的F12，你会发现value值发生了变化"></a>但是打开你的F12，你会发现value值发生了变化</h4><p><img src="https://img-blog.csdnimg.cn/img_convert/24be7dcca9b2cae9ebdb3be7cab210b5.png" alt="这里写图片描述"></p>
+</blockquote>
+<h3 id="得出结论"><a href="#得出结论" class="headerlink" title="得出结论"></a>得出结论</h3><h2 id="setAttribute-方法修改的是input-demo的Attribute"><a href="#setAttribute-方法修改的是input-demo的Attribute" class="headerlink" title=".setAttribute()方法修改的是input#demo的Attribute"></a><code>.setAttribute()</code>方法修改的是input#demo的Attribute</h2><hr>
+<p>在这里引用一段 -T大大- 博客里的文字来更好的阐述这两者的区别</p>
+<p>原文链接：<a href="http://blog.csdn.net/wangji5850/article/details/50925042">http://blog.csdn.net/wangji5850/article/details/50925042</a> &#x2F;&#x2F;图片请前往原文查看</p>
+<blockquote>
+<p>此问题归根结底是由于DOM的property和attribute的区别：</p>
+</blockquote>
+<blockquote>
+<h3 id="attribute"><a href="#attribute" class="headerlink" title="attribute"></a>attribute</h3><p>input节点有很多属性(attribute)：‘type’,’id’,’value’,’class’以及自定义属性，在DOM中有setAttribute()和getAttribute()读写DOM树节点的属性(attribute)</p>
+<p>PS:在这里的getAttribute方法有一个潜规则，部分属性（input的value和checked）通过getAttribut取到的是初始值，这个就很好的解释了图2结果为什么为2。</p>
+<h3 id="property"><a href="#property" class="headerlink" title="property"></a>property</h3><p>JavaScript获取到的DOM节点对象，比如input<br>你可以将他看作为一个基本的js对象，这个对象包括很多属性(property)，比如“value”，“className”以及一些方法，setAttribute,getAttribute,onclick等，值得注意的是对象的value的属性(property)取值是跟着输入框内的当前值一起更新的，这解释了图1中7为什么为200了。<br>所有在日常的工作中，推荐是使用 property,这样事情处理起来比较简单一些，attribute永远是字符串。。</p>
+</blockquote>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>Ubuntu扩展根目录空间（扩展原有分区）</title>
+    <url>/2021/12/01/Ubuntu%E6%89%A9%E5%B1%95%E6%A0%B9%E7%9B%AE%E5%BD%95%E7%A9%BA%E9%97%B4%EF%BC%88%E6%89%A9%E5%B1%95%E5%8E%9F%E6%9C%89%E5%88%86%E5%8C%BA%EF%BC%89.html</url>
+    <content><![CDATA[<h1 id="0-概念说明"><a href="#0-概念说明" class="headerlink" title="0.概念说明"></a>0.概念说明</h1><p>一切开始的开始 先说明一些概念</p>
+<blockquote>
+<p><strong>物理卷（Physical Volume）即PV：</strong>  物理卷就是指硬盘分区或从逻辑上与磁盘分区具有同样功能的设备(如RAID)，是LVM的基本存储逻辑块，但和基本的物理存储介质（如分区、磁盘等）比较，却包含有与LVM相关的管理参数。<br><strong>卷组（Volume Group）即VG：</strong> LVM卷组类似于非LVM系统中的物理硬盘，其由物理卷组成。可以在卷组上创建一个或多个“LVM分区”（逻辑卷），LVM卷组由一个或多个物理卷组成。<br><strong>逻辑卷（Logical Volume）即LV：</strong> LVM的逻辑卷类似于非LVM系统中的硬盘分区，在逻辑卷之上可以建立文件系统(比如&#x2F;home或者&#x2F;usr等)。</p>
+</blockquote>
+<p>总之 LV建立在VG之上，VG建立在PV之上，是PV的集合，PV即物理卷。</p>
+<p><strong>本文的总体思路为： 扩容PV-&gt; 扩容LV -&gt; 扩容根目录空间</strong></p>
+<h1 id="1-VM添加空间"><a href="#1-VM添加空间" class="headerlink" title="1.VM添加空间"></a>1.VM添加空间</h1><p>使用vmware增加空间 ↓<br><img src="https://img-blog.csdnimg.cn/6bcae82012ad45d6afcd2a9a55bda7a4.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
+<h1 id="2-使用fdisk扩展原有分区"><a href="#2-使用fdisk扩展原有分区" class="headerlink" title="2.使用fdisk扩展原有分区"></a>2.使用fdisk扩展原有分区</h1><p>此处参考了<a href="https://www.linuxprobe.com/linux-fdisk-size.html">Linux下使用fdisk扩展分区容量</a>，原文关键部分摘录如下</p>
+<blockquote>
+<p>对&#x2F;dev&#x2F;sda4进行扩容</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@linuxprobe ~]: fdisk /dev/sda #对/dev/sda进行操作</span><br><span class="line"></span><br><span class="line">WARNING: DOS-compatible mode is deprecated. It&#x27;s strongly recommended to</span><br><span class="line">         switch off the mode (command &#x27;c&#x27;) and change display units to</span><br><span class="line">         sectors (command &#x27;u&#x27;).</span><br><span class="line"></span><br><span class="line">Command (m for help): p        #查看分区表信息</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line">/dev/sda4            1497        2611     8952832   83  Linux</span><br><span class="line"></span><br><span class="line">Command (m for help): d           #删除分区</span><br><span class="line">Partition number (1-4): 4         #删除需要扩容的分区（这里为sda4）</span><br><span class="line"></span><br><span class="line">Command (m for help): p       #再次查看分区信息，/dev/sda4已被删除</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line"></span><br><span class="line">Command (m for help): n      #创建新的分区</span><br><span class="line">Command action</span><br><span class="line">   e   extended</span><br><span class="line">   p   primary partition (1-4)</span><br><span class="line">p             #创建为主分区</span><br><span class="line">Selected partition 4</span><br><span class="line">First cylinder (1497-3916, default 1497):          #经对比，正好和上一个磁盘柱一致，默认即可</span><br><span class="line">Using default value 1497</span><br><span class="line">Last cylinder, +cylinders or +size&#123;K,M,G&#125; (1497-3916, default 3916): </span><br><span class="line">Using default value 3916              #直接默认就可以</span><br><span class="line"></span><br><span class="line">Command (m for help): p               #查看分区表信息</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line">/dev/sda4            1497        3916    19436582   83  Linux</span><br><span class="line"></span><br><span class="line">Command (m for help): wp       #保存并退出，如果创建有误，直接退出不要保存即可</span><br><span class="line">The partition table has been altered!</span><br><span class="line"></span><br><span class="line">Calling ioctl() to re-read partition table.</span><br><span class="line"></span><br><span class="line">WARNING: Re-reading the partition table failed with error 16: Device or resource busy.</span><br><span class="line">The kernel still uses the old table. The new table will be used at</span><br><span class="line">the next reboot or after you run partprobe(8) or kpartx(8)</span><br><span class="line">Syncing disks.</span><br></pre></td></tr></table></figure>
+<h1 id="3-刷新PV空间"><a href="#3-刷新PV空间" class="headerlink" title="3.刷新PV空间"></a>3.刷新PV空间</h1><p>对分区扩容完成后，会发现空间依旧没有增加，此时需要先刷新pv大小，使用<code>pvresize</code>:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: pvdisplay #先列出pv</span><br><span class="line">  --- Physical volume ---</span><br><span class="line">  PV Name               /dev/sda4</span><br><span class="line">  VG Name               ubuntu-vg</span><br><span class="line">  PV Size               &lt;19.00 GiB / not usable 16.50 KiB</span><br><span class="line">  Allocatable           yes (but full)</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              9983</span><br><span class="line">  Free PE               0</span><br><span class="line">  Allocated PE          9983</span><br><span class="line">  PV UUID               2CF0fb-auL8-N1Xk-Lpo1-pdzo-MLN5-R0QAIX</span><br><span class="line">  </span><br><span class="line">[root@syra-ti_ubuntu~]: pvresize /dev/sda4 #调用pvresize进行刷新</span><br><span class="line">  Physical volume &quot;/dev/sda3&quot; changed</span><br><span class="line">  1 physical volume(s) resized / 0 physical volume(s) not resized</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: pvdisplay #再次查看pv大小 发现pv大小已经正常</span><br><span class="line">  --- Physical volume ---</span><br><span class="line">  PV Name               /dev/sda4</span><br><span class="line">  VG Name               ubuntu-vg</span><br><span class="line">  PV Size               &lt;39.00 GiB / not usable 16.50 KiB</span><br><span class="line">  Allocatable           yes (but full)</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              9983</span><br><span class="line">  Free PE               0</span><br><span class="line">  Allocated PE          9983</span><br><span class="line">  PV UUID               2CF0fb-auL8-N1Xk-Lpo1-pdzo-MLN5-R0QAIX</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+<h1 id="4-为LV增加空间"><a href="#4-为LV增加空间" class="headerlink" title="4.为LV增加空间"></a>4.为LV增加空间</h1><p>对pv扩容完成后，会发现lv的空间依旧没有增加，此时需要扩展lv大小，使用<code>lvextend</code>:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: lvdisplay #列出lv信息 发现lv空间没有增加</span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Path                /dev/ubuntu-vg/ubuntu-lv</span><br><span class="line">  LV Name                ubuntu-lv</span><br><span class="line">  VG Name                ubuntu-vg</span><br><span class="line">  LV UUID                3THGqb-Me9D-KFEK-QxT5-dP8Y-hUqa-knbAa3</span><br><span class="line">  LV Write Access        read/write</span><br><span class="line">  LV Creation host, time ubuntu-server, 2021-10-12 06:49:31 +0000</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta">  # </span><span class="language-bash">open                 1</span></span><br><span class="line">  LV Size                &lt;19.00 GiB</span><br><span class="line">  Current LE             9983</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:0</span><br><span class="line">[root@syra-ti_ubuntu~]: lvextend -L +20G /dev/ubuntu-vg/ubuntu-lv /dev/sda4 #调用lvextend进行扩容</span><br><span class="line">[root@syra-ti_ubuntu~]: lvdisplay #再次列出lv信息 发现lv空间已经增加</span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Path                /dev/ubuntu-vg/ubuntu-lv</span><br><span class="line">  LV Name                ubuntu-lv</span><br><span class="line">  VG Name                ubuntu-vg</span><br><span class="line">  LV UUID                3THGqb-Me9D-KFEK-QxT5-dP8Y-hUqa-knbAa3</span><br><span class="line">  LV Write Access        read/write</span><br><span class="line">  LV Creation host, time ubuntu-server, 2021-10-12 06:49:31 +0000</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta">  # </span><span class="language-bash">open                 1</span></span><br><span class="line">  LV Size                &lt;39.00 GiB</span><br><span class="line">  Current LE             9983</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="5-扩展根目录空间"><a href="#5-扩展根目录空间" class="headerlink" title="5.扩展根目录空间"></a>5.扩展根目录空间</h1><p>对lv扩容完成后，会发现根目录的空间依旧没有增加，此时需要刷新根目录大小，使用<code>resize2fs</code>:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: df -h #发现/根目录空间还是没有增加</span><br><span class="line">Filesystem                         Size  Used Avail Use% Mounted on</span><br><span class="line">udev                               1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs                              393M  1.8M  391M   1% /run</span><br><span class="line">/dev/mapper/ubuntu--vg-ubuntu--lv   19G   18G   19G  99% /</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs                              5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">/dev/loop0                          56M   56M     0 100% /snap/core18/2128</span><br><span class="line">/dev/loop1                          56M   56M     0 100% /snap/core18/2253</span><br><span class="line">/dev/loop3                          43M   43M     0 100% /snap/snapd/14066</span><br><span class="line">/dev/loop2                         117M  117M     0 100% /snap/docker/1125</span><br><span class="line">/dev/loop4                          33M   33M     0 100% /snap/snapd/13270</span><br><span class="line">/dev/sda2                          976M  150M  759M  17% /boot</span><br><span class="line">tmpfs                              393M     0  393M   0% /run/user/0</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv #使用resize2fs进行刷新</span><br><span class="line">resize2fs 1.44.1 (24-Mar-2018)</span><br><span class="line">Filesystem at /dev/mapper/ubuntu--vg-ubuntu--lv is mounted on /; on-line resizing required</span><br><span class="line">old_desc_blocks = 3, new_desc_blocks = 5</span><br><span class="line">The filesystem on /dev/mapper/ubuntu--vg-ubuntu--lv is now 10222592 (4k) blocks long.</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: df -h #再次查看，发现/根目录空间已经增加</span><br><span class="line">Filesystem                         Size  Used Avail Use% Mounted on</span><br><span class="line">udev                               1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs                              393M  1.8M  391M   1% /run</span><br><span class="line">/dev/mapper/ubuntu--vg-ubuntu--lv   39G   18G   19G  49% /</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs                              5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">/dev/loop0                          56M   56M     0 100% /snap/core18/2128</span><br><span class="line">/dev/loop1                          56M   56M     0 100% /snap/core18/2253</span><br><span class="line">/dev/loop3                          43M   43M     0 100% /snap/snapd/14066</span><br><span class="line">/dev/loop2                         117M  117M     0 100% /snap/docker/1125</span><br><span class="line">/dev/loop4                          33M   33M     0 100% /snap/snapd/13270</span><br><span class="line">/dev/sda2                          976M  150M  759M  17% /boot</span><br><span class="line">tmpfs                              393M     0  393M   0% /run/user/0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>以上！まいど～</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>Vue绑定&lt;audio&gt;/&lt;video&gt;标记的muted属性无效问题随记</title>
+    <url>/2021/01/28/Vue%E7%BB%91%E5%AE%9A-audio-video-%E6%A0%87%E8%AE%B0%E7%9A%84muted%E5%B1%9E%E6%80%A7%E6%97%A0%E6%95%88%E9%97%AE%E9%A2%98%E9%9A%8F%E8%AE%B0.html</url>
+    <content><![CDATA[<h2 id="问题代码"><a href="#问题代码" class="headerlink" title="问题代码"></a>问题代码</h2><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--这里的muted绑定不起作用--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">:muted</span>=<span class="string">&quot;isMuted&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;audioPlayer&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="援引Github上的issue回复"><a href="#援引Github上的issue回复" class="headerlink" title="援引Github上的issue回复"></a>援引Github上的issue回复</h2><p><img src="https://img-blog.csdnimg.cn/20210127220113689.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>翻译：muted属性类似于<code>&lt;input&gt;</code>的<code>value</code>属性，如果他在元素初始化时是内联的，那么属性值将作为初始值；但是如果在一开始并没有内联，只是后续更改了attribute <a href="%E5%85%B3%E4%BA%8Eattribute%E5%92%8Cproperty%E5%80%BC%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E6%88%91%E5%BE%80%E6%9C%9F%E7%9A%84%5B%E6%96%87%E7%AB%A0%5D(https://blog.csdn.net/sinat_34930640/article/details/76310396)%E3%80%82">^1</a> 值，那么将不会起任何效果，正确的做法是设置相对应的property <a href="%E5%85%B3%E4%BA%8Eattribute%E5%92%8Cproperty%E5%80%BC%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E6%88%91%E5%BE%80%E6%9C%9F%E7%9A%84%5B%E6%96%87%E7%AB%A0%5D(https://blog.csdn.net/sinat_34930640/article/details/76310396)%E3%80%82">^1</a> 值。</p>
+<h3 id="解决方式：使用watch来手动设置muted"><a href="#解决方式：使用watch来手动设置muted" class="headerlink" title="解决方式：使用watch来手动设置muted"></a>解决方式：使用watch来手动设置muted</h3><p><em>html</em></p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">ref</span>=<span class="string">&quot;audioPlayer&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><em>javascript</em></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="attr">watch</span>:&#123;</span><br><span class="line">	<span class="title function_">isMuted</span>(<span class="params">val</span>)&#123;</span><br><span class="line">		<span class="keyword">if</span>(val)&#123;</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">$refs</span>.<span class="property">audioPlayer</span>.<span class="property">muted</span> = <span class="string">&#x27;muted&#x27;</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">$refs</span>.<span class="property">audioPlayer</span>.<span class="property">muted</span> = <span class="string">&#x27;&#x27;</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
+    <title>Windows 使用 ssh-agent 添加多个ssh key后，git依旧无权限的解决方法</title>
+    <url>/2021/10/25/Windows-%E4%BD%BF%E7%94%A8-ssh-agent-%E6%B7%BB%E5%8A%A0%E5%A4%9A%E4%B8%AAssh-key%E5%90%8E%EF%BC%8Cgit%E4%BE%9D%E6%97%A7%E6%97%A0%E6%9D%83%E9%99%90%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95.html</url>
+    <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在windows安装完ssh-agent，添加多个ssh key之后,git clone依旧提示Permission Denied。<br>（安装参见：<a href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement">https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement</a>）</p>
+<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>Git需要知道Windows ssh-agent服务的位置， 可以通过添加<code>GIT_SSH</code>环境变量来解决该问题。</p>
+<p>以下文字来源：<a href="https://snowdrift.tech/cli/ssh/git/tutorials/2019/01/31/using-ssh-agent-git-windows.html">https://snowdrift.tech/cli/ssh/git/tutorials/2019/01/31/using-ssh-agent-git-windows.html</a></p>
+<blockquote>
+<p>Git for Windows uses the ssh binaries included with git by default. While this works well enough in most situations, one side-effect is that git has no idea how to talk to the Windows ssh-agent service. In order for git commands to use the Windows ssh-agent service, git needs to be informed of the system OpenSSH path. To accomplish this, the environment variable <code>GIT_SSH</code>needs to be set with the path of the system OpenSSH executable.</p>
+</blockquote>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><blockquote>
+<p>Run the following command to update the environment variable:<br>在PowerShell中运行以下命令添加环境变量：</p>
+</blockquote>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> &gt;  [<span class="type">Environment</span>]::SetEnvironmentVariable(<span class="string">&quot;GIT_SSH&quot;</span>, <span class="string">&quot;<span class="variable">$</span>((Get-Command ssh).Source)&quot;</span>, [<span class="type">System.EnvironmentVariableTarget</span>]::User)</span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+  <entry>
+    <title>apt-get临时设置代理方式</title>
+    <url>/2021/08/11/apt-get%E4%B8%B4%E6%97%B6%E8%AE%BE%E7%BD%AE%E4%BB%A3%E7%90%86%E6%96%B9%E5%BC%8F.html</url>
+    <content><![CDATA[<p>&#96;&#96;&#96;<br>sudo apt-get -o Acquire::http::proxy&#x3D;”<a href="http://host:port/&quot;">http://host:port/&quot;</a> install xxx</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>css椭圆轨迹运动动画</title>
+    <url>/2019/07/02/css%E6%A4%AD%E5%9C%86%E8%BD%A8%E8%BF%B9%E8%BF%90%E5%8A%A8%E5%8A%A8%E7%94%BB.html</url>
+    <content><![CDATA[<p>朋友问我一个球沿着斜的椭圆轨迹运动怎么实现 实现之后随手记录<br><a href="https://codepen.io/KissekiAkaru/pen/GbxXzz">demo地址</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>html垂直自适应布局</title>
+    <url>/2017/12/02/html%E5%9E%82%E7%9B%B4%E8%87%AA%E9%80%82%E5%BA%94%E5%B8%83%E5%B1%80.html</url>
+    <content><![CDATA[<h3 id="项目中遇到如下需求"><a href="#项目中遇到如下需求" class="headerlink" title="项目中遇到如下需求"></a>项目中遇到如下需求</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- top 盒子内容为内部撑开 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;top&quot;</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!-- 未知高度的一些元素 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- 目标盒子 需要自动填满屏幕剩余高度--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;target&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">body</span>,<span class="selector-tag">html</span>&#123;</span><br><span class="line">	<span class="attribute">height</span>:<span class="number">100%</span>;</span><br><span class="line">	<span class="attribute">width</span>:<span class="number">100%</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">body</span>&#123;</span><br><span class="line">	<span class="attribute">display</span>:flex;</span><br><span class="line">	<span class="attribute">flex-direction</span>: column</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.target</span>&#123;</span><br><span class="line">	<span class="attribute">flex</span>:<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>iframe在ios中高度自扩展问题 解决方案</title>
+    <url>/2018/10/11/iframe%E5%9C%A8ios%E4%B8%AD%E9%AB%98%E5%BA%A6%E8%87%AA%E6%89%A9%E5%B1%95%E9%97%AE%E9%A2%98-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
+    <content><![CDATA[<h5 id="开发需求"><a href="#开发需求" class="headerlink" title="开发需求"></a>开发需求</h5><p>在页面中加入一个定高的iframe</p>
+<h5 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h5><p>IOS safari中iframe会根据内容高度进行iframe的内容自扩展以适应内容高度 设置height无效</p>
+<h6 id="百谷之后"><a href="#百谷之后" class="headerlink" title="百谷之后"></a>百谷之后</h6><blockquote>
+<p>在 iOS Safari 上，对于一个 scrollable 的 iframe 元素，iOS Safari 会选择扩展 iframe 的高度来自适应其中 web 页面内容的高度。所以当页面内容超过 iframe 设置的高度时，iOS Safari 并不会像在 Android 浏览器中那样维持 iframe 的高度并在右侧显示一个拖动条，而是直接扩展 iframe 的高度</p>
+</blockquote>
+<h5 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h5><p>① 在iframe上添加 scrollable&#x3D;no<br>此方案会使safari中iframe的设置高度生效不再自扩展，但是页面会直接被裁剪 产生类似于overflow:hidden的效果 不是想要的效果<br>②在iframe外增加一个定高div 并overflow-y:hidden，至此IOS满足需求，发现安卓显示高度不正确，令iframe高度100% 至此双端表现一致 满足需求 采用该方案</p>
+<h5 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h5><h6 id="问题代码"><a href="#问题代码" class="headerlink" title="问题代码"></a>问题代码</h6><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;url&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height:300px&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h6 id="方案①代码"><a href="#方案①代码" class="headerlink" title="方案①代码"></a>方案①代码</h6><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;url&quot;</span> <span class="attr">scrollable</span>=<span class="string">&quot;no&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height:300px&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h6 id="方案②代码（最终代码）"><a href="#方案②代码（最终代码）" class="headerlink" title="方案②代码（最终代码）"></a>方案②代码（最终代码）</h6><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;wrap&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height:300px;overflow-y:hidden&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;url&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height:100%&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="—-以上-问题解决"><a href="#—-以上-问题解决" class="headerlink" title="— 以上 问题解决"></a>— 以上 问题解决</h3><h3 id="有什么不明白的可以在评论里留言-￣▽￣-／"><a href="#有什么不明白的可以在评论里留言-￣▽￣-／" class="headerlink" title="有什么不明白的可以在评论里留言(￣▽￣)／"></a>有什么不明白的可以在评论里留言(￣▽￣)／</h3><hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>input的disabled属性会导致无法上传</title>
+    <url>/2017/07/29/input%E7%9A%84disabled%E5%B1%9E%E6%80%A7%E4%BC%9A%E5%AF%BC%E8%87%B4%E6%97%A0%E6%B3%95%E4%B8%8A%E4%BC%A0.html</url>
+    <content><![CDATA[<p>如题 很多人会用<code>disable</code>禁止用户修改<code>input</code>的值<br>但是同时会导致<code>form</code>提交时不包含这个文本框的值<br>（<code>disabled</code>本意即为禁用 所以自然不会上传）</p>
+<p><strong>需要实现禁止修改可以使用<code>readonly</code>属性</strong></p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>ios中 input[readonly] 仍然可聚焦出现光标并弹出“完成”面板问题</title>
+    <url>/2018/02/05/ios%E4%B8%AD-input-readonly-%E4%BB%8D%E7%84%B6%E5%8F%AF%E8%81%9A%E7%84%A6%E5%87%BA%E7%8E%B0%E5%85%89%E6%A0%87%E5%B9%B6%E5%BC%B9%E5%87%BA%E2%80%9C%E5%AE%8C%E6%88%90%E2%80%9D%E9%9D%A2%E6%9D%BF%E9%97%AE%E9%A2%98.html</url>
+    <content><![CDATA[<p>除readonly外 还需要添加</p>
+<pre><code>unselectable=&quot;on&quot; onfocus=&quot;this.blur()&quot; 
+</code></pre>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>mui slider轮播组件常用API</title>
+    <url>/2017/08/09/mui-slider%E8%BD%AE%E6%92%AD%E7%BB%84%E4%BB%B6%E5%B8%B8%E7%94%A8API.html</url>
+    <content><![CDATA[<p>原文:<a href="http://www.bcty365.com/content-146-5588-1.html">http://www.bcty365.com/content-146-5588-1.html</a></p>
+<h2 id="组件介绍"><a href="#组件介绍" class="headerlink" title="组件介绍"></a>组件介绍</h2><p>轮播组件是mui提供的一个核心组件，在该核心组件基础上，衍生出了图片轮播、可拖动式图文表格、可拖动式选项卡、左右滑动9宫格等组件。</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>获取slide组件对象</p>
+<pre><code>var slider = mui(&#39;#slider&#39;).slider();
+</code></pre>
+<h2 id="常用API"><a href="#常用API" class="headerlink" title="常用API"></a>常用API</h2><h3 id="gotoItem-index"><a href="#gotoItem-index" class="headerlink" title="gotoItem(index)"></a>gotoItem(index)</h3><p>切换到指定轮播</p>
+<pre><code>slider.gotoItem(1); //切换至第二个轮播
+</code></pre>
+<h3 id="prevItem"><a href="#prevItem" class="headerlink" title="prevItem()"></a>prevItem()</h3><p>上一个轮播</p>
+<pre><code>slider.prevItem();
+</code></pre>
+<h3 id="nextItem"><a href="#nextItem" class="headerlink" title="nextItem()"></a>nextItem()</h3><p>下一个轮播</p>
+<pre><code>slider.nextItem();
+</code></pre>
+<h3 id="getSlideNumber"><a href="#getSlideNumber" class="headerlink" title="getSlideNumber()"></a>getSlideNumber()</h3><p>当前所处位置</p>
+<pre><code>slider.getSlideNumber();
+</code></pre>
+<h3 id="stopped"><a href="#stopped" class="headerlink" title="stopped"></a>stopped</h3><p>禁用&#x2F;开启滑动切换</p>
+<pre><code>slider.stopped = false; //开启滑动切换
+slider.stopped = true; //关闭滑动切换
+</code></pre>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>new Obj() 与 Object.create(Obj.prototype)的区别</title>
+    <url>/2018/06/07/new-Obj-%E4%B8%8E-Object-create-Obj-prototype-%E7%9A%84%E5%8C%BA%E5%88%AB.html</url>
+    <content><![CDATA[<h2 id="先看-Object-create-和new-的区别"><a href="#先看-Object-create-和new-的区别" class="headerlink" title="先看 Object.create 和new 的区别"></a>先看 Object.create 和new 的区别</h2><h6 id="以下引用自blueblueskyhua的博客"><a href="#以下引用自blueblueskyhua的博客" class="headerlink" title="以下引用自blueblueskyhua的博客"></a>以下引用自<a href="https://blog.csdn.net/blueblueskyhua/article/details/73135938">blueblueskyhua的博客</a></h6><blockquote>
+<p>创建对象的方式，我以我碰到的两种创建方式，Object.create 和new来说明</p>
+</blockquote>
+<pre><code>var Base = function () &#123;&#125;
+var o1 = new Base()
+var o2 = Object.create(Base)
+</code></pre>
+<blockquote>
+<p>那这样到底有什么不一样呢？<br>这里写图片描述</p>
+</blockquote>
+<blockquote>
+<p>我先来一段Object.create的实现方式</p>
+</blockquote>
+<pre><code>Object.create =  function (o) &#123;
+    var F = function () &#123;&#125;
+    F.prototype = o
+    return new F()
+&#125;
+</code></pre>
+<blockquote>
+<p>可以看出来。Object.create是内部定义一个对象，并且让F.prototype对象 赋值为引进的对象&#x2F;函数 o，并return出一个新的对象。<br>再看看var o1 &#x3D; new Base()的时候new做了什么。</p>
+</blockquote>
+<blockquote>
+<p>JavaScript 实际上执行的是：</p>
+</blockquote>
+<pre><code>var o1 = new Object()
+o1.[[Prototype]] = Base.prototype
+Base.call(o1)
+</code></pre>
+<blockquote>
+<p>new做法是新建一个obj对象o1，并且让o1的__proto__指向了Base.prototype对象。并且使用call 进行强转作用环境。从而实现了实例的创建。</p>
+</blockquote>
+<h3 id="那么new-Obj-与-Object-create-Obj-prototype-有什么区别呢"><a href="#那么new-Obj-与-Object-create-Obj-prototype-有什么区别呢" class="headerlink" title="那么new Obj() 与 Object.create(Obj.prototype)有什么区别呢"></a>那么new Obj() 与 Object.create(Obj.prototype)有什么区别呢</h3><h6 id="以下为原创内容"><a href="#以下为原创内容" class="headerlink" title="以下为原创内容"></a>以下为原创内容</h6><pre><code>var Obj = function()&#123;
+    console.log(&#39;obj\&#39;s constructor&#39;)
+&#125;
+
+&gt; new Obj()
+&lt; obj&#39;s constructor
+&lt; Obj &#123;&#125;
+&gt; Object.create(Obj.prototype)
+&lt; Obj &#123;&#125;
+</code></pre>
+<h2 id="——-得出结论-Object-create-Obj-prototype-将不会触发Obj的构造函数"><a href="#——-得出结论-Object-create-Obj-prototype-将不会触发Obj的构造函数" class="headerlink" title="—— 得出结论 Object.create(Obj.prototype)将不会触发Obj的构造函数"></a>—— 得出结论 Object.create(Obj.prototype)将不会触发Obj的构造函数</h2><hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>openwrt部署openvpn server以及群晖连接（DSM7）完成内网穿透</title>
+    <url>/2022/01/20/openwrt%E9%83%A8%E7%BD%B2openvpn-server%E4%BB%A5%E5%8F%8A%E7%BE%A4%E6%99%96%E8%BF%9E%E6%8E%A5%EF%BC%88DSM7%EF%BC%89%E5%AE%8C%E6%88%90%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F.html</url>
+    <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>公司里放了一台黑裙，但是没有公网IP，想到用openvpn拨到家里的路由器，再进行端口转发达到内网穿透，公网访问的目的。</p>
+<p><strong>总之的总之三步走，需要openwrt上有server，以及群晖能够有client进行拨入，最后配置端口转发</strong></p>
+<hr>
+<h2 id="1-openwrt部署openvpn-server"><a href="#1-openwrt部署openvpn-server" class="headerlink" title="1. openwrt部署openvpn server"></a>1. openwrt部署openvpn server</h2><blockquote>
+<p>openwrt官方提供了详实的文档，如下<br><a href="https://openwrt.org/docs/guide-user/services/vpn/openvpn/server">[OpenWrt Wiki] OpenVPN server</a></p>
+</blockquote>
+<p>但是这个版本生成的配置，因为用到了<code>&lt;tls-crypt-v2&gt;</code>，群晖没法识别。可以使用下面这个<code> previous version of OpenWrt</code> 的旧版本。</p>
+<blockquote>
+<p><img src="https://img-blog.csdnimg.cn/8196fece92354dfda722165d47ba5c54.png" alt="在这里插入图片描述"><br>链接在这里↓<br><a href="https://openwrt.org/docs/guide-user/services/vpn/openvpn/server?rev=1632708683">[OpenWrt Wiki] OpenVPN server (old)</a></p>
+</blockquote>
+<hr>
+<p>接下来就是跟着文档走一遍, 我会对官方的文档进行一个翻译和加注：</p>
+<blockquote>
+<p><strong>1. 准备</strong><br>如果需要请先设置DDNS客户端。 安装依赖包. 指定一些临时的环境变量</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装包</span></span><br><span class="line">opkg update</span><br><span class="line">opkg install openvpn-openssl openvpn-easy-rsa</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">OVPN_DIR=<span class="string">&quot;/etc/openvpn&quot;</span></span><br><span class="line">OVPN_PKI=<span class="string">&quot;/etc/easy-rsa/pki&quot;</span></span><br><span class="line">OVPN_PORT=<span class="string">&quot;1194&quot;</span></span><br><span class="line">OVPN_PROTO=<span class="string">&quot;udp&quot;</span></span><br><span class="line">OVPN_POOL=<span class="string">&quot;192.168.8.0 255.255.255.0&quot;</span>  <span class="comment"># 注：这里可以指定openvpn的网段</span></span><br><span class="line">OVPN_DNS=<span class="string">&quot;<span class="variable">$&#123;OVPN_POOL%.* *&#125;</span>.1&quot;</span></span><br><span class="line">OVPN_DOMAIN=<span class="string">&quot;<span class="subst">$(uci get dhcp.@dnsmasq[0].domain)</span>&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 拿到外网ip作为外网地址</span></span><br><span class="line">. /lib/functions/network.sh</span><br><span class="line">network_flush_cache</span><br><span class="line">network_find_wan NET_IF</span><br><span class="line">network_get_ipaddr NET_ADDR <span class="string">&quot;<span class="variable">$&#123;NET_IF&#125;</span>&quot;</span></span><br><span class="line">OVPN_SERV=<span class="string">&quot;<span class="variable">$&#123;NET_ADDR&#125;</span>&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 如果有ddns 则从ddns拿到全域名(FQDN)作为外网地址</span></span><br><span class="line">NET_FQDN=<span class="string">&quot;<span class="subst">$(uci -q get ddns.@service[0].lookup_host)</span>&quot;</span></span><br><span class="line"><span class="keyword">if</span> [ -n <span class="string">&quot;<span class="variable">$&#123;NET_FQDN&#125;</span>&quot;</span> ]</span><br><span class="line"><span class="keyword">then</span> OVPN_SERV=<span class="string">&quot;<span class="variable">$&#123;NET_FQDN&#125;</span>&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>2. 秘钥管理</strong><br>使用 EasyRSA 管理 PKI. 必要时使用私钥密码保护.</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_PKI=<span class="string">&quot;<span class="variable">$&#123;OVPN_PKI&#125;</span>&quot;</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_REQ_CN=<span class="string">&quot;ovpnca&quot;</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_BATCH=<span class="string">&quot;1&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 移除并且重新初始化pki目录</span></span><br><span class="line">easyrsa init-pki</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 生成DH变量</span></span><br><span class="line">easyrsa gen-dh</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 创建新的CA</span></span><br><span class="line">easyrsa build-ca nopass</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 为服务端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-server-full server nopass</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 为客户端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-client-full client nopass  </span><br><span class="line"><span class="comment">#注：此处为生成客户端配置必要，如果需要多个客户端的，可以多次运行本行 只需要更改“client”, 如：</span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client1 nopass </span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client2 nopass </span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client-dsm nopass</span></span><br><span class="line"><span class="comment">#注：更改后的名称会作为生成后配置文件的名称 </span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 生成TLS PSK</span></span><br><span class="line">openvpn --genkey --secret <span class="variable">$&#123;OVPN_PKI&#125;</span>/tc.pem</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>3. 防火墙</strong><br>将VPN网络视为私有网络，将VPN接口分配到LAN区域，以减少防火墙的设置。允许从WAN区域访问VPN服务器。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置防火墙</span></span><br><span class="line">uci rename firewall.@zone[0]=<span class="string">&quot;lan&quot;</span></span><br><span class="line">uci rename firewall.@zone[1]=<span class="string">&quot;wan&quot;</span></span><br><span class="line">uci del_list firewall.lan.device=<span class="string">&quot;tun+&quot;</span></span><br><span class="line">uci add_list firewall.lan.device=<span class="string">&quot;tun+&quot;</span></span><br><span class="line">uci -q delete firewall.ovpn</span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn=<span class="string">&quot;rule&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.name=<span class="string">&quot;Allow-OpenVPN&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.src=<span class="string">&quot;wan&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.dest_port=<span class="string">&quot;<span class="variable">$&#123;OVPN_PORT&#125;</span>&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.proto=<span class="string">&quot;<span class="variable">$&#123;OVPN_PROTO&#125;</span>&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.target=<span class="string">&quot;ACCEPT&quot;</span></span><br><span class="line">uci commit firewall</span><br><span class="line">/etc/init.d/firewall restart</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>4. VPN服务</strong><br>配置VPN服务，生成客户端配置文件。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">OVPN_DH=<span class="string">&quot;<span class="subst">$(cat $&#123;OVPN_PKI&#125;/dh.pem)</span>&quot;</span></span><br><span class="line">OVPN_TC=<span class="string">&quot;<span class="subst">$(sed -e <span class="string">&quot;/^#/d;/^\w/N;s/\n//&quot;</span> $&#123;OVPN_PKI&#125;/tc.pem)</span>&quot;</span></span><br><span class="line">OVPN_CA=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/ca.crt)</span>&quot;</span></span><br><span class="line">NL=$<span class="string">&#x27;\n&#x27;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 配置VPN服务，生成客户端配置文件。 </span></span><br><span class="line"><span class="comment">#注：如果你清楚的知道你在做什么，可以更改下方ovpn配置相关的代码，可以省掉后续多个客户端单独修改配置的工作量</span></span><br><span class="line"><span class="built_in">umask</span> go=</span><br><span class="line"><span class="built_in">ls</span> <span class="variable">$&#123;OVPN_PKI&#125;</span>/issued \</span><br><span class="line">| sed -e <span class="string">&quot;s/\.\w*$//&quot;</span> \</span><br><span class="line">| <span class="keyword">while</span> <span class="built_in">read</span> -r OVPN_ID</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">OVPN_KEY=<span class="string">&quot;<span class="subst">$(cat $&#123;OVPN_PKI&#125;/private/$&#123;OVPN_ID&#125;.key)</span>&quot;</span></span><br><span class="line">OVPN_CERT=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt)</span>&quot;</span></span><br><span class="line">OVPN_EKU=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt -purpose)</span>&quot;</span></span><br><span class="line"><span class="keyword">case</span> <span class="variable">$&#123;OVPN_EKU&#125;</span> <span class="keyword">in</span></span><br><span class="line">(*<span class="string">&quot;SSL server : Yes&quot;</span>*)</span><br><span class="line">OVPN_CONF=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">port <span class="variable">$&#123;OVPN_PORT&#125;</span></span></span><br><span class="line"><span class="string">proto <span class="variable">$&#123;OVPN_PROTO&#125;</span></span></span><br><span class="line"><span class="string">server <span class="variable">$&#123;OVPN_POOL&#125;</span></span></span><br><span class="line"><span class="string">topology subnet</span></span><br><span class="line"><span class="string">client-to-client</span></span><br><span class="line"><span class="string">keepalive 10 60</span></span><br><span class="line"><span class="string">persist-tun</span></span><br><span class="line"><span class="string">persist-key</span></span><br><span class="line"><span class="string">push \&quot;dhcp-option DNS <span class="variable">$&#123;OVPN_DNS&#125;</span>\&quot;</span></span><br><span class="line"><span class="string">push \&quot;dhcp-option DOMAIN <span class="variable">$&#123;OVPN_DOMAIN&#125;</span>\&quot;</span></span><br><span class="line"><span class="string">push \&quot;redirect-gateway def1\&quot;</span></span><br><span class="line"><span class="string">push \&quot;persist-tun\&quot;</span></span><br><span class="line"><span class="string">push \&quot;persist-key\&quot;</span></span><br><span class="line"><span class="string">&lt;dh&gt;<span class="variable">$&#123;NL&#125;</span><span class="variable">$&#123;OVPN_DH&#125;</span><span class="variable">$&#123;NL&#125;</span>&lt;/dh&gt;&quot;</span></span><br><span class="line">OVPN_EXT=<span class="string">&quot;conf&quot;</span> ;;</span><br><span class="line">(*<span class="string">&quot;SSL client : Yes&quot;</span>*)</span><br><span class="line">OVPN_CONF=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">nobind</span></span><br><span class="line"><span class="string">client</span></span><br><span class="line"><span class="string">remote <span class="variable">$&#123;OVPN_SERV&#125;</span> <span class="variable">$&#123;OVPN_PORT&#125;</span> <span class="variable">$&#123;OVPN_PROTO&#125;</span></span></span><br><span class="line"><span class="string">auth-nocache</span></span><br><span class="line"><span class="string">remote-cert-tls server&quot;</span></span><br><span class="line">OVPN_EXT=<span class="string">&quot;ovpn&quot;</span> ;;</span><br><span class="line"><span class="keyword">esac</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt; <span class="string">EOF &gt; $&#123;OVPN_DIR&#125;/$&#123;OVPN_ID&#125;.$&#123;OVPN_EXT&#125;</span></span><br><span class="line"><span class="string">user nobody</span></span><br><span class="line"><span class="string">group nogroup</span></span><br><span class="line"><span class="string">dev tun</span></span><br><span class="line"><span class="string">$&#123;OVPN_CONF&#125;</span></span><br><span class="line"><span class="string">&lt;tls-crypt&gt;$&#123;NL&#125;$&#123;OVPN_TC&#125;$&#123;NL&#125;&lt;/tls-crypt&gt;</span></span><br><span class="line"><span class="string">&lt;key&gt;$&#123;NL&#125;$&#123;OVPN_KEY&#125;$&#123;NL&#125;&lt;/key&gt;</span></span><br><span class="line"><span class="string">&lt;cert&gt;$&#123;NL&#125;$&#123;OVPN_CERT&#125;$&#123;NL&#125;&lt;/cert&gt;</span></span><br><span class="line"><span class="string">&lt;ca&gt;$&#123;NL&#125;$&#123;OVPN_CA&#125;$&#123;NL&#125;&lt;/ca&gt;</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">/etc/init.d/openvpn restart</span><br><span class="line"><span class="comment"># 此处就能够看到client.ovpn 把这个文件通过openwrt的备份功能导出来，上传到群晖即可</span></span><br><span class="line"><span class="built_in">ls</span> <span class="variable">$&#123;OVPN_DIR&#125;</span>/*.ovpn</span><br></pre></td></tr></table></figure>
+<p>到这里openwrt的openvpn服务端配置完毕，可以使用openvpn的备份功能（<code>System -&gt; Backup/Flash Firmware</code>）. 从备份包导出客户端的配置文件。</p>
+<hr>
+<h2 id="2-群晖连接openvpn"><a href="#2-群晖连接openvpn" class="headerlink" title="2. 群晖连接openvpn"></a>2. 群晖连接openvpn</h2><p>到了群晖这一步就比较简单，按照官网的流程，打开 <code>控制面板-&gt;网络-&gt;网络界面-&gt;新增-&gt;创建VPN配置文件</code>，把刚才导出的client.ovpn上传即可</p>
+<blockquote>
+<p>注：其实这里因为群晖的错误提示非常的“友好”，连接失败只会提示“失败，请检查配置”或者“认证错误”，导致排错非常的困难，踩了不少坑。比如不支持的标签，属性等等，总之注意点都写在第一步了。如果还是有问题，请自行前往<code>/var/log/messages</code>进行openvpn相关日志的排查。</p>
+</blockquote>
+<p>按照下图位置上传client.ovpn<br><img src="https://img-blog.csdnimg.cn/db605dfb49fe49aebf6ac6fe52d3c13c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>这里只需要填写 “导入.ovpn” 文件这一项<br><img src="https://img-blog.csdnimg.cn/3a403e5c14fe4f0493d5e95118e79b6c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_19,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>记得勾选这两个选项<br><img src="https://img-blog.csdnimg.cn/88e52cab7a7144d9a9d482b3391b4903.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>到这一步 openvpn的连接可以正常建立了。</p>
+<hr>
+<h2 id="3-配置端口转发"><a href="#3-配置端口转发" class="headerlink" title="3.配置端口转发"></a>3.配置端口转发</h2><p>需要完成端口转发，首先我们得先把群晖的ip固定下来，否则ip一变动，端口转发规则就失效了。<br>需要完成openvpn客户端的ip固定，我们需要在server配置中添加规则。</p>
+<p><strong>编辑服务端配置</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim <span class="variable">$&#123;OVPN_DIR&#125;</span>/server.ovpn</span><br></pre></td></tr></table></figure>
+<p><strong>添加下面这一行，用来指定客户端config文件夹</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 这里的文件夹路径可以自定</span></span><br><span class="line">client-config-dir /etc/openvpn/ccd</span><br></pre></td></tr></table></figure>
+<p><strong>保存后新增客户端config 注意这里的“client”需要和.ovpn文件名相符，也就是easyrsa创建客户端秘钥时的名字</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim /etc/openvpn/ccd/client</span><br></pre></td></tr></table></figure>
+<p><strong>添加下面这一行，来绑定ip</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 这里的192.168.8.108 即为你想要绑定的ip</span></span><br><span class="line">ifconfig-push 192.168.8.108 255.255.255.0</span><br></pre></td></tr></table></figure>
+<p><strong>保存后重启openvpn</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/etc/init.d/openvpn restart</span><br></pre></td></tr></table></figure>
+<hr>
+<p>接下来正式开始配置端口转发，进入openwrt,  菜单选择 <code>Network-&gt;Firewall-&gt;Port Forwards</code><br><img src="https://img-blog.csdnimg.cn/b76d34e11f01421aaf38f7c9a4c6c0cb.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>新增一条端口转发，按照下图填写<br><img src="https://img-blog.csdnimg.cn/2df447f9ae0a470c8d3a3f65c98dba4a.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>至此，应该就能够使用openwrt的端口转发达到内网穿透的目的了。</p>
+<p>以上！まいど～</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>修复gitCI中文件的创建时间与修改时间</title>
+    <url>/2022/04/10/restore-atime-mtime-in-git-CI.html</url>
+    <content><![CDATA[<h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>hexo发现经过CI之后，所有文章的 <strong>更新时间(mtime)</strong> 变成了CI运行的时间。</p>
+<h1 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h1><p>在CI checkout代码时，使用文件最后一次涉及的commit时间作为文件的修改时间，进行mtime的恢复。</p>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># .github/workflows/action.yml</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v3</span></span><br><span class="line">  <span class="comment"># 如果使用的是GithubAction的actions/checkout，记得加上下面的内容，对仓库历史进行完整的签出</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">fetch-depth:</span> <span class="number">0</span></span><br><span class="line"><span class="comment"># 恢复文件修改时间</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Restore</span> <span class="string">file</span> <span class="string">modification</span> <span class="string">time</span></span><br><span class="line">  <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">    find source/_posts -name &#x27;*.md&#x27; | while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span></span><br><span class="line"><span class="string"></span><span class="string">...</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="代码解释"><a href="#代码解释" class="headerlink" title="代码解释"></a>代码解释</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">列出需要恢复修改时间的文件</span></span><br><span class="line">find source/_posts -name &#x27;*.md&#x27;</span><br><span class="line"><span class="meta"># </span><span class="language-bash">循环</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 git <span class="built_in">log</span> -- <span class="variable">$file</span> 得到该文件最后修改的commit 并且使用pretty选项获取时间戳</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 <span class="built_in">touch</span> -d 来将文件的atime以及mtime修改为commit的时间戳</span></span><br><span class="line">while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span><br></pre></td></tr></table></figure>
+
+
+<p>以上！まいど～</p>
+<hr>
+]]></content>
+      <tags>
+        <tag>CI/CD</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>webstorm中 emmet 模板的修改步骤</title>
+    <url>/2018/03/27/webstorm%E4%B8%AD-emmet-%E6%A8%A1%E6%9D%BF%E7%9A%84%E4%BF%AE%E6%94%B9%E6%AD%A5%E9%AA%A4.html</url>
+    <content><![CDATA[<p>之前用atom、sublime的时候 Emmet 的模板是可配置的 但是在webstorm配置中的Editor &gt; Emmet选项下没有发现任何有关模板的配置 只有一些选项的配置</p>
+<hr>
+<p><img src="https://img-blog.csdn.net/20180327135651291?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="webstorm Emmet相关配置"></p>
+<p>其实模板配置在Editor&gt;Live Templates 下 会找到有Zen字样开头的 Zen CSS、 Zen HTML、Zen XSL 分别是CSS、HTML、XSL的模板</p>
+<hr>
+<h2 id=""><a href="#" class="headerlink" title=""></a><img src="https://img-blog.csdn.net/20180327140915194?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="模板配置"></h2><p>*Emmet前身叫做ZenCoding 所以这里会用Zen开头 模板的配置方式与webstorm其他模板配置相同 这里不再赘述</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>window.location.replace和window.location.href区别</title>
+    <url>/2017/12/07/window-location-replace%E5%92%8Cwindow-location-href%E5%8C%BA%E5%88%AB.html</url>
+    <content><![CDATA[<p>###有3个页面 a,b,c<br>如果当前页面是c页面，并且c页面是这样跳转过来的：a-&gt;b-&gt;c</p>
+<p>1: b-&gt;c 是通过window.location.replace(“..xx&#x2F;c”)   此时b页面的url会被c页面代替，并且点击后退按钮时会回退到a页面（最开始的页面）</p>
+<p>2: b-&gt;c是通过window.location.href(“..xx&#x2F;c”)    此时b页面的路径会被c页面代替，但是点击回按钮后页面回退的是b页面</p>
+<p>两者的区别: 两者后退时所回退的页面不一样</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>window.requestAnimFrame 以及Polyfill</title>
+    <url>/2017/10/08/window-requestAnimFrame-%E4%BB%A5%E5%8F%8APolyfill.html</url>
+    <content><![CDATA[<h2 id="requestAnimationFrame"><a href="#requestAnimationFrame" class="headerlink" title="requestAnimationFrame"></a>requestAnimationFrame</h2><blockquote>
+<p>requestAnimationFrame是浏览器用于定时循环操作的一个接口，类似于setTimeout，主要用途是按帧对网页进行重绘。</p>
+</blockquote>
+<blockquote>
+<p>设置这个API的目的是为了让各种网页动画效果（DOM动画、Canvas动画、SVG动画、WebGL动画）能够有一个统一的刷新机制，从而节省系统资源，提高系统性能，改善视觉效果。代码中使用这个API，就是告诉浏览器希望执行一个动画，让浏览器在下一个动画帧安排一次网页重绘。</p>
+</blockquote>
+<blockquote>
+<p>requestAnimationFrame的优势，在于充分利用显示器的刷新机制，比较节省系统资源。显示器有固定的刷新频率（60Hz或75Hz），也就是说，每秒最多只能重绘60次或75次，requestAnimationFrame的基本思想就是与这个刷新频率保持同步，利用这个刷新频率进行页面重绘。此外，使用这个API，一旦页面不处于浏览器的当前标签，就会自动停止刷新。这就节省了CPU、GPU和电力。</p>
+</blockquote>
+<blockquote>
+<p>不过有一点需要注意，requestAnimationFrame是在主线程上完成。这意味着，如果主线程非常繁忙，requestAnimationFrame的动画效果会大打折扣。</p>
+</blockquote>
+<blockquote>
+<p>requestAnimationFrame使用一个回调函数作为参数。这个回调函数会在浏览器重绘之前调用。</p>
+</blockquote>
+<pre><code>requestID = window.requestAnimationFrame(callback);
+</code></pre>
+<h2 id="Polyfill"><a href="#Polyfill" class="headerlink" title="Polyfill"></a>Polyfill</h2><blockquote>
+<p>目前，高版本浏览器Firefox 23 &#x2F; IE 10 &#x2F; Chrome &#x2F; Safari）都支持这个方法。可以用下面的方法，检查浏览器是否支持这个API。如果不支持，则自行模拟部署该方法。</p>
+</blockquote>
+<pre><code>window.requestAnimFrame = (function()&#123;
+  return  window.requestAnimationFrame       || 
+          window.webkitRequestAnimationFrame || 
+          window.mozRequestAnimationFrame    || 
+          window.oRequestAnimationFrame      || 
+          window.msRequestAnimationFrame     || 
+          function( callback )&#123;
+            window.setTimeout(callback, 1000 / 60);
+          &#125;;
+&#125;)();
+</code></pre>
+<blockquote>
+<p>上面的代码按照1秒钟60次（大约每16.7毫秒一次），来模拟requestAnimationFrame。</p>
+</blockquote>
+<blockquote>
+<p>使用requestAnimationFrame的时候，只需反复调用它即可。</p>
+</blockquote>
+<pre><code>function repeatOften() &#123;
+    // Do whatever
+    requestAnimationFrame(repeatOften);
+&#125;
+
+requestAnimationFrame(repeatOften);
+</code></pre>
+<blockquote>
+<p>取消重绘可以用 cancelAnimationFrame。</p>
+</blockquote>
+<pre><code>window.cancelAnimationFrame(requestID);
+</code></pre>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>一个Mui Demo仓库</title>
+    <url>/2017/08/10/%E4%B8%80%E4%B8%AAMui-Demo%E4%BB%93%E5%BA%93.html</url>
+    <content><![CDATA[<p>链接 <a href="https://github.com/zhaomenghuan/mui-demo">https://github.com/zhaomenghuan/mui-demo</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>一根网线同时搭载电信itv及网络 解决方案</title>
+    <url>/2019/02/10/%E4%B8%80%E6%A0%B9%E7%BD%91%E7%BA%BF%E5%90%8C%E6%97%B6%E6%90%AD%E8%BD%BD%E7%94%B5%E4%BF%A1itv%E5%8F%8A%E7%BD%91%E7%BB%9C-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
+    <content><![CDATA[<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv</p>
+<p><strong>原拓扑图如下</strong><br><img src="https://img-blog.csdnimg.cn/20190210155452299.png#pic_center" alt="原拓扑图"></p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>材料：</strong><br>1、水星Mercury SG105Pro 五口千兆网管交换机 价格 98 元 放置在客厅（下称SW5）<br>2、水星Mercury SG108Pro 八口千兆网管交换机 价格 169 元 放置在弱电箱（下称SW8）</p>
+<p><strong>整体解决思路：</strong><br>在弱电箱端，使用一台交换机，将itv和网络的数据包合并至一条主干道网线上，到使用端（客厅）使用另一台交换机进行识别后拆分为两条线使用——达到墙内一条线，实际承载两条线路的目的。</p>
+<p><strong>实际解决方案（看不明白可以先往下看）：</strong><br>利用802.1Q VLAN的Tag机制划分两路VLAN：一路走itv（下称VLAN2）一路走网络（下称VLAN3），由交换机为收到的包打Tag后送入网线，进入Tag所示VLAN传输，由另一台交换机判断Tag，送入指定设备——达到目的。</p>
+<p><strong>先行说明：</strong><br>在说明解决步骤之前先说明几个概念，po也是用了不少时间加实践去理解了VLAN、802.1Q标准中的Tag、Untagged、VLAN ID、PVID等概念，在这里做简单的讲述</p>
+<p>*<strong>这里我们先打个比方，方便讲概念：</strong></p>
+<blockquote>
+<p>我们把数据包在交换机中的传输比作一场从出发地到目的地传送小球的游戏</p>
+<ul>
+<li>数据包比作小球；</li>
+<li>交换机是一个小球的中转站，决定来到这里的小球应该去到哪里；</li>
+<li>交换机的端口是小球的出入口，我们将它比作检查站，每个检查站都有一把刷子和一把水枪（至于为什么是刷子和水枪？后面会说到），可以对小球进行上色和洗色；</li>
+</ul>
+</blockquote>
+<p>*<strong>下面开始讲概念：</strong><br><em>VLAN——是一条传送小球的管道：</em></p>
+<blockquote>
+<p>VLAN（Virtual Local Area Network）的中文名为”虚拟局域网”。划分到同一VLAN下的端口可以互相通信，不同VLAN不能互相通信。</p>
+<p>——如果我们把数据传输比作小球过管道，数据包是小球，那么VLAN就好比是管道，进入A管道的球是不能去到B管道的。</p>
+</blockquote>
+<p><em>802.1Q——是制作管道的标准:</em></p>
+<blockquote>
+<p>802.1Q是VLAN标准的一种。<br>——你可以理解为制作管道的标准。</p>
+</blockquote>
+<p><em>VLAN ID——是颜色：</em></p>
+<blockquote>
+<p>802.1Q标准中为数据包附加的一个值 标识该包在VLAN ID所示的VLAN中传输<br>——标准规定管道必须涂上颜色（VLAN ID），里面只能通过管道对应颜色（VLAN ID）的球。</p>
+</blockquote>
+<p><em>TAG帧——带颜色的小球：</em></p>
+<blockquote>
+<p>带有VLAN ID的数据包<br>——带颜色（VLAN ID）的小球</p>
+</blockquote>
+<p><em>UNTAG帧——白色的小球：</em></p>
+<blockquote>
+<p>不带有VLAN ID的数据包<br>——不带颜色（VLAN ID）的小球</p>
+</blockquote>
+<p><em>PVID——是检查站刷子上的油漆：</em></p>
+<blockquote>
+<p>Port VLAN ID，即端口缺省VLAN ID  ，在交换机中提前配置<br>当端口接收到数据包时，可以为该包打上等于该端口PVID值的VLAN ID，此后该包成为TAG帧，在该VLAN ID所表示的VLAN中传输，是否打上tag由端口模式决定（Tagged&#x2F;Untagged）。<br>——每个检查站都有一把刷子，刷子上都沾了我们指定颜色的油漆（PVID），当遇到小球的时候，可以把它刷成油漆的颜色(VLAN ID)，接下来小球就只能进到对应颜色的管道里了，是不是要涂色，根据检查站的模式来决定。</p>
+</blockquote>
+<p><em>Tagged与Untagged及端口收发包逻辑——检查站的两种模式</em></p>
+<blockquote>
+<h6 id="端口处理数据有两种方式：Tagged-x2F-Untagged"><a href="#端口处理数据有两种方式：Tagged-x2F-Untagged" class="headerlink" title="端口处理数据有两种方式：Tagged&#x2F;Untagged"></a><em>端口处理数据有两种方式：Tagged&#x2F;Untagged</em></h6><p><strong>端口接收数据时：</strong></p>
+<ul>
+<li>如果端口是tagged方式<br>- 当数据包为UNTAG帧的话，就加上该端口的PVID，送入PVID所示的VLAN中传输；<br>- 如果数据包为TAG帧，那么就不再添加，直接送入TAG所示的VLAN中传输；</li>
+<li>如果是untagged方式，<ul>
+<li>输入的数据包全部都要加上该端口的PVID。不管输入的数据包是TAG帧还是UNTAG帧。</li>
+</ul>
+</li>
+</ul>
+<p><strong>端口发送数据时：</strong></p>
+<ul>
+<li>如果端口是tagged方式<ul>
+<li>如果端口PVID等于发送的数据包所含的VLAN ID，那么就会将VLAN ID从发送的数据包中去掉；</li>
+<li>如果不相等，则数据包将保持原样发送出去。</li>
+</ul>
+</li>
+<li>如果端口是untagged方式<ul>
+<li>则不管端口PVID为多少，是否等于要输出的数据包的VLAN，都会将VLAN ID从数据包中去掉。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h6 id="检查站有两种模式：Tagged和Untagged"><a href="#检查站有两种模式：Tagged和Untagged" class="headerlink" title="检查站有两种模式：Tagged和Untagged"></a><em>检查站有两种模式：Tagged和Untagged</em></h6><p><strong>检查站遇到外面来的小球：</strong></p>
+<ul>
+<li>如果检查站是tagged模式<ul>
+<li>如果小球是白色的，就用刷子为小球涂上油漆的颜色，送进对应颜色的管道里传输；</li>
+<li>如果小球有颜色，那就不再处理小球，直接送到小球对应颜色的管道里传输；</li>
+</ul>
+</li>
+<li>如果检查站在untagged模式<ul>
+<li>碰到的小球全部用刷子刷上油漆，强行送进对应的管道传输；</li>
+</ul>
+</li>
+</ul>
+<p><strong>检查站准备送走从管子里出来的小球时</strong></p>
+<ul>
+<li>如果检查站是tagged模式<ul>
+<li>如果油漆的颜色和小球的颜色一致，就把小球的油漆用水枪洗掉再送走。</li>
+<li>如果油漆的颜色和小球的颜色不一致，就把小球原样送走。</li>
+</ul>
+</li>
+<li>如果检查站是untagged方式<ul>
+<li>不管油漆颜色还是小球颜色，都将小球的油漆用水枪洗掉再送走。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>讲解完概念后，我们再回来看解决方案</p>
+<blockquote>
+<p><strong>实际解决方案（看不明白可以先往下看）：</strong><br>利用802.1Q VLAN的Tag机制划分两路VLAN：一路走itv（下称VLAN2）一路走网络（下称VLAN3），由交换机为收到的包打Tag后送入网线，进入Tag所示VLAN传输，由另一台交换机判断Tag，送入指定设备——达到目的。</p>
+</blockquote>
+<p><strong>如果你还是看不懂，我们再换成传送小球：</strong></p>
+<blockquote>
+<p>我们按照标准制造了两根管道，一根涂成红色（itv），一根涂成蓝色（网络），将这两条管道埋设到一条网线中，由一头的中转站为光猫送来的白色小球上色，分别送入两条管道，经过同一条网线，另一头的中转站判断颜色，送到指定的目的地——达到目的。</p>
+</blockquote>
+<p><strong>具体解决步骤：</strong></p>
+<ul>
+<li><p>1、配置SW8的VLAN</p>
+<ul>
+<li><p>VLAN划分如下：<br><img src="https://img-blog.csdnimg.cn/20190210233114958.png#pic_center" alt="SW8 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,7端口配置为itv交换<br>VLAN3 将1-6 以及8 端口配置为网络交换</p>
+<p><strong>将端口1作为主干道端口<br>*此端口连接SW5<br>**接收：由SW5发送过来的TAG帧 并根据TAG帧中的VLAN ID 决定送入VLAN2还是VLAN3（即广播至VLAN2的7端口或VLAN3的2-6、8端口）<br>**发送：由SW8其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW5</strong></p>
+</li>
+<li><p>PVID配置如下：<br><img src="https://img-blog.csdnimg.cn/20190210161628593.png#pic_center" alt="VLAN PVID配置"><br>端口1：接SW5 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口7：接光猫ITV口 PVID设置为2 接收光猫ITV口发送来的UNTAG帧 送入VLAN2<br>端口8：接光猫千兆口 PVID设置为3 接收光猫千兆网络口发送来的UNTAG帧 送入VLAN3<br>端口2-6：接其他房间电脑 PVID设置为3 接收其他房间电脑发送来的UNTAG帧 送入VLAN3 与端口8光猫千兆口相互通信</p>
+</li>
+</ul>
+</li>
+<li><p>2、配置SW5的VLAN</p>
+<ul>
+<li><p>VLAN划分如下：<br><img src="https://img-blog.csdnimg.cn/20190210223800782.png#pic_center" alt="SW5 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,4 端口配置为itv交换 令4端口可以与主干道端口进行通信<br>VLAN3 将1,5 端口配置为网络交换 令5端口可以与主干道端口进行通信</p>
+<p><strong>将端口1作为主干道端口<br>**接收：由SW8发送过来的TAG帧 并根据TAG帧中的VLAN ID 决定送入VLAN2还是VLAN3（即 广播至VLAN2的4端口或VLAN3的5端口）<br>**发送：由SW5其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW8</strong></p>
+</li>
+<li><p>PVID配置如下：<br><img src="https://img-blog.csdnimg.cn/20190210224225870.png#pic_center" alt="SW5 PVID配置"><br>端口1：接SW8 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口4：接机顶盒 PVID设置为2 接收机顶盒发来的UNTAG帧 打上VLAN ID值为2后将该TAG帧交由端口1<br>端口5：接路由器 PVID设置为3 接收路由器发送来的UNTAG帧 打上VLAN ID值为3后将该TAG帧交由端口1<br>端口2-3：闲置 可无视</p>
+</li>
+<li><p>最终VLAN端口一览<br>VLAN2（ITV）：SW8P1、SW8P7、SW5P1、SW5P4<br>VLAN3（网络）：SW8P1、SW8P2-6、SW8P8、SW5P1、SW5P5</p>
+</li>
+</ul>
+<blockquote>
+<p>至此ITV通过SW5P4与SW8P7可互相通信 网络通过SW5P5与SW8P8可互相通信<br>ITV与网络互不干扰 但通过SW8P1与SW5P1之间只连接了一根网线 目的达成</p>
+</blockquote>
+</li>
+<li><p>3、连接拓扑图<br><img src="https://img-blog.csdnimg.cn/20190210230243826.png#pic_center" alt="连接拓扑图"></p>
+</li>
+<li><p>4、问题解决</p>
+</li>
+</ul>
+<p><strong>交换逻辑：</strong></p>
+<p><em>网络数据帧传输：</em></p>
+<p>1.去程 光猫千兆口-&gt;客厅路由器</p>
+<blockquote>
+<p>1.光猫千兆口发送UNTAG帧 到达SW8 8端口<br>2.判断8端口PVID为3 为数据帧打上VLAN ID标记值为3 转为TAG帧 传入VLAN3 交换至1-6端口<br>3.TAG帧到达2-6端口 与其他房间各电脑通信直接拨号上网；同时，TAG帧到达1端口 送至SW5<br>5.TAG帧到达SW5的1端口 判断TAG帧中VLAN ID为3 送入VLAN3 交换至5端口<br>6.TAG帧到达5端口 送至客厅路由器<br>7.完成光猫千兆口-&gt;客厅路由器的传输 全程数据帧在VLAN3中传输 与SW8 7端口ITV无关</p>
+</blockquote>
+<p>2.回程 客厅路由器-&gt;光猫千兆口</p>
+<blockquote>
+<p>1.客厅路由器发送UNTAG帧 到达SW5 5端口<br>2.判断5端口PVID为3 为数据帧打上VLAN ID标记值为3 转为TAG帧 传入VLAN3 交换至1端口 送至SW8<br>3.TAG帧到达SW8的1端口 判断TAG帧中VLAN ID为3 送入VLAN3 交换至1-6端口<br>4.TAG帧到达2-6端口 实现客厅路由器与其他各房间的局域网通信；同时TAG帧到达8端口 送至光猫千兆口<br>5.完成客厅路由器-&gt;光猫千兆口的传输 全程数据帧在VLAN3中传输 与SW8 7端口ITV无关</p>
+</blockquote>
+<p><em>ITV数据帧传输：</em></p>
+<p>1.去程 光猫ITV口-&gt;客厅机顶盒</p>
+<blockquote>
+<p>1.光猫ITV口发送UNTAG帧 到达SW8 7端口<br>2.判断7端口PVID为2 为数据帧打上VLAN ID标记值为2 转为TAG帧 传入VLAN2 交换至1-6端口<br>3.TAG帧到达1端口 送至SW5<br>5.TAG帧到达SW5的1端口 判断TAG帧中VLAN ID为2 送入VLAN2 交换至4端口<br>6.TAG帧到达4端口 送至机顶盒<br>7.完成光猫ITV口-&gt;客厅机顶盒的传输 全程数据帧在VLAN2中传输 与SW8 8端口网络无关</p>
+</blockquote>
+<p>2.回程 客厅机顶盒-&gt;光猫ITV口</p>
+<blockquote>
+<p>1.客厅机顶盒发送UNTAG帧 到达SW5 4端口<br>2.判断4端口PVID为2 为数据帧打上VLAN ID标记值为2 转为TAG帧 传入VLAN2 交换至1端口 送至SW8<br>3.TAG帧到达SW8的1端口 判断TAG帧中VLAN ID为2 送入VLAN2 交换至7端口<br>4.TAG帧到达7端口 送至光猫ITV口<br>5.完成客厅路由器-&gt;光猫ITV口的传输 全程数据帧在VLAN2中传输  与SW8 8端口网络无关</p>
+</blockquote>
+<h4 id="至此问题解决！-也是钻研了三四天-临时起意肯定有写的不对的地方-欢迎各位在评论指出！"><a href="#至此问题解决！-也是钻研了三四天-临时起意肯定有写的不对的地方-欢迎各位在评论指出！" class="headerlink" title="至此问题解决！ 也是钻研了三四天 临时起意肯定有写的不对的地方 欢迎各位在评论指出！"></a>至此问题解决！ 也是钻研了三四天 临时起意肯定有写的不对的地方 欢迎各位在评论指出！</h4><hr>
+<p>参考资料</p>
+<ol>
+<li><a href="http://blog.chinaunix.net/uid-24020646-id-3065954.html">交换机Vlan中 tagged和untagged的区别-platinaluo-ChinaUnix博客</a></li>
+<li><a href="https://blog.csdn.net/xiaohaijiejie/article/details/70208549">802.1Q VLAN 技术原理—理解PVID和VID - 小海的专栏 - CSDN博客</a></li>
+<li><a href="https://www.chiphell.com/thread-1670251-1-1.html">一根网线走iptv及网络的实践经验 - 电脑讨论 -  Chiphell - 分享与交流用户体验</a></li>
+<li><a href="https://www.chiphell.com/thread-1524134-1-1.html">一根网线怎么走局域网和iptv - 电脑讨论 -  Chiphell - 分享与交流用户体验</a></li>
+</ol>
+<hr>
+<p>2019年10月13日：有读者来问问题，似乎还是看的不太明白，加了小球的比方，希望能有助于理解吧！各位看官如果有啥不明白的，评论私信都可以哈！多多的来！</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>为什么不要使用 ::before{content:url(&#39;xxx&#39;)} 设置图标</title>
+    <url>/2020/09/07/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8-before-content-url--xxx--%E8%AE%BE%E7%BD%AE%E5%9B%BE%E6%A0%87.html</url>
+    <content><![CDATA[<p>项目中遇到 随手记录<br>::before ::after等伪类中使用content:url()中的图片无法设置宽高</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>从V8引擎的工作流程看Javascript代码优化</title>
+    <url>/2022/06/14/%E4%BB%8EV8%E5%BC%95%E6%93%8E%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E7%9C%8BJavascript%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96.html</url>
+    <content><![CDATA[<h2 id="0-V8介绍"><a href="#0-V8介绍" class="headerlink" title="0. V8介绍"></a>0. V8介绍</h2><p>官方文档这么介绍：V8是谷歌开源高性能JavaScript和WebAssembly引擎，用C++编写。它主要用在Chrome和Node.js中，等等。</p>
+<p>简单的来说，我们知道，JavaScript是解释型的语言，需要逐行解释执行<br>V8则是一种C++开发的JavaScript解释器，它将JavaScript编译成可执行代码，即机器码。</p>
+<h2 id="1-V8工作流程概述"><a href="#1-V8工作流程概述" class="headerlink" title="1. V8工作流程概述"></a>1. V8工作流程概述</h2><p>JavaScript是解释型的语言，解释型的语言先天就有执行效率上的不足。为此，V8引擎同时采用了解释执行和编译执行这两种方式，也就是在解释执行的同时进行编译，这种方式称为<strong>JIT (Just in Time) 即时编译</strong>。</p>
+<p><strong>解释执行</strong>：V8在执行JavaScript源码时，会先通过解析器Parser将源码解析成AST，解释器Ignition会将AST转化为字节码，一边解释一遍执行。</p>
+<p><strong>即时编译</strong>：Ignition同时会记录某一代码片段的执行次数，如果执行次数超过了某个阈值，这段代码便会被标记为热点代码(HotSpot)，同时将运行信息反馈给<strong>优化编译器TurboFan</strong>，会将这部分热点代码的字节码优化并编译，生成机器码更高效地运行。</p>
+<pre class="mermaid">graph LR
+  源代码 --Parser--> AST
+  AST --Ignition--> 字节码
+  字节码 --Ignition--> 逐行解释为机器码执行
+  字节码 -.Ignition高频执行.-> HotSpot
+  HotSpot --TurboFan--> 编译为机器码执行</pre>
+
+<h3 id="1-1-Parser-解析器-生成语法抽象树（AST）"><a href="#1-1-Parser-解析器-生成语法抽象树（AST）" class="headerlink" title="1.1 Parser 解析器 生成语法抽象树（AST）"></a>1.1 Parser 解析器 生成语法抽象树（AST）</h3><p>生成AST中的一个优化是惰性解析(Lazy Parsing)，因为源码在执行前如果全部完全解析的话，不仅执行时间过长，而且会消耗更多的内存。<br>惰性解析就是指如果遇到并不是立即执行的函数，只会对其进行预解析(Pre-Parser)，当函数被调用时，才会对其完全解析。<br>预解析时，只会验证函数的语法是否有效、解析函数声明以及确定函数作用域，并不会生成AST，这项工作由Pre-Parser预解析器完成。</p>
+<h3 id="1-2-Ignition-解释器-生成字节码及解释执行"><a href="#1-2-Ignition-解释器-生成字节码及解释执行" class="headerlink" title="1.2 Ignition 解释器 生成字节码及解释执行"></a>1.2 Ignition 解释器 生成字节码及解释执行</h3><p>Ignition 是 V8 的解释器，负责生成和执行字节码。字节码与平台无关，也就是说无论 X86 架构或 ARM 架构，同一份 JavaScript 源码生成的字节码序列是相同的，解释器逐条读取字节码并执行。</p>
+<p>字节码是机器码的抽象，可以看作是小型的构建块。相比机器码，字节码不仅占用内存少，而且生成字节码的时间很快，提升了启动速度。</p>
+<h3 id="1-3-Turbofan-优化编译器-对部分代码直接编译执行"><a href="#1-3-Turbofan-优化编译器-对部分代码直接编译执行" class="headerlink" title="1.3 Turbofan 优化编译器 对部分代码直接编译执行"></a>1.3 Turbofan 优化编译器 对部分代码直接编译执行</h3><p>Turbofan 是 V8 的优化编译器，它使 JavaScript 执行的更快，但比Ignition需要更多的编译时间，所以 V8 只对热点代码（HotCode）使用 Turbofan。</p>
+<p>JavaScript 代码先由 Ignition 执行，并判断当该代码片段执行次数达到设定值时变为热点代码，由TurboFan把它编译为更高效的机器码储存起来，等到下次再执行到这段代码时，就会用现在的机器码替换原来的字节码进行执行，这样大大提升了代码的执行效率。</p>
+<h2 id="2-V8工作流程中一些具体实现"><a href="#2-V8工作流程中一些具体实现" class="headerlink" title="2.  V8工作流程中一些具体实现"></a>2.  V8工作流程中一些具体实现</h2><h3 id="2-1-隐藏类-JavaScript-动态类型"><a href="#2-1-隐藏类-JavaScript-动态类型" class="headerlink" title="2.1 隐藏类  JavaScript 动态类型"></a>2.1 隐藏类  JavaScript 动态类型</h3><p>我们知道，JavaScript是动态类型语言，运行时数据类型会发生变化。V8 采用 C++ 编写，C++ 是强类型语言，要求类型确定。类型确定的 C++ 是如何表达类型不确定的 JavaScript 呢？</p>
+<p>答案是：C++ 申请一块内存，这块是 JavaScript 的一个对象，并约定这块内存的开始位置保存内存的解读方式，操作这块内存之前先查解读方法，通过改变解读方式来模拟 JavaScript 对象的动态变化。</p>
+<p>具体来说：操作 JS 数据前先查询类型，再操作。为此，V8采用了隐藏类（Hidden Class），因为 JavaScript 程序员看不到这个 class，所以称为隐藏类。注意： 隐藏类的术语是 Map，它的含义是地图，说明如何解读内存，不是 JavaScript Map 机制。</p>
+<p>V8通过查询存储空间的第一个位置，就可以找到Map。这个Map大小是80byte，存储信息的格式与位置也是固定的，存储信息包括：JavaScript 对象的存储空间有哪些成员，成员类型，成员偏移地址等。所以说，Map 就是地图。</p>
+<h3 id="2-2-Inline-Cache-内联缓存"><a href="#2-2-Inline-Cache-内联缓存" class="headerlink" title="2.2 Inline Cache 内联缓存"></a>2.2 Inline Cache 内联缓存</h3><p>我们已经知道，V8在查找对象的属性（例如obj.x）时流程是这样的：查找对象 obj 的隐藏类，再通过隐藏类查找 x 属性偏移量，然后根据偏移量获取属性值。</p>
+<p>我们把上面这个获取 x 属性偏移量的过程称为寻址方法。</p>
+<p>简单的来说：IC负责缓存对象的寻址方法，下次执行该函数时，直接使用寻址方法（V8 中的术语是 Handler），节省了计算寻址方法的时间。</p>
+<h2 id="3-如何编写优化的-JavaScript"><a href="#3-如何编写优化的-JavaScript" class="headerlink" title="3. 如何编写优化的 JavaScript"></a>3. 如何编写优化的 JavaScript</h2><h3 id="3-1-隐藏类"><a href="#3-1-隐藏类" class="headerlink" title="3.1 隐藏类"></a>3.1 隐藏类</h3><p>我们已经知道，V8 通过查询 Map，可以知道存储空间内存放了什么，怎么存放的，进而正确操作该对象。</p>
+<p>例如有以下代码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Point</span>(<span class="params">x,y</span>) &#123; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">x</span> = x; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">y</span> = y; </span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">const</span> obj = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<p>一旦声明了一个新的方法实例，Javascript就会创建一个隐藏类C0。</p>
+<p><img src="http://pic.yupoo.com/syra-ti/75020ec7/de92f2f8.png" alt="image-20220609100921408"></p>
+<p>在此时还没有声明任何的属性，所以C0现在为空。<br>一旦第一个语句“this.x&#x3D;x”被执行，V8将会基于C0创建第二个隐藏类C1。C1记录了可以找到属性x在内存中的位置。</p>
+<p>在这个例子中，x保存在偏移量为0的位置，这表示可以将一个内存中的对象目标看作是一段连续的空间。而这段空间中的第一段偏移代表着属性x。与此同时，V8将会用“类偏移”操作更新C0，这代表着属性x已经添加到了目标对象。之后，目标对象所对应的隐藏类指针将指向C1。</p>
+<p><img src="http://pic.yupoo.com/syra-ti/3a28213c/1b25a842.png" alt="image-20220609101620685"></p>
+<p>每当目标对象添加一个新的属性，对象的旧的隐藏类就会变换路径到一个新的隐藏类。隐藏类的重要之处在于可以使经过相同创建过程创建的对象共享隐藏类。假如两个对象共享一个隐藏类，并向两个对象中同时添加相同的属性，那么这种变换将会保证变换后得到相同的隐藏类，这样代码就得到了优化。<br>当“this.y&#x3D;y”执行时将重复上面的操作。一个新的叫C2的隐藏类将被创建，然后对C1进行类变换表明属性y已经添加到了目标对象，最后将隐藏类指向C2。这样目标对象的隐藏类就更新到了C2。</p>
+<p><img src="http://pic.yupoo.com/syra-ti/d68b4140/4943fa23.png" alt="image-20220609102128520"></p>
+<p>注意：隐藏类的变换取决于对目标对象的属性添加顺序。请注意下面的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Point</span>(<span class="params">x,y</span>) &#123; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">x</span> = x; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">y</span> = y;</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">var</span> obj1 = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">var</span> obj2 = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line"><span class="comment">// 至此为止 obj1和obj2都共享同一个隐藏类</span></span><br><span class="line">obj1.<span class="property">a</span> = <span class="number">5</span>; </span><br><span class="line">obj1.<span class="property">b</span> = <span class="number">10</span>; </span><br><span class="line">obj2.<span class="property">b</span> = <span class="number">10</span>; </span><br><span class="line">obj2.<span class="property">a</span> = <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
+
+
+<p>直到第6行为止，obj1和obj2都共享同一个隐藏类。但是，当属性a和b以相反的顺序添加到了两个对象中，这导致最后两个对象以不同的变换路径产生了两个不同的的隐藏类。</p>
+<p><img src="http://pic.yupoo.com/syra-ti/845431d8/0c995993.png" alt="image-20220609103423223"></p>
+<p><strong>因此，隐藏类更希望开发者不要频繁添加对象的属性，更希望对象的属性实例化顺序是固定的。像上述的例子，希望你只按照相同的顺序添加属性，先添加a，后添加b，这样obj1与obj2就可以共享同一个隐藏类。如果经常毫无规律的变动对象的内部成员，就会保存越来越多的隐藏类，带来不必要的性能开销。</strong></p>
+<h3 id="3-2-Inline-Cache"><a href="#3-2-Inline-Cache" class="headerlink" title="3.2 Inline Cache"></a>3.2 Inline Cache</h3><p>inline cache 提升了 JavaScript 的运行性能，但对于使用次数较少的 JavaScript 函数使用 inline cache 不会带来太多的性能，反而影响 V8 的性能。因此 V8 规定，函数调用次数超过 8 次时才开启 inline cache。<br>例如有以下函数：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getfoo</span>(<span class="params">obj</span>)&#123;</span><br><span class="line"> <span class="keyword">return</span> obj.<span class="property">foo</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> o1 = &#123;<span class="string">&quot;x&quot;</span>:<span class="number">42</span>,<span class="string">&quot;y&quot;</span>:<span class="number">43</span>,<span class="string">&quot;foo&quot;</span>,<span class="string">&quot;41&quot;</span>&#125;;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++)&#123;</span><br><span class="line"> <span class="title function_">getfoo</span>(o1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行getfoo时，V8会先读取obj的Map，找到foo的偏移量，然后才能获取foo。 当运行超过8次时，obj.foo的寻址方法会被缓存。</p>
+<p><strong>所以inline cache更希望开发者不要变动o1的结构，更希望开发者对 o1 的读写操作是固定的。具体在本例中，希望你只对 foo 操作，inline cache 只需保存属性 foo 的寻址方式即可，如果经常变动o1的内部成员，inline cache就会保存越来越多的寻址方法，并且增加很多不必要的判断过程。影响性能。</strong></p>
+<h3 id="3-3-TurboFan"><a href="#3-3-TurboFan" class="headerlink" title="3.3 TurboFan"></a>3.3 TurboFan</h3><p>TurboFan将字节码编译为机器码并存储起来执行，来使得JavaScript运行的更快，但相比解释执行也需要更多的首次编译时间，这也是为什么V8只针对热点代码使用TurboFan。</p>
+<p>TurboFan不希望程序的行为发生变化，例如我们有以下代码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">add</span>(<span class="params">x,y</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> x+y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add</span>(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add</span>(<span class="string">&quot;hello &quot;</span>, <span class="string">&quot;world&quot;</span>));</span><br></pre></td></tr></table></figure>
+<p>我们知道 add() 是多态的，可以传入多种类型的参数。但是灵活也就意味着效率不高，需要判断类型，越界检测等等…</p>
+<p>Turbofan 针对 add(1,2) 优化时，它笃定你的 add() 只用于整数加法运行，把其编译为本地机器码的加法运算，去掉了各种不必要的判断。针对 add(“hello “,”world”) 优化时，TurboFan会把其编译为字符串的拼接操作。add() 的多态方便了开发者，减少了代码量，<strong>但如果 add() 毫无规律地在不同操作数之间使用，会导致TurboFan编译更多的时间，存储更多的机器码，优化效果很差，所以 Turbofan 不希望程序行为变化。</strong></p>
+<h2 id="优化建议"><a href="#优化建议" class="headerlink" title="优化建议"></a>优化建议</h2><ol>
+<li>对象属性： 以相同顺序实例化对象的成员，以便于共享隐藏类。</li>
+<li>对象结构： 不要变动对象的结构，减少寻址方法内联缓存造成的额外开销。</li>
+<li>无规律的程序行为：减少无规律的程序行为，例如随意的多态调用，减少turbofan编译和存储机器码的额外开销。</li>
+<li>可复用的方法：方法尽量复用，提高使用频次，增加热点代码，使turbofan能够介入进行编译运行，提高程序运行效率</li>
+</ol>
+<hr>
+<h2 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h2><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/514716577">《Chrome V8 源码》55. 优化技术综述，如何提升 JS 运行速度
+</a></li>
+<li><a href="https://blog.sessionstack.com/how-javascript-works-inside-the-v8-engine-5-tips-on-how-to-write-optimized-code-ac089e62b12e">How JavaScript works: inside the V8 engine + 5 tips on how to write optimized code</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/469962133">V8中的隐藏类（Hidden Classes）和内联缓存（Inline Caching）
+</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/491369553">浅析V8引擎，让你更懂JavaScript！
+</a></li>
+</ol>
+<p>以上！まいど～</p>
+<hr>
+]]></content>
+      <tags>
+        <tag>v8</tag>
+        <tag>javascript</tag>
+        <tag>node.js</tag>
+        <tag>chrome</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用canvas实现图片压缩</title>
+    <url>/2017/11/09/%E4%BD%BF%E7%94%A8canvas%E5%AE%9E%E7%8E%B0%E5%9B%BE%E7%89%87%E5%8E%8B%E7%BC%A9.html</url>
+    <content><![CDATA[<h2 id="原文链接-https-segmentfault-com-a-1190000009308553"><a href="#原文链接-https-segmentfault-com-a-1190000009308553" class="headerlink" title="原文链接 https://segmentfault.com/a/1190000009308553"></a>原文链接 <a href="https://segmentfault.com/a/1190000009308553">https://segmentfault.com/a/1190000009308553</a></h2><p>那，首先通过<code>URL.createObjectURL(file)</code>从file对象直接取得了图片的地址</p>
+<p>前面就不详细说了，开始压缩咯 ( ´ ▽ &#96; )ﾉ</p>
+<p>噢，有个注意点:</p>
+<p>每次调用<code>createObjectURL</code>的时候，一个新的URL对象就被创建了，即使是同一个file对象，也会创建一个新对URL对象，所以，为了最佳性能和内存使用，当不再需要这个对象的时候要<code>URL.revokeObjectURL()</code>释放它。</p>
+<p>开始压缩</p>
+<p>创建一个<code>compressImage</code>函数，将之图片的地址url作参数传入：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">compressImage (url) &#123;</span><br><span class="line">	<span class="keyword">let</span> cvs = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;canvas&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> ctx = cvs.<span class="title function_">getContext</span>(<span class="string">&#x27;2d&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> img = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Image</span>()</span><br><span class="line">	img.<span class="property">src</span> = url</span><br><span class="line">	img.<span class="property">onload</span> = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">		cvs.<span class="property">width</span> = img.<span class="property">width</span></span><br><span class="line">		cvs.<span class="property">height</span> = img.<span class="property">height</span></span><br><span class="line">		<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">			ctx.<span class="title function_">drawImage</span>(img, <span class="number">0</span>, <span class="number">0</span>, cvs.<span class="property">width</span>, cvs.<span class="property">height</span>)</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">newImageData</span> = cvs.<span class="title function_">toDataURL</span>(<span class="string">&#x27;image/jpeg&#x27;</span>, <span class="number">0.1</span>)</span><br><span class="line">	    &#125;, <span class="number">0</span>)</span><br><span class="line">	    <span class="variable language_">this</span>.<span class="property">showPreviewer</span> = <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里说说</p>
+<p><code>canvas.toDataURL(type, encoderOptions)</code><br><code>HTMLCanvasElement.toDataURL()</code>方法接受两个参数，<code>type</code>和<code>encoderOptions</code></p>
+<p><code>type</code>是可选的，图片格式，默认是 <code>image/png</code>，<code>encoderOptions</code>表示图片质量， 在<code>type</code>为<code>image/jpeg</code> 或 <code>image/webp</code>时可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 <code>0.92</code>。其他参数会被忽略。</p>
+<p><code>toDataURL()</code>返回的是<code>base64</code>字符串，如果要转成2进制</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">convertToBinary (dataURI) &#123;</span><br><span class="line">	<span class="keyword">let</span> byteString = <span class="variable language_">window</span>.<span class="title function_">atob</span>(dataURI.<span class="title function_">split</span>(<span class="string">&#x27;,&#x27;</span>)[<span class="number">1</span>])</span><br><span class="line">	<span class="keyword">let</span> ab = <span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>(byteString.<span class="property">length</span>)</span><br><span class="line">	<span class="keyword">let</span> ia = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(ab)</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; byteString.<span class="property">length</span>; i++) &#123;</span><br><span class="line">		ia[i] = byteString.<span class="title function_">charCodeAt</span>(i)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">let</span> bb = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Blob</span>([ ab ])</span><br><span class="line">	<span class="keyword">return</span> bb</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果：由iphone6所拍摄的图片上传，由平均1.9M左右压缩至170k</p>
+<p><em>･゜ﾟ･</em>:.｡..｡.:<em>･’(<em>ﾟ▽ﾟ</em>)’･</em>:.｡. .｡.:<em>･゜ﾟ･</em></p>
+<p>再见<br>5月5日发布</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>关于Ajax跨域访问 session不能保存或之后无法访问session取值为空等问题</title>
+    <url>/2017/09/26/%E5%85%B3%E4%BA%8EAjax%E8%B7%A8%E5%9F%9F%E8%AE%BF%E9%97%AE-session%E4%B8%8D%E8%83%BD%E4%BF%9D%E5%AD%98%E6%88%96%E4%B9%8B%E5%90%8E%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AEsession%E5%8F%96%E5%80%BC%E4%B8%BA%E7%A9%BA%E7%AD%89%E9%97%AE%E9%A2%98.html</url>
+    <content><![CDATA[<h4 id="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"><a href="#根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。" class="headerlink" title="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"></a>根据浏览器的保护规则，<strong>跨域的时候我们创建的sessionId是不会被浏览器保存下来的</strong>，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。</h4><p>在ajax 请求要加配置</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$.<span class="title function_">ajax</span>(&#123;</span><br><span class="line">	<span class="attr">url</span>:url,</span><br><span class="line">	<span class="comment">//加上 xhrFields及crossDomain</span></span><br><span class="line">	<span class="attr">xhrFields</span>: &#123;</span><br><span class="line">		<span class="comment">//允许带上凭据</span></span><br><span class="line">        <span class="attr">withCredentials</span>: <span class="literal">true</span></span><br><span class="line">	&#125;,</span><br><span class="line">       <span class="attr">crossDomain</span>: <span class="literal">true</span>,</span><br><span class="line">       <span class="comment">//以上</span></span><br><span class="line">	<span class="attr">success</span>:<span class="keyword">function</span>(<span class="params">result</span>)&#123;</span><br><span class="line">		<span class="title function_">alert</span>(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">error</span>:<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="关于-withCredentials"><a href="#关于-withCredentials" class="headerlink" title="关于 withCredentials"></a>关于 withCredentials</h3><blockquote>
+<p><strong>withCredentials：</strong><br>默认情况下，跨源请求不提供凭据(cookie、HTTP认证及客户端SSL证明等)。通过将withCredentials属性设置为true，可以指定某个请求应该发送凭据。如果服务器接收带凭据的请求，会用下面的HTTP头部来响应。</p>
+</blockquote>
+<blockquote>
+<p><em>“Access-Control-Allow-Credentials: true”</em></p>
+</blockquote>
+<blockquote>
+<p>如果发送的是带凭据的请求，但服务器的相应中没有包含上面这个头部，那么浏览器就不会把相应交给JavaScript(于是，responseText中将是空字符串，status的值为0，而且会调用onerror()事件处理程序)。另外，服务器还可以在Preflight响应中发送这个HTTP头部，表示允许源发送带凭据的请求。</p>
+</blockquote>
+<blockquote>
+<p>支持withCredentials属性的浏览器有Firefox 3.5+、Safari 4+和Chrome。IE10及更早版本都不支持。<br>同时</p>
+</blockquote>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>在添加基本的允许跨域响应头之后<br>需要添加 Access-Allow-Credentials:true<br>另外由于谷歌的安全策略<br>当withCredentials 为 true 时<br>ResponseHeader中的 Access-Allow-Origin 不能使用通配符 ‘*’<br>否则会提示</p>
+<blockquote>
+<p>A wildcard ‘*’ cannot be used in the ‘Access-Control-Allow-Origin’ header when the credentials flag is true. Origin ‘<a href="http://url&/#39;">http://url&#39;</a> is therefore not allowed access.</p>
+</blockquote>
+<p>其他浏览器待测试</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>关于CSS选择器书写正确浏览器却不认的一个原因</title>
+    <url>/2020/03/26/%E5%85%B3%E4%BA%8ECSS%E9%80%89%E6%8B%A9%E5%99%A8%E4%B9%A6%E5%86%99%E6%AD%A3%E7%A1%AE%E6%B5%8F%E8%A7%88%E5%99%A8%E5%8D%B4%E4%B8%8D%E8%AE%A4%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8E%9F%E5%9B%A0.html</url>
+    <content><![CDATA[<blockquote>
+<p>不想看原因的，可以直接跳到页尾看解决方案</p>
+</blockquote>
+<p><strong>今天在写样式的时候出现不生效的问题，选择器是正确的，使用jquery也能正常选择到，但是浏览器就是不识别这一段样式。</strong></p>
+<p><em>问题样式 ↓</em><br><img src="https://img-blog.csdnimg.cn/20200326102440376.png" alt="问题样式"><br><em>jQuery能选择到 ↓</em><br><img src="https://img-blog.csdnimg.cn/20200326102815730.png" alt="jQuery能选择到"></p>
+<p><em>然而Chrome的开发者工具里面根本没有出现这一行 ↓</em><br><img src="https://img-blog.csdnimg.cn/20200326102544543.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw,size_16,color_FFFFFF,t_70" alt="Chrome不识别"></p>
+<hr>
+<p><strong>排查到最后尝试删除了选择器末尾的空格，发现居然神奇的被识别了。。。。</strong></p>
+<p><em>删除末尾空格 ↓</em><br><img src="https://img-blog.csdnimg.cn/20200326103031581.png" alt="删除空格"><br><em>识别成功 ↓</em><br><img src="https://img-blog.csdnimg.cn/20200326103217265.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw,size_16,color_FFFFFF,t_70" alt="识别成功"></p>
+<hr>
+<p>问题是解决了，但是奇了怪了，以前好像从来没有被末尾空格影响过啊，同文件里其他末尾空格也没影响到样式识别啊？</p>
+<p>直觉告诉我是不是BOM头类似的问题，是其他的不可见字符导致的？</p>
+<p>于是乎原样复制了问题样式末尾的的空格，转成unicode查看，果然。。。。</p>
+<p><img src="https://img-blog.csdnimg.cn/20200326105101412.png" alt="空格转Unicode"><br>可以看到 <code>两个空格+一个大括号</code> 一共三个字符，unicode分别为 160、32、123，果然两个空格不是一伙的！</p>
+<p>查阅了Unicode表，发现</p>
+<ul>
+<li>Unicode 32，是普通空格 —— 就是在末尾会被忽略的那种；</li>
+<li>Unicode 160，是No-break Space —— 也就是我们熟知的&amp;nbsp; 这个放在选择器末尾是会被浏览器识别的！</li>
+</ul>
+<p>这就导致了<code>.mini-buttonedit-border</code>变成了<code>.mini-buttonedit-border&amp;nbsp;</code> 当然就没法对应到元素上了！</p>
+<hr>
+<p>事出有因，这段css是在Chrome的开发者工具调整好选中直接复制出来的，相信很多人这么干过↓<br><img src="https://img-blog.csdnimg.cn/20200326105853418.png" alt="在开发者工具选中复制"><br>有可能复制的时候会带有&amp;nbsp;字符，现在要注意了。。。</p>
+<hr>
+<h2 id="所以-解决方案就是：→删掉选择器末尾空格←"><a href="#所以-解决方案就是：→删掉选择器末尾空格←" class="headerlink" title="所以 解决方案就是：→删掉选择器末尾空格←"></a>所以 解决方案就是：→删掉选择器末尾空格←</h2><h5 id="PS：不一定是花括号前面那个，理论上每个空格都有可能出现这个问题，如果删去花括号前面的还有问题，可以尝试把前面的空格都重新打一遍。"><a href="#PS：不一定是花括号前面那个，理论上每个空格都有可能出现这个问题，如果删去花括号前面的还有问题，可以尝试把前面的空格都重新打一遍。" class="headerlink" title="PS：不一定是花括号前面那个，理论上每个空格都有可能出现这个问题，如果删去花括号前面的还有问题，可以尝试把前面的空格都重新打一遍。"></a>PS：不一定是花括号前面那个，理论上每个空格都有可能出现这个问题，如果删去花括号前面的还有问题，可以尝试把前面的空格都重新打一遍。</h5><p><br><br><br></p>
+<p>以上，如果有什么问题欢迎在下面评论，我会及时回复www</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>关于For循环中进行异步操作索引不正确的处理方式</title>
+    <url>/2017/11/28/%E5%85%B3%E4%BA%8EFor%E5%BE%AA%E7%8E%AF%E4%B8%AD%E8%BF%9B%E8%A1%8C%E5%BC%82%E6%AD%A5%E6%93%8D%E4%BD%9C%E7%B4%A2%E5%BC%95%E4%B8%8D%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F.html</url>
+    <content><![CDATA[<h3 id="code-问题代码"><a href="#code-问题代码" class="headerlink" title="code 问题代码"></a>code 问题代码</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) &#123;</span><br><span class="line">        <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;index is :&quot;</span>, i);</span><br><span class="line">        &#125;, <span class="number">1000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">test</span>();</span><br></pre></td></tr></table></figure>
+<h3 id="output-问题输出"><a href="#output-问题输出" class="headerlink" title="output 问题输出"></a>output 问题输出</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="solution-使用自执行函数"><a href="#solution-使用自执行函数" class="headerlink" title="solution 使用自执行函数"></a>solution 使用自执行函数</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) &#123;</span><br><span class="line">        (<span class="keyword">function</span>(<span class="params">i</span>)&#123;</span><br><span class="line">	        <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">	            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;index is :&quot;</span>, i);</span><br><span class="line">	        &#125;, <span class="number">1000</span>)</span><br><span class="line">        &#125;)(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">test</span>();</span><br></pre></td></tr></table></figure>
+
+<h3 id="output-正确输出"><a href="#output-正确输出" class="headerlink" title="output 正确输出"></a>output 正确输出</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">index is : <span class="number">0</span></span><br><span class="line">index is : <span class="number">1</span></span><br><span class="line">index is : <span class="number">2</span></span><br><span class="line">index is : <span class="number">3</span></span><br><span class="line">index is : <span class="number">4</span></span><br></pre></td></tr></table></figure>
+
+
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>关于Group By 单个和多个字段</title>
+    <url>/2019/10/31/%E5%85%B3%E4%BA%8EGroup-By-%E5%8D%95%E4%B8%AA%E5%92%8C%E5%A4%9A%E4%B8%AA%E5%AD%97%E6%AE%B5.html</url>
+    <content><![CDATA[<p><strong>在MYSQL中使用GROUP BY对表中的数据进行分组时：</strong><br><strong>单个字段：</strong> GROUP BY X意思是将所有具有相同X字段值的记录放到一个分组里，<br><strong>多个字段：</strong> GROUP BY X, Y意思是将所有具有相同X字段值和Y字段值的记录放到一个分组里。</p>
+<p>参考文章：</p>
+<blockquote>
+<p><a href="https://blog.csdn.net/u010178308/article/details/77651560">MYSQL  GROUP BY 对多个字段进行分组 - Acettest’s Blogs - CSDN博客</a></p>
+</blockquote>
+<p>有什么问题欢迎在下面评论，我会及时回复www</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>关于ajaxFileUpload造成 input[type=file] change事件只能触发一次的问题</title>
+    <url>/2017/08/18/%E5%85%B3%E4%BA%8EajaxFileUpload%E9%80%A0%E6%88%90-input-type-file-change%E4%BA%8B%E4%BB%B6%E5%8F%AA%E8%83%BD%E8%A7%A6%E5%8F%91%E4%B8%80%E6%AC%A1%E7%9A%84%E9%97%AE%E9%A2%98.html</url>
+    <content><![CDATA[<h4 id="现在发现的问题"><a href="#现在发现的问题" class="headerlink" title="现在发现的问题"></a>现在发现的问题</h4><p>通过js绑定的<code>input[type=file]</code> <code>change</code>事件只能触发一次</p>
+<h4 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h4><p>该问题并不是由change事件失效造成的，而是ajaxFileUpload插件造成的，它会把原来的file元素替换成新的file元素，所以之前绑定的change事件就失效了，需要重新绑定一下</p>
+<p>除了重新绑定以外，如果是使用<code>$fileInput.trigger(&#39;click&#39;)</code> 方式，失效原因是<code>$fileInput</code>仍指向旧元素，替代方案分为以下两步</p>
+<ol>
+<li>首先将ajaxFileUpload源码中<code>$(oldElement).clone()</code>（有些版本中为<code>jQuery(oldElement).clone()</code>）改为<code>$(oldElement).clone(true)</code> 这样可以在复制元素的同时复制事件</li>
+<li>将<code>$fileInput.trigger(&#39;click&#39;)</code> 改为 <code>$(&#39;#id&#39;).trigger(&#39;click&#39;)</code>对保证新元素进行trigger而不是旧元素</li>
+</ol>
+<p>如果你想要知道具体原因，请往下看</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * ajaxFileUpload源码</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"> <span class="comment">// 原input[type=file] </span></span><br><span class="line"> <span class="keyword">var</span> oldElement = $(<span class="string">&#x27;#&#x27;</span> + fileElementId);</span><br><span class="line"> <span class="comment">// clone一份新元素 此处需要添加true为参数 即上文第一步所提到的 复制元素的同时复制事件</span></span><br><span class="line"> <span class="keyword">var</span> newElement = $(oldElement).<span class="title function_">clone</span>(<span class="literal">true</span>);</span><br><span class="line"> <span class="comment">// 修改旧元素的id</span></span><br><span class="line"> $(oldElement).<span class="title function_">attr</span>(<span class="string">&#x27;id&#x27;</span>, fileId);</span><br><span class="line"> <span class="comment">// 将新元素放在旧元素的位置</span></span><br><span class="line"> $(oldElement).<span class="title function_">before</span>(newElement);</span><br><span class="line"> <span class="comment">// 将旧元素移动到目标表单</span></span><br><span class="line"> $(oldElement).<span class="title function_">appendTo</span>(form);</span><br><span class="line"> <span class="comment">// 设置表单样式</span></span><br><span class="line"> $(form).<span class="title function_">css</span>(<span class="string">&#x27;position&#x27;</span>, <span class="string">&#x27;absolute&#x27;</span>);</span><br><span class="line"> $(form).<span class="title function_">css</span>(<span class="string">&#x27;top&#x27;</span>, <span class="string">&#x27;-1200px&#x27;</span>);</span><br><span class="line"> $(form).<span class="title function_">css</span>(<span class="string">&#x27;left&#x27;</span>, <span class="string">&#x27;-1200px&#x27;</span>);</span><br><span class="line"> $(form).<span class="title function_">appendTo</span>(<span class="string">&#x27;body&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>所以提交完后 原来上传的位置实际已经被newElement替代 但是如果在上传之前就指定了变量指向原input[type&#x3D;file] ，那么上传之后将依旧指向oldElement（其实已经在表单里）,此时trigger会生效，但是该元素实际已经被ajaxFileUpload所删除 ,只存在于内存中，change事件似乎不会生效了（此处原因不详，如果知晓请告诉我）</p>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><h3 id="1-（治标）将change事件写为内联onchange-quot-func-quot-形式"><a href="#1-（治标）将change事件写为内联onchange-quot-func-quot-形式" class="headerlink" title="1.（治标）将change事件写为内联onchange=&quot;func()&quot;形式"></a>1.（治标）将change事件写为内联<code>onchange=&quot;func()&quot;</code>形式</h3><h3 id="2-（治标）将change事件重新绑定"><a href="#2-（治标）将change事件重新绑定" class="headerlink" title="2.（治标）将change事件重新绑定"></a>2.（治标）将change事件重新绑定</h3><h3 id="3-（推荐-治本）将ajaxFileUpload内-oldElement-clone-添加true为参数后-将-fileInput-trigger-39-click-39-改为-39-id-39-trigger-39-click-39"><a href="#3-（推荐-治本）将ajaxFileUpload内-oldElement-clone-添加true为参数后-将-fileInput-trigger-39-click-39-改为-39-id-39-trigger-39-click-39" class="headerlink" title="3.（推荐 治本）将ajaxFileUpload内$(oldElement).clone()添加true为参数后 将$fileInput.trigger(&#39;click&#39;) 改为 $(&#39;#id&#39;).trigger(&#39;click&#39;)"></a>3.（推荐 治本）将ajaxFileUpload内<code>$(oldElement).clone()</code>添加true为参数后 将<code>$fileInput.trigger(&#39;click&#39;)</code> 改为 <code>$(&#39;#id&#39;).trigger(&#39;click&#39;)</code></h3><hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>关于mui Div模式选项卡 JS主动触发切换指定选项卡</title>
+    <url>/2017/11/07/%E5%85%B3%E4%BA%8Emui-Div%E6%A8%A1%E5%BC%8F%E9%80%89%E9%A1%B9%E5%8D%A1-JS%E4%B8%BB%E5%8A%A8%E8%A7%A6%E5%8F%91%E5%88%87%E6%8D%A2%E6%8C%87%E5%AE%9A%E9%80%89%E9%A1%B9%E5%8D%A1.html</url>
+    <content><![CDATA[<h3 id="需要先触发touchstart事件（旧版本需要先触发mousedown事件）"><a href="#需要先触发touchstart事件（旧版本需要先触发mousedown事件）" class="headerlink" title="需要先触发touchstart事件（旧版本需要先触发mousedown事件）"></a>需要先触发touchstart事件（旧版本需要先触发mousedown事件）</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">mui.<span class="title function_">trigger</span>($(<span class="string">&#x27;.mui-tab-item&#x27;</span>).<span class="title function_">eq</span>(<span class="number">1</span>)[<span class="number">0</span>],<span class="string">&#x27;touchstart&#x27;</span>);</span><br><span class="line">mui.<span class="title function_">trigger</span>($(<span class="string">&#x27;.mui-tab-item&#x27;</span>).<span class="title function_">eq</span>(<span class="number">1</span>)[<span class="number">0</span>],<span class="string">&#x27;tap&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="源代码尚未研究-以上为解决方案"><a href="#源代码尚未研究-以上为解决方案" class="headerlink" title="源代码尚未研究 以上为解决方案"></a>源代码尚未研究 以上为解决方案</h3><h4 id="2018-3-30-PS-发现好像只要改一下mui-active就行了？（扶额）"><a href="#2018-3-30-PS-发现好像只要改一下mui-active就行了？（扶额）" class="headerlink" title="2018-3-30 PS: 发现好像只要改一下mui-active就行了？（扶额）"></a>2018-3-30 PS: 发现好像只要改一下mui-active就行了？（扶额）</h4><h4 id="2018-4-25-PS-最简单的方式是改变item和切换目标的mui-active"><a href="#2018-4-25-PS-最简单的方式是改变item和切换目标的mui-active" class="headerlink" title="2018-4-25 PS: 最简单的方式是改变item和切换目标的mui-active"></a>2018-4-25 PS: 最简单的方式是改变item和切换目标的mui-active</h4><hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>关于vue-cli4无法配置自定义devtool选项的问题</title>
+    <url>/2021/10/26/%E5%85%B3%E4%BA%8Evue-cli4%E6%97%A0%E6%B3%95%E9%85%8D%E7%BD%AE%E8%87%AA%E5%AE%9A%E4%B9%89devtool%E9%80%89%E9%A1%B9%E7%9A%84%E9%97%AE%E9%A2%98.html</url>
+    <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在<code>vue.config.js</code>中无法配置自定义<code>devtool</code>选项，无论是使用<code>configureWebpack</code>还是<code>chainWebpack</code>都无法改变<code>source-map</code>的类型。官方文档也没有提供相关的说明。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// vue.config.js</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Components</span> = <span class="built_in">require</span>(<span class="string">&#x27;unplugin-vue-components/webpack&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">ElementPlusResolver</span> &#125; = <span class="built_in">require</span>(<span class="string">&#x27;unplugin-vue-components/resolvers&#x27;</span>)</span><br><span class="line"><span class="comment">// 两种方式均无法更改devtool</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">configureWebpack</span>: &#123;</span><br><span class="line">    <span class="attr">devtool</span>: <span class="string">&quot;source-map&quot;</span>,</span><br><span class="line">    <span class="comment">// 2021.10.26更新 ↓罪魁祸首</span></span><br><span class="line">    <span class="attr">plugins</span>: [</span><br><span class="line">      <span class="title class_">Components</span>(&#123;</span><br><span class="line">        <span class="attr">resolvers</span>: [<span class="title class_">ElementPlusResolver</span>()]</span><br><span class="line">      &#125;)</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">chainWebpack</span>: <span class="function"><span class="params">config</span> =&gt;</span> &#123;</span><br><span class="line">    config</span><br><span class="line">      .<span class="title function_">devtool</span>(<span class="string">&#x27;source-map&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p><strong>2021.10.26更新</strong>： 问题产生的原因不是<code>vue-cli</code>，而是<code>element-ui</code>提供的按需加载插件<code>unplugin-vue-components/resolvers</code>破坏了sourcemap，具体的原因不清楚，似乎插件作者也不是很有<code>sourcemap</code>方面的开发意愿。 总之遇到这个问题的话看一看有没有这个玩应吧。<br><img src="https://img-blog.csdnimg.cn/e7165c44fff043758752a54008586582.png" alt="在这里插入图片描述"></p>
+<hr>
+<h3 id="本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x-下面的都可以不用看了"><a href="#本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x-下面的都可以不用看了" class="headerlink" title="本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x 下面的都可以不用看了"></a>本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x 下面的都可以不用看了</h3><p><del><code>vue-cli</code>在<code>npm run serve</code>时强制使用了<code>&#39;eval-cheap-module-source-map&#39;</code></del></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @vue/cli-service/lib/commands/serve.js</span></span><br><span class="line"><span class="comment">// line: 51</span></span><br><span class="line"> api.<span class="title function_">chainWebpack</span>(<span class="function"><span class="params">webpackConfig</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (process.<span class="property">env</span>.<span class="property">NODE_ENV</span> !== <span class="string">&#x27;production&#x27;</span> &amp;&amp; process.<span class="property">env</span>.<span class="property">NODE_ENV</span> !== <span class="string">&#x27;test&#x27;</span>) &#123;</span><br><span class="line">       <span class="comment">// 注意这里：在npm run serve时强制使用了&#x27;eval-cheap-module-source-map&#x27;</span></span><br><span class="line">        webpackConfig</span><br><span class="line">          .<span class="title function_">devtool</span>(<span class="string">&#x27;eval-cheap-module-source-map&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        webpackConfig</span><br><span class="line">          .<span class="title function_">plugin</span>(<span class="string">&#x27;hmr&#x27;</span>)</span><br><span class="line">            .<span class="title function_">use</span>(<span class="built_in">require</span>(<span class="string">&#x27;webpack/lib/HotModuleReplacementPlugin&#x27;</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment">// https://github.com/webpack/webpack/issues/6642</span></span><br><span class="line">        <span class="comment">// https://github.com/vuejs/vue-cli/issues/3539</span></span><br><span class="line">        webpackConfig</span><br><span class="line">          .<span class="property">output</span></span><br><span class="line">            .<span class="title function_">globalObject</span>(<span class="string">`(typeof self !== &#x27;undefined&#x27; ? self : this)`</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!process.<span class="property">env</span>.<span class="property">VUE_CLI_TEST</span> &amp;&amp; options.<span class="property">devServer</span>.<span class="property">progress</span> !== <span class="literal">false</span>) &#123;</span><br><span class="line">          webpackConfig</span><br><span class="line">            .<span class="title function_">plugin</span>(<span class="string">&#x27;progress&#x27;</span>)</span><br><span class="line">            .<span class="title function_">use</span>(<span class="built_in">require</span>(<span class="string">&#x27;webpack/lib/ProgressPlugin&#x27;</span>))</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<p><del>截止目前（2021年10月26日），<code>vue-cli</code>的最新<code>realese</code>版本（v4.5.14）中，依旧存在这个问题。但是github的开源代码的<code>dev</code>分支已经修复此问题（<a href="https://github.com/vuejs/vue-cli/blob/dev/packages/%40vue/cli-service/lib/commands/serve.js">查看代码</a>），不知道什么时候会发布到正式版本中去。</del></p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a><del>解决方案</del></h2><p><del><strong>方案一：</strong> 手动修改<code>node_modules/@vue/cli-service/lib/commands/serve.js:54</code>， 将<code>&#39;eval-cheap-module-source-map&#39;</code>改为想要的模式。弊端是install之后可能需要再改一下，如果不在意<code>source-map</code>的话还是权衡一下利弊。</del></p>
+<p><del><strong>方案二：</strong> 使用<code>vue-cli</code>的<code>dev</code>分支源代码编译一份最新的来使用。</del></p>
+<br>
+
+<p>以上！まいど～</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>关于百度地图 DrivingRoute moreResultsUrl为“未能找到相应结果，请您:返回上一步操作..” 以及 WalkingRoute moreResultsUrl为空 的解决方案</title>
+    <url>/2017/12/07/%E5%85%B3%E4%BA%8E%E7%99%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE-DrivingRoute-moreResultsUrl%E4%B8%BA%E2%80%9C%E6%9C%AA%E8%83%BD%E6%89%BE%E5%88%B0%E7%9B%B8%E5%BA%94%E7%BB%93%E6%9E%9C%EF%BC%8C%E8%AF%B7%E6%82%A8-%E8%BF%94%E5%9B%9E%E4%B8%8A%E4%B8%80%E6%AD%A5%E6%93%8D%E4%BD%9C-%E2%80%9D-%E4%BB%A5%E5%8F%8A-WalkingRoute-moreResultsUrl%E4%B8%BA%E7%A9%BA-%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
+    <content><![CDATA[<h4 id="——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案"><a href="#——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案" class="headerlink" title="—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案"></a>—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案</h4><h3 id="A-Few-Minutes-Later…"><a href="#A-Few-Minutes-Later…" class="headerlink" title="A Few Minutes Later….."></a><strong>A Few Minutes Later…..</strong></h3><p>经过一番Demo和文档的查找，惊喜的发现正式版中TransitRoute，WalkingRoute，以及DrivingRoute 的searchComplete回调中有个“moreResultsUrl” 打开正是百度地图的导航结果页！<br>&amp;nbsp;</p>
+<h3 id="事情并没有那么简单-——-使用DrivingRoute"><a href="#事情并没有那么简单-——-使用DrivingRoute" class="headerlink" title="事情并没有那么简单  —— 使用DrivingRoute"></a><strong>事情并没有那么简单  —— 使用DrivingRoute</strong></h3><p>当我打开DrivingRoute的moreResultsUrl 度娘很友好的向我展示了下面的界面 并且不管我如何调整参数 emmmmm 毫无变化！</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/d953d2f1c93ba21043d2bb65adfcd32b.png" alt="DrivingRoute未能找到相应结果"></p>
+<p>&amp;nbsp;<br>&amp;nbsp;</p>
+<h3 id="Fine-不开车我走路行了吧-——-使用WalkingRoute"><a href="#Fine-不开车我走路行了吧-——-使用WalkingRoute" class="headerlink" title="Fine 不开车我走路行了吧  —— 使用WalkingRoute!"></a><strong>Fine 不开车我走路行了吧  —— 使用WalkingRoute!</strong></h3><p><img src="https://img-blog.csdnimg.cn/img_convert/0576d2b2c8e66659d39bb9c500dabe9c.png" alt="ops!"></p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/0385b0475d2f8f0784130c8f3d045013.png" alt="这里写图片描述"><br>..<br>………………<br>……………………..<br>…………………………………. <img src="https://img-blog.csdnimg.cn/img_convert/f052cca3f5e3eee8bb5117452a8b5264.png" alt="这里写图片描述"></p>
+<p>*以上自行感受（崩溃）<br>&amp;nbsp;<br>&amp;nbsp;</p>
+<h3 id="…好吧下下策-坐公交吧-з」∠-——-使用TransitRoute"><a href="#…好吧下下策-坐公交吧-з」∠-——-使用TransitRoute" class="headerlink" title="…好吧下下策  坐公交吧_(:з」∠)_ —— 使用TransitRoute"></a><strong>…好吧下下策  坐公交吧_(:з」∠)_ —— 使用TransitRoute</strong></h3><p>那个,出来是出来了…….</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/5b554afc825dfce4c6cf9f2cc824b8f7.png" alt="这里写图片描述"></p>
+<p>为什么地图还要我切换选项卡才能看到啊！！！！（拿烟的手微微颤抖.jpg</p>
+<h3 id="OK-冷静-我们来分析一下公交的链接…"><a href="#OK-冷静-我们来分析一下公交的链接…" class="headerlink" title="OK 冷静 我们来分析一下公交的链接…"></a><strong>OK 冷静 我们来分析一下公交的链接…</strong></h3><blockquote>
+<p><a href="http://api.map.baidu.com/direction?region=%E6%9D%AD%E5%B7%9E%E5%B8%82&amp;origin=30.26348989892,120.21415684874&amp;destination=30.235552,120.205199&amp;output=html&amp;mode=transit&amp;src=baidu_map_jsapi">http://api.map.baidu.com/direction?region=杭州市&amp;origin=30.26348989892,120.21415684874&amp;destination=30.235552,120.205199&amp;output=html&amp;mode=transit&amp;src=baidu_map_jsapi</a></p>
+</blockquote>
+<p>↓<br>↓仔细看↓<br>↓</p>
+<blockquote>
+<p>?region&#x3D;city&amp;origin&#x3D;30.26348989892,120.21415684874&amp;destination&#x3D;30.235552,120.205199&amp;output&#x3D;html&amp;mode&#x3D;transit&amp;src&#x3D;baidu_map_jsapi</p>
+</blockquote>
+<p>↓<br>↓仔细看↓<br>↓</p>
+<blockquote>
+<p>&amp;mode&#x3D;transit&amp;src&#x3D;baidu_map_jsapi</p>
+</blockquote>
+<p>↓<br>↓仔细看↓<br>↓</p>
+<blockquote>
+<p>&amp;mode&#x3D;transit</p>
+</blockquote>
+<p>是不是明白了什么（滑稽）？</p>
+<h3 id="Magic！——使用Driving模式和Walking模式的变通方式"><a href="#Magic！——使用Driving模式和Walking模式的变通方式" class="headerlink" title="Magic！——使用Driving模式和Walking模式的变通方式"></a><strong>Magic！——使用Driving模式和Walking模式的变通方式</strong></h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">moreResultsUrl.<span class="title function_">replace</span>(<span class="string">&#x27;transit&#x27;</span>, <span class="string">&#x27;driving&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">moreResultsUrl.<span class="title function_">replace</span>(<span class="string">&#x27;transit&#x27;</span>, <span class="string">&#x27;walking&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p>PS.希望百度早点修复吧、、、 有什么问题在下面问或者说有更好的办法请告诉我 谢谢~☆</p>
+<h4 id="2018-x2F-5-x2F-3-更新"><a href="#2018-x2F-5-x2F-3-更新" class="headerlink" title="2018&#x2F;5&#x2F;3 更新"></a>2018&#x2F;5&#x2F;3 更新</h4><p>现在似乎三种都无法获取到moreResultsUrl了替代方案为 直接传入region、origin、destination、mode 拼接下面的url然后跳转</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">href</span> = <span class="string">&#x27;http://api.map.baidu.com/direction&#x27;</span>+</span><br><span class="line">							<span class="string">&#x27;?region=&#x27;</span>+region+</span><br><span class="line">							<span class="string">&#x27;&amp;origin=&#x27;</span>+origin.<span class="property">lat</span>+<span class="string">&#x27;,&#x27;</span>+origin.<span class="property">lng</span>+</span><br><span class="line">							<span class="string">&#x27;&amp;destination=&#x27;</span>+dest.<span class="property">lat</span>+<span class="string">&#x27;,&#x27;</span>+dest.<span class="property">lng</span>+</span><br><span class="line">							<span class="string">&#x27;&amp;output=html&#x27;</span>+</span><br><span class="line">							<span class="string">&#x27;&amp;mode=&#x27;</span>+transit/walking/driving+</span><br><span class="line">							<span class="string">&#x27;&amp;src=baidu_map_jsapi&#x27;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>利用Overflow:Hidden实现自适应左右两列布局/填充父级元素剩余宽度</title>
+    <url>/2017/07/27/%E5%88%A9%E7%94%A8Overflow-Hidden%E5%AE%9E%E7%8E%B0%E8%87%AA%E9%80%82%E5%BA%94%E5%B7%A6%E5%8F%B3%E4%B8%A4%E5%88%97%E5%B8%83%E5%B1%80-%E5%A1%AB%E5%85%85%E7%88%B6%E7%BA%A7%E5%85%83%E7%B4%A0%E5%89%A9%E4%BD%99%E5%AE%BD%E5%BA%A6.html</url>
+    <content><![CDATA[<h3 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h3><hr>
+<pre><code>&lt;div class=&quot;parent&quot;&gt;
+    &lt;div class=&quot;Left&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;Right&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3 id="左侧CSS"><a href="#左侧CSS" class="headerlink" title="左侧CSS"></a>左侧CSS</h3><hr>
+<pre><code>.Left&#123;
+    width:auto;/* 左侧宽度任意 */
+    float:left;
+&#125;
+</code></pre>
+<h3 id="右侧CSS"><a href="#右侧CSS" class="headerlink" title="右侧CSS"></a>右侧CSS</h3><hr>
+<pre><code>.Right&#123;
+    overflow:hidden;
+&#125;
+</code></pre>
+<hr>
+<p>以上！まいど～</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>前端代码规范</title>
+    <url>/2019/03/25/%E5%89%8D%E7%AB%AF%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83.html</url>
+    <content><![CDATA[<h1 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h1><h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><ul>
+<li>用四个空格来代替制表符（tab） – IDE可设置一个Tab四个空格</li>
+<li>嵌套元素应当缩进一次（即四个空格）。</li>
+<li>对于属性的定义，确保全部使用双引号，绝不要使用单引号。</li>
+<li>不要在自闭合（self-closing）元素的尾部添加斜线 。</li>
+<li>不要省略可选的结束标签（closing tag）（例如，<code>&lt;/li&gt;</code>或 <code>&lt;/body&gt;</code>）。</li>
+</ul>
+<h2 id="HTML5-doctype"><a href="#HTML5-doctype" class="headerlink" title="HTML5 doctype"></a>HTML5 doctype</h2><ul>
+<li>为每个 HTML 页面的第一行添加标准模式（standard mode）的声明，这样能够确保在每个浏览器中拥有一致的展现。</li>
+</ul>
+<h2 id="语言属性"><a href="#语言属性" class="headerlink" title="语言属性"></a>语言属性</h2><p>根据 HTML5 规范：</p>
+<blockquote>
+<p>强烈建议为 html 根元素指定 lang 属性，从而为文档设置正确的语言。这将有助于语音合成工具确定其所应该采用的发音，有助于翻译工具确定其翻译时所应遵守的规则等等。</p>
+</blockquote>
+<h2 id="IE-兼容模式"><a href="#IE-兼容模式" class="headerlink" title="IE 兼容模式"></a>IE 兼容模式</h2><p>IE 支持通过特定的 <meta> 标签来确定绘制当前页面所应该采用的 IE 版本。除非有强烈的特殊需求，否则最好是设置为 edge mode，从而通知 IE 采用其所支持的最新的模式。</p>
+<h2 id="字符编码"><a href="#字符编码" class="headerlink" title="字符编码"></a>字符编码</h2><p>通过明确声明字符编码，能够确保浏览器快速并容易的判断页面内容的渲染方式。这样做的好处是，可以避免在 HTML 中使用字符实体标记（character entity），从而全部与文档编码一致（一般采用 UTF-8 编码）。</p>
+<h2 id="引入-CSS-和-JavaScript-文件"><a href="#引入-CSS-和-JavaScript-文件" class="headerlink" title="引入 CSS 和 JavaScript 文件"></a>引入 CSS 和 JavaScript 文件</h2><ul>
+<li>根据 HTML5 规范，在引入 CSS 和 JavaScript 文件时一般不需要指定 type 属性，因为 text&#x2F;css 和 text&#x2F;javascript 分别是它们的默认值。</li>
+<li>在head标签的结束标签前引入css，在body标签的结束标签前引入js。目的是在渲染dom前加载css，防止展示不带样式的dom，并且在渲染dom后再加载js，防止加载过慢。</li>
+</ul>
+<h2 id="属性顺序"><a href="#属性顺序" class="headerlink" title="属性顺序"></a>属性顺序</h2><p>HTML 属性应当按照以下给出的顺序依次排列，确保代码的易读性。</p>
+<ol>
+<li>class</li>
+<li>id, name</li>
+<li>data-*</li>
+<li>src, for, type, href, value</li>
+<li>title, alt</li>
+<li>role, aria-*</li>
+<li>框架相关属性</li>
+</ol>
+<p>class 用于标识高度可复用组件，因此应该排在首位。id 用于标识具体组件，应当谨慎使用（例如，页面内的书签），因此排在第二位。</p>
+<h2 id="属性命名"><a href="#属性命名" class="headerlink" title="属性命名"></a>属性命名</h2><ul>
+<li><strong>class</strong> 使用短横线全小写，不超过三个单词的长度  如 block, one-block, block-with-border</li>
+<li><strong>id</strong> 使用小驼峰书写方式，不超过三个单词的长度，并准确表达该元素  如 topCarousel controlPanel<br>bannerImageWrapper</li>
+</ul>
+<h2 id="布尔（boolean）型属性"><a href="#布尔（boolean）型属性" class="headerlink" title="布尔（boolean）型属性"></a>布尔（boolean）型属性</h2><p>布尔型属性可以在声明时不赋值。XHTML 规范要求为其赋值，但是 HTML5 规范不需要。</p>
+<p>元素的布尔型属性如果有值，就是 true，如果没有值，就是 false。</p>
+<p>如果一定要为其赋值的话，请参考 WhatWG 规范：</p>
+<p>如果属性存在，其值必须是空字符串或属性的规范名称，并且不要在首尾添加空白符。</p>
+<p><strong>简单来说，就是不用赋值。</strong></p>
+<hr>
+<h1 id="CSS"><a href="#CSS" class="headerlink" title="CSS"></a>CSS</h1><h2 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h2><ul>
+<li>用四个空格来代替制表符（tab） – IDE可设置一个Tab四个空格</li>
+<li>为选择器分组（逗号）时，将单独的选择器单独放在一行。</li>
+<li>为了代码的易读性，在每个声明块的左花括号前添加一个空格。</li>
+<li>声明块的右花括号应当单独成行。</li>
+<li>每条声明语句的 : 后应该插入一个空格。</li>
+<li>为了获得更准确的错误报告，每条声明都应该独占一行。</li>
+<li>所有声明语句都应当以分号结尾。最后一条声明语句后面的分号是可选的，但是，如果省略这个分号，你的代码可能更易出错。</li>
+<li>对于以逗号分隔的属性值，每个逗号后面都应该插入一个空格（例如，box-shadow）。</li>
+<li>不要在 rgb()、rgba()、hsl()、hsla() 或 rect() 值的内部的逗号后面插入空格。这样利于从多个属性值（既加逗号也加空格）中区分多个颜色值（只加逗号，不加空格）。</li>
+<li>对于属性值或颜色参数，省略小于 1 的小数前面的 0 （例如，.5 代替 0.5；-.5px 代替 -0.5px）。</li>
+<li>十六进制值应该全部小写，例如，#fff。在扫描文档时，小写字符易于分辨，因为他们的形式更易于区分。</li>
+<li>尽量使用简写形式的十六进制值，例如，用 #fff 代替 #ffffff。</li>
+<li>为选择器中的属性添加双引号，例如，input[type&#x3D;”text”]。只有在某些情况下是可选的，但是，为了代码的一致性，建议都加上双引号。</li>
+<li>避免为 0 值指定单位，例如，用 margin: 0; 代替 margin: 0px;。</li>
+</ul>
+<h2 id="声明顺序"><a href="#声明顺序" class="headerlink" title="声明顺序"></a>声明顺序</h2><p>相关的属性声明应当归为一组，并按照下面的顺序排列：</p>
+<ol>
+<li>Positioning 定位相关属性 display,list-style,position,top,right,bottom,left,float,clear ……</li>
+<li>Box model 盒模型相关属性 width,height,margin,padding,border,……..</li>
+<li>Typographic 印刷样式属性 background,color,font-size,font-family………</li>
+<li>Other 其他：content,cursor,z-index,zoom,overflow……</li>
+<li>CSS3属性（需要加前缀的属性）：transform,transition,animation,box-shadow,border-radius……</li>
+</ol>
+<ul>
+<li>由于定位（positioning）可以从正常的文档流中移除元素，并且还能覆盖盒模型（box model）相关的样式，因此排在首位。盒模型排在第二位，因为它决定了组件的尺寸和位置。</li>
+<li>其他属性只是影响组件的内部（inside）或者是不影响前两组属性，因此排在后面。</li>
+<li>如果使用CSS3的属性，如果有必要加入浏览器前缀，则按照-webkit-&#x2F;-moz-&#x2F;-ms-&#x2F;-o-&#x2F;std的顺序进行添加，标准属性写在最后</li>
+<li>链接的样式请严格按照如下顺序添加：a:link -&gt; a:visited -&gt; a:hover -&gt; a:active</li>
+</ul>
+<h2 id="不要使用-import"><a href="#不要使用-import" class="headerlink" title="不要使用 @import"></a>不要使用 @import</h2><p>与 &lt;link&gt; 标签相比，@import 指令要慢很多，不光增加了额外的请求次数，还会导致不可预料的问题。替代办法有以下几种：</p>
+<ol>
+<li>使用多个 <link> 元素</li>
+<li>通过 Sass 或 Less 类似的 CSS 预处理器将多个 CSS 文件编译为一个文件</li>
+<li>通过 Rails、Jekyll 或其他系统中提供过 CSS 文件合并功能</li>
+</ol>
+<h2 id="媒体查询（Media-query）的位置"><a href="#媒体查询（Media-query）的位置" class="headerlink" title="媒体查询（Media query）的位置"></a>媒体查询（Media query）的位置</h2><p>将媒体查询放在尽可能相关规则的附近。不要将他们打包放在一个单一样式文件中或者放在文档底部。如果你把他们分开了，将来只会被大家遗忘。下面给出一个典型的实例。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.element</span> &#123; ... &#125;</span><br><span class="line"><span class="selector-class">.element-avatar</span> &#123; ... &#125;</span><br><span class="line"><span class="selector-class">.element-selected</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@media</span> (<span class="attribute">min-width</span>: <span class="number">480px</span>) &#123;</span><br><span class="line">  <span class="selector-class">.element</span> &#123; ...&#125;</span><br><span class="line">  <span class="selector-class">.element-avatar</span> &#123; ... &#125;</span><br><span class="line">  <span class="selector-class">.element-selected</span> &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="限制简写形式的属性声明"><a href="#限制简写形式的属性声明" class="headerlink" title="限制简写形式的属性声明"></a>限制简写形式的属性声明</h2><p>在需要显示地设置所有值的情况下，应当尽量限制使用简写形式的属性声明。常见的滥用简写属性声明的情况如下：</p>
+<ul>
+<li>padding</li>
+<li>margin</li>
+<li>font</li>
+<li>background</li>
+<li>border</li>
+<li>border-radius</li>
+</ul>
+<p>大部分情况下，我们不需要为简写形式的属性声明指定所有值。例如，HTML 的 heading 元素只需要设置上、下边距（margin）的值，因此，在必要的时候，只需覆盖这两个值就可以。过度使用简写形式的属性声明会导致代码混乱，并且<strong>会对属性值带来不必要的覆盖从而引起意外的副作用。</strong></p>
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><p>代码是由人编写并维护的。请确保你的代码能够自描述、注释良好并且易于他人理解。好的代码注释能够传达上下文关系和代码目的。不要简单地重申组件或 class 名称。</p>
+<p>对于较长的注释，务必书写完整的句子；对于一般性注解，可以书写简洁的短语。</p>
+<h2 id="class-命名"><a href="#class-命名" class="headerlink" title="class 命名"></a>class 命名</h2><ul>
+<li>class 名称中只能出现小写字符和破折号（dash）（不是下划线，也不是驼峰命名法）。破折号应当用于相关 class 的命名（类似于命名空间）（例如，.btn 和 .btn-danger）。</li>
+<li>避免过度任意的简写。.btn 代表 button，但是 .s 不能表达任何意思。</li>
+<li>class 名称应当尽可能短，并且意义明确。</li>
+<li>使用有意义的名称。使用有组织的或目的明确的名称，不要使用表现形式（presentational）的名称。</li>
+<li>基于最近的父 class 或基本（base） class 作为新 class 的前缀。</li>
+<li>使用 .js-* class 来标识行为（与样式相对），并且不要将这些 class 包含到 CSS 文件中。</li>
+</ul>
+<h2 id="选择器"><a href="#选择器" class="headerlink" title="选择器"></a>选择器</h2><ul>
+<li>对于通用元素使用 class ，这样利于渲染性能的优化。</li>
+<li>选择器要尽可能短，并且尽量限制组成选择器的元素个数，单个建议不要超过 3 个选择器。</li>
+<li>只有在必要的时候才将 class 限制在最近的父元素内（也就是后代选择器）（例如，不使用带前缀的 class 时 – 前缀类似于命名空间）。</li>
+</ul>
+<hr>
+<h1 id="JS"><a href="#JS" class="headerlink" title="JS"></a>JS</h1><h2 id="语法-2"><a href="#语法-2" class="headerlink" title="语法"></a>语法</h2><ul>
+<li>用四个空格来代替制表符（tab） – IDE可设置一个Tab四个空格</li>
+<li>为了代码的易读性，在每个代码块的左花括号前添加一个空格。</li>
+<li>代码块的右花括号应当单独成行。</li>
+<li>每条语句的 : , 后应该插入一个空格，+ - * &#x2F;  &#x3D; 的两侧应该插入空格。</li>
+<li>为了获得更准确的错误报告，每条语句都应该独占一行，尽量避免多行语句写在一行。</li>
+<li>为了减小文件的大小，尽量减少分号的书写（除了 <strong>&#x3D;&#x3D;( [ &#x2F; + - * % , .&#x3D;&#x3D;</strong> 为开头的语句需要在前一句句末加上分号，否则会导致编译错误，一般只需注意 <strong>&#x3D;&#x3D;(&#x3D;&#x3D;</strong> 开头的语句）。</li>
+<li>所有命名最好使用英语表示。</li>
+<li>所有变量名应该明确而必要，尽量避免不必要的容易混淆的缩写。<br>-netease.events.mouse.Handler，而不是 netease.events.mouse.MouseEventHandler。</li>
+<li>对应的方法应该使用对应的动词，例如：get&#x2F;set, add&#x2F;remove, create&#x2F;destroy, start&#x2F;stop, insert&#x2F;delete, begin&#x2F;end。</li>
+<li>应该避免双重否定意义的变量，例如：bIsNotError, bIsNotFound，不可取。</li>
+<li>变量应该在最小的范围内定义，并尽可能的保持最少的活动时间。</li>
+<li>循环变量最好在循环中定义。例如for(var i&#x3D;0,m&#x3D;10;i</li>
+<li>尽量避免复杂的条件语句，可以使用临时的boolean变量代替。</li>
+<li>一定要避免在条件中执行语句，例如：if((i&#x3D;3)&gt;2){}，不可取。</li>
+<li>不要在代码中重复使用相同意义的数字，用一个变量代替，比如 nTotal&#x3D;100; num&#x3D; total<h2 id="变量命名规范"><a href="#变量命名规范" class="headerlink" title="变量命名规范"></a>变量命名规范</h2></li>
+</ul>
+<p>变量名包括全局变量，局部变量，类变量，函数参数等等，他们都属于这一类。</p>
+<p><strong>基本规范</strong></p>
+<ul>
+<li>变量命名都以类型前缀+有意义的单词组成，单词首字母都需要大写。例如：sUserName，nCount。</li>
+</ul>
+<p><strong>前缀规范</strong></p>
+<ul>
+<li>每个局部变量都需要有一个类型前缀，按照类型可以分为：</li>
+</ul>
+<blockquote>
+<p>s：表示字符串。例如：sName，sHtml;<br>n：表示数字。例如：nPage，nTotal;<br>d：表示Date。例如 dTimeNow， dToday<br>b：表示逻辑。例如：bChecked，bHasLogin;<br>a：表示数组。例如：aList，aGroup;<br>r：表示正则表达式。例如：rDomain，rEmail;<br>f：表示函数。例如：fGetHtml，fInit;<br>o：表示以上未涉及到的其他对象，例如：oButton，oDate;</p>
+</blockquote>
+<ul>
+<li>*例外情况：</li>
+</ul>
+<ol>
+<li>作用域不大临时变量可以简写，比如：str，num，bol，obj，fun，arr。</li>
+<li>循环变量可以简写，比如：i，j，k等。</li>
+</ol>
+<ul>
+<li>为什么需要这样强制定义变量前缀?正式因为javascript是弱语言造成的。在定义大量变量的时候，我们需要很明确的知道当前变量是什么属性，如果只通过普通单词，是很难区分的。</li>
+</ul>
+<p><strong>全局变量以及常量规范</strong></p>
+<ul>
+<li><p>全局变量使用g作为前缀，定义在window下。例如gUserName，gLoginTime。</p>
+</li>
+<li><p>某些作为不允许修改值的变量认为是常量，全部字母都大写。例如：COPYRIGHT，PI。常量可以存在于函数中，也可以存在于全局。</p>
+</li>
+</ul>
+<p><strong>函数命名规范</strong></p>
+<ul>
+<li><p>统一使用动词或者动词[+名词]形式，例如：fGetVersion()，fSubmitForm()，fInit();涉及返回逻辑值的函数可以使用is，has等表示逻辑的词语代替动词。</p>
+</li>
+<li><p>如果有内部函数，使用__f+动词[+名词]形式，内部函数必需在函数最后定义。例如：</p>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">fGetNumber</span>(<span class="params">nTotal</span>)&#123;    </span><br><span class="line">  <span class="keyword">if</span>(nTotal&lt;<span class="number">100</span>)&#123;    </span><br><span class="line">	  nTotal = <span class="number">100</span>;    </span><br><span class="line">  &#125;    </span><br><span class="line">  <span class="keyword">return</span> <span class="title function_">__fAdd</span>(nTotal);        </span><br><span class="line">      </span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">__fAdd</span>(<span class="params">nNumber</span>)&#123;    </span><br><span class="line">   nNumber++;    </span><br><span class="line">   <span class="keyword">return</span> nNumber;    </span><br><span class="line">  &#125;    </span><br><span class="line">&#125;    </span><br><span class="line"><span class="title function_">alert</span>(<span class="title function_">fGetNumber</span>(<span class="number">30</span>));<span class="comment">//alert 101</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>对象方法实现</li>
+</ul>
+<p>对象方法命名使用 f+对象类名+动词[+名词]形式;例如 fAddressGetEmail</p>
+<ul>
+<li>事件响应函数</li>
+</ul>
+<p>某事件响应函数命名方式为触发事件对象名+事件名或者模块名+触发事件对象名+事件名，例如：fDivClick()，fAddressSubmitButtonClic k()</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>微信浏览器中iframe srcdoc、src=data:text/html,xxxx 等无法使用情况下防止样式污染的解决方案</title>
+    <url>/2018/11/07/%E5%BE%AE%E4%BF%A1%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%ADiframe-srcdoc%E3%80%81src-data-text-html-xxxx-%E7%AD%89%E6%97%A0%E6%B3%95%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5%E4%B8%8B%E9%98%B2%E6%AD%A2%E6%A0%B7%E5%BC%8F%E6%B1%A1%E6%9F%93%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
+    <content><![CDATA[<h4 id="业务需求"><a href="#业务需求" class="headerlink" title="业务需求"></a>业务需求</h4><blockquote>
+<p>从后端取HTML 前端展示</p>
+</blockquote>
+<h4 id="要求"><a href="#要求" class="headerlink" title="要求"></a>要求</h4><blockquote>
+<p>HTML不得被前台全局样式污染</p>
+</blockquote>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>1、使用iframe 的 srcdoc</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">srcdoc</span>=<span class="string">&quot;&lt;p&gt;这是HTML&lt;p&gt;&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>2、 src&#x3D;”text&#x2F;html,xxxx”</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;data:text/html,&lt;p&gt;这是HTML&lt;p&gt;&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>3、 在src中使用javascript （ueditor的方案）</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> </span></span><br><span class="line"><span class="tag">	<span class="attr">src</span>=<span class="string">&quot;javascript:void(function()&#123;</span></span></span><br><span class="line"><span class="string"><span class="tag">	document.open();document.write(&#x27;&lt;p&gt;这是HTML&lt;p&gt;&#x27;);</span></span></span><br><span class="line"><span class="string"><span class="tag">	document.close();&#125;())&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><blockquote>
+<p>微信浏览器中以上方案都无效 似乎对iframe的src都进行了特殊处理 （惨）</p>
+</blockquote>
+<h1 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h1><p>直接对iframe的contentWindow进行操作 使用document.write 最终解决问题 此方法应该兼容性最好<br> <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;about:blank;&quot;</span> <span class="attr">id</span>=<span class="string">&quot;target&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript">	</span></span><br><span class="line"><span class="language-javascript">	<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;target&#x27;</span>).<span class="property">contentWindow</span>.<span class="property">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;&lt;p&gt;这是HTML&lt;p&gt;&#x27;</span>) </span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure><br>*百谷一番都没有找到任何的解决方案 最终自己得出以下方案 记录一下 也为开发者们做一些微小的贡献（笑）</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>拒绝假空心！纯css实现 真·空心带边框直角三角形和空心带边框直角梯形！</title>
+    <url>/2019/06/07/%E6%8B%92%E7%BB%9D%E5%81%87%E7%A9%BA%E5%BF%83%EF%BC%81%E7%BA%AFcss%E5%AE%9E%E7%8E%B0-%E7%9C%9F%C2%B7%E7%A9%BA%E5%BF%83%E5%B8%A6%E8%BE%B9%E6%A1%86%E7%9B%B4%E8%A7%92%E4%B8%89%E8%A7%92%E5%BD%A2%E5%92%8C%E7%A9%BA%E5%BF%83%E5%B8%A6%E8%BE%B9%E6%A1%86%E7%9B%B4%E8%A7%92%E6%A2%AF%E5%BD%A2%EF%BC%81.html</url>
+    <content><![CDATA[<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p><img src="https://img-blog.csdnimg.cn/20190607225358253.png" alt="要实现的直角梯形"><br><strong>↑需要实现一个背景为半透明且带边框的直角梯形</strong><br><br></p>
+<h2 id="百谷解决方案"><a href="#百谷解决方案" class="headerlink" title="百谷解决方案"></a>百谷解决方案</h2><p>碰到问题，程序猿的优良传统，先百谷一下（？） 得到的解决方案总结一下有这些：<br>1.利用border交界处为斜边来制作，即border-top:none;border-right:transparent<br><strong>→问题：使用border来做背景，没法在border上再做边框，只能得到一个半透明的直角梯形</strong><br>2.在用border制作的梯形外侧套上一个上下左右大出1像素，以边框色为背景的梯形，作为边框<br><strong>→问题：中间小梯形无法做成半透明，会叠加上大梯形的背景色</strong><br>3.利用矩形和三角形拼接<br><strong>→问题：右边直角三角形的边框依旧无法解决</strong><br>4.边框使用矩形旋转来做<br><strong>→问题：至少要用到4个div，过于复杂</strong><br><br></p>
+<h2 id="没有条件就自己上！"><a href="#没有条件就自己上！" class="headerlink" title="没有条件就自己上！"></a>没有条件就自己上！</h2><p>就在要放弃打算导出png来做的时候，导出界面给了我灵感！<br><img src="https://img-blog.csdnimg.cn/20190607230522372.png" alt="导出图片界面"><br><strong>↑这不就是一个矩形overflow:hidden套上一个平行四边形吗！给力！</strong></p>
+<p>不废话立马做了出来</p>
+<h4 id="html"><a href="#html" class="headerlink" title="html"></a>html</h4><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 真·空心直角三角形 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;tri&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 真·空心直角梯形 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;trapezoid&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="css"><a href="#css" class="headerlink" title="css"></a>css</h4><figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 直角三角形 */</span></span><br><span class="line"><span class="selector-class">.tri</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>:relative;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">border-left</span>:<span class="number">5px</span> solid red;</span><br><span class="line">  <span class="attribute">overflow</span>:hidden;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.tri</span><span class="selector-pseudo">:before</span>&#123;</span><br><span class="line">  <span class="attribute">content</span>:<span class="string">&#x27;&#x27;</span>;</span><br><span class="line">  <span class="attribute">display</span>:block;</span><br><span class="line">  <span class="attribute">position</span>:absolute;</span><br><span class="line">  <span class="attribute">top</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">bottom</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">right</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">border</span>:<span class="number">5px</span> solid blue;</span><br><span class="line">  <span class="attribute">transform-origin</span>:<span class="number">0</span> <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">transform</span>:<span class="built_in">skewX</span>(<span class="number">45deg</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 直角梯形 */</span></span><br><span class="line"><span class="selector-class">.trapezoid</span>&#123;</span><br><span class="line">  <span class="attribute">margin-top</span>: <span class="number">10px</span>;</span><br><span class="line">  <span class="attribute">position</span>:relative;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">  <span class="attribute">border-left</span>:<span class="number">5px</span> solid red;</span><br><span class="line">  <span class="attribute">overflow</span>:hidden;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.trapezoid</span><span class="selector-pseudo">:before</span>&#123;</span><br><span class="line">  <span class="attribute">content</span>:<span class="string">&#x27;&#x27;</span>;</span><br><span class="line">  <span class="attribute">display</span>:block;</span><br><span class="line">  <span class="attribute">position</span>:absolute;</span><br><span class="line">  <span class="attribute">top</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">bottom</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">right</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">  <span class="attribute">border</span>:<span class="number">5px</span> solid blue;</span><br><span class="line">  <span class="attribute">transform-origin</span>:<span class="number">0</span> <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">transform</span>:<span class="built_in">skewX</span>(<span class="number">45deg</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
+
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p><img src="https://img-blog.csdnimg.cn/20190607231305645.png" alt="在这里插入图片描述"><br>方便你们看，红色的是矩形的边框，蓝色的是平行四边形的边框！<br>是空心的哦！真是太满意了！</p>
+<p>不多说了，上DEMO！<br><a href="https://codepen.io/KissekiAkaru/pen/argrVe">Demo点这里</a></p>
+<p>有什么问题欢迎在下面评论，我会及时回复www</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>浮点数计算精度误差原理随记</title>
+    <url>/2020/06/03/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%AE%A1%E7%AE%97%E7%B2%BE%E5%BA%A6%E8%AF%AF%E5%B7%AE%E5%8E%9F%E7%90%86%E9%9A%8F%E8%AE%B0.html</url>
+    <content><![CDATA[<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>0.1 + 0.2 &#x3D; 0.30000000000000004</p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>以下摘自 <a href="https://www.cnblogs.com/wymbk/p/6031442.html">https://www.cnblogs.com/wymbk/p/6031442.html</a></p>
+<p>首先，我们要站在计算机的角度思考 0.1 + 0.2 这个看似小儿科的问题。我们知道，能被计算机读懂的是二进制，而不是十进制，所以我们先把 0.1 和 0.2 转换成二进制看看：</p>
+<p>0.1&#x3D;&#x3D;》0.1.toString(2)&#x3D;&#x3D;》0.0001100110011(无限循环..)</p>
+<p>0.2&#x3D;&#x3D;》0.2.toString(2)&#x3D;&#x3D;》0.001100110011(无限循环..)</p>
+<p>双精度浮点数的小数部分最多支持 52 位，所以两者相加之后得到这么一串 0.0100110011001100110011001100110011001100110011001100 因浮点数小数位的限制而截断的二进制数字，这时候，我们再把它转换为十进制，就成了 0.30000000000000004。<br>&#96;</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>十进制浮点数转二进制会无限循环，单双精度长度限制问题导致截断后出现误差</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>添加了~/.bash_profile之后，~/.bashrc失效以及bash失去高亮的原因及解决方案</title>
+    <url>/2021/09/29/%E6%B7%BB%E5%8A%A0%E4%BA%86-bash-profile%E4%B9%8B%E5%90%8E%EF%BC%8C-bashrc%E5%A4%B1%E6%95%88%E4%BB%A5%E5%8F%8Abash%E5%A4%B1%E5%8E%BB%E9%AB%98%E4%BA%AE%E7%9A%84%E5%8E%9F%E5%9B%A0%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
+    <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>添加<code>~/.bash_profile</code>之后，bash失去高亮，<code>~/.bashrc</code>中的逻辑不运行。<br><img src="https://img-blog.csdnimg.cn/b49d241eeab14f43b53edb783eb9d8f1.png" alt="添加前"><br>添加前↑<br><img src="https://img-blog.csdnimg.cn/fd0ce34e0824462fb70387c80a53c57f.png" alt="添加后"><br>添加后↑</p>
+<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>在添加<code>~/.bash_profile</code>之后，<code>~/.profile</code>会被覆盖不再运行，而load bashrc的逻辑在<code>~/.profile</code>中，导致<code>~/.bashrc</code>也一并失效。<br><img src="https://img-blog.csdnimg.cn/50f8cda872f34b57a3f9f7e7b3d1f48c.png" alt="~/.profile中加载bashrc的逻辑"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">## 解决方案</span><br><span class="line">- 方案一：将```~/.bash_profile```中的逻辑移至```~/.profile```，并删除```~/.bash_profile```。</span><br><span class="line">- 方案二：在```~/.bash_profile```中添加以下代码保证```~/.profile```中的代码运行。</span><br><span class="line"> ```bash</span><br><span class="line"> source ~/.profile</span><br></pre></td></tr></table></figure>
+
+
+<br>
+以上！まいど～
+
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>获取元素到页面顶部的距离</title>
+    <url>/2020/03/12/%E8%8E%B7%E5%8F%96%E5%85%83%E7%B4%A0%E5%88%B0%E9%A1%B5%E9%9D%A2%E9%A1%B6%E9%83%A8%E7%9A%84%E8%B7%9D%E7%A6%BB.html</url>
+    <content><![CDATA[<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> offsetTop = targetElement.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span> + <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span></span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+</search>

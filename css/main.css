@@ -2886,6 +2886,7 @@ mark.search-keyword {
   }
 }
 @media (prefers-color-scheme: dark) {
+  .gitalk-container .gt-container .gt-header-preview,
   .gitalk-container .gt-container .gt-header-textarea,
   .gitalk-container .gt-container .gt-header-textarea:hover,
   .gitalk-container .gt-container .gt-comment-admin .gt-comment-content,

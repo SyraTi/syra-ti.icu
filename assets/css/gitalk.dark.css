@@ -1,9 +1,0 @@
-.gt-container .gt-header-textarea,
-.gt-container .gt-header-textarea:hover,
-.gt-container .gt-comment-admin .gt-comment-content,
-.gt-container .gt-comment-content{
-  background: #3B3B3B;
-}
-.gt-container .gt-comment-body{
-  color: var(--text-color);
-}

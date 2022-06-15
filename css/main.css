@@ -2894,6 +2894,9 @@ mark.search-keyword {
 article p {
   text-indent: 2em;
 }
+article .inline-block {
+  display: inline-block;
+}
 canvas#live2dCanvas {
   width: 300px;
   height: 300px;

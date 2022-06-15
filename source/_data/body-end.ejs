@@ -2,9 +2,9 @@
 <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pixi.js@5.3.6/dist/pixi.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/index.min.js"></script>
+<script src="/scripts/pixi-live2d-display/index.js"></script>
 <!-- 如果只需要 Cubism 4 -->
-<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/cubism4.min.js"></script>
+<script src="/scripts/pixi-live2d-display/cubism4.js"></script>
 
 <script>
   async function main() {
@@ -12,18 +12,26 @@
     const app = new PIXI.Application({
       view: document.getElementById("live2dCanvas"),
       autoStart: true,
-      width: 1500,
-      height: 1500,
+      width: 1600,
+      height: 2600,
       transparent: true,
     });
 
     const model = await PIXI.live2d.Live2DModel.from('/assets/live2d/models/object_live2d_002_101.asset/object_live2d_002_101.asset.model3.json');
-    // model.scale.set(.2)
     app.stage.addChild(model);
-    // document.getElementById('canvas').addEventListener('click', () => {
-    //
-    //   model.motion('motion');
-    // })
+    model.motion('Entry');
+    let idleCounter
+    let index = 0
+    const changeMotion = () => {
+      index = index % 5
+      model.motion('Tap',index++);
+      clearTimeout(idleCounter)
+      idleCounter = setTimeout(() => {
+        model.motion('Entry');
+      }, 5000)
+    }
+    document.getElementById('live2dCanvas').addEventListener('click', changeMotion)
+    document.getElementById('live2dCanvas').addEventListener('touchstart', changeMotion)
 
     // 变换
     // model.x = 100;

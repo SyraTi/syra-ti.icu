@@ -127,7 +127,7 @@ sidebar:
 # Sidebar Avatar
 avatar:
   # Replace the default image and set the url here.
-  url: /assets/images/avatar.jpg
+  url: /images/avatar.jpg
   # If true, the avatar will be displayed in circle.
   rounded: true
   # If true, the avatar will be rotated with the cursor.
@@ -261,8 +261,9 @@ reward_settings:
   comment: 你的东西都会还给你的ZE☆~
 
 reward:
-  爱发电: /assets/images/afdian.jpg
-  #wechatpay: /assets/images/wechat.jpg
+  爱发电: /images/afdian.jpg
+  #alipay: /images/alipay.jpg
+  #wechatpay: /images/wechat.jpg
   #paypal: /images/paypal.png
   #bitcoin: /images/bitcoin.png
 

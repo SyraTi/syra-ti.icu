@@ -2728,7 +2728,6 @@ mark.search-keyword {
   position: sticky;
   top: 12px;
   width: 240px;
-  visibility: hidden;
 }
 @media (max-width: 991px) {
   .sidebar {
@@ -2787,20 +2786,6 @@ mark.search-keyword {
 }
 .links-of-author-item a:hover {
   background: var(--body-bg-color);
-}
-.links-of-blogroll-item {
-  display: inline-block;
-  max-width: 100%;
-  margin: 5px 0 0;
-}
-.links-of-blogroll-item a {
-  box-sizing: border-box;
-  display: inline-block;
-  max-width: 100%;
-  overflow: hidden;
-  padding: 0 5px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .back-to-top {
   background: var(--body-bg-color);

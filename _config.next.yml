@@ -14,7 +14,7 @@ cache:
   enable: true
 
 # Remove unnecessary files after hexo generate.
-minify: false
+minify: true
 
 # Define custom file paths.
 # Create your custom files in site directory `source/_data` and uncomment needed files below.
@@ -94,7 +94,7 @@ menu:
 # Enable / Disable menu icons / item badges.
 menu_settings:
   icons: true
-  badges: false
+  badges: true
 
 
 # ---------------------------------------------------------------
@@ -141,9 +141,9 @@ site_state: true
 # Key is the link label showing to end users.
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
-  #GitHub: https://github.com/yourname || fab fa-github
-  #E-Mail: mailto:yourname@gmail.com || fa fa-envelope
-  #Weibo: https://weibo.com/yourname || fab fa-weibo
+  GitHub: https://github.com/SyraTi || fab fa-github
+  Weibo: https://weibo.com/GenyaShiroko || fab fa-weibo
+  E-Mail: mailto:flandrescarlet@koumakan.vip || fa fa-envelope
   #Google: https://plus.google.com/yourname || fab fa-google
   #Twitter: https://twitter.com/yourname || fab fa-twitter
   #FB Page: https://www.facebook.com/yourname || fab fa-facebook
@@ -154,7 +154,7 @@ social:
 
 social_icons:
   enable: true
-  icons_only: false
+  icons_only: true
   transition: false
 
 # Blog rolls
@@ -162,10 +162,12 @@ links_settings:
   icon: fa fa-globe
   title: Links
   # Available values: block | inline
-  layout: block
+  layout: inline
 
 links:
   #Title: https://example.com
+  爱丽丝的人偶屋: https://alicem.top
+  王乌龟的跳板机吧: https://stlab.ar.gp
 
 # Table of Contents in the Sidebar
 # Front-matter variable (nonsupport wrap expand_all).
@@ -254,13 +256,13 @@ tag_icon: false
 # Front-matter variable (nonsupport animation).
 reward_settings:
   # If true, a donate button will be displayed in every article by default.
-  enable: false
+  enable: true
   animation: false
-  #comment: Buy me a coffee
+  comment: 你的东西都会还给你的ZE☆~
 
 reward:
-  #wechatpay: /images/wechatpay.png
-  #alipay: /images/alipay.png
+  爱发电: /assets/images/afdian.jpg
+  #wechatpay: /assets/images/wechat.jpg
   #paypal: /images/paypal.png
   #bitcoin: /images/bitcoin.png
 
@@ -313,8 +315,8 @@ tagcloud:
 # Google Calendar
 # Share your recent schedule to others via calendar page.
 calendar:
-  calendar_id: <required> # Your Google account E-Mail
-  api_key: <required>
+  calendar_id: 4sg2pc1c7joop7i7melcfte7i4@group.calendar.google.com # Your Google account E-Mail
+  api_key: AIzaSyDoZoJ4z0Y3opIPDlpSbgmosiqgtv6Ctbg
   orderBy: startTime
   showLocation: false
   offsetMax: 72 # Time Range
@@ -378,7 +380,7 @@ back2top:
 
 # Reading progress bar
 reading_progress:
-  enable: false
+  enable: true
   # Available values: left | right
   start_at: left
   # Available values: top | bottom
@@ -515,11 +517,11 @@ math:
 
 # Easily enable fast Ajax navigation on your website.
 # For more information: https://github.com/next-theme/pjax
-pjax: false
+pjax: true
 
 # FancyBox is a tool that offers a nice and elegant way to add zooming functionality for images.
 # For more information: https://fancyapps.com/fancybox/
-fancybox: false
+fancybox: true
 
 # A JavaScript library for zooming images like Medium.
 # Warning: Do not enable both `fancybox` and `mediumzoom`.
@@ -528,7 +530,7 @@ mediumzoom: false
 
 # Vanilla JavaScript plugin for lazyloading images.
 # For more information: https://apoorv.pro/lozad.js/demo/
-lazyload: false
+lazyload: true
 
 # Pangu Support
 # For more information: https://github.com/vinta/pangu.js
@@ -843,7 +845,7 @@ motion:
 # Progress bar in the top during page loading.
 # For more information: https://github.com/CodeByZach/pace
 pace:
-  enable: false
+  enable: true
   # All available colors:
   # black | blue | green | orange | pink | purple | red | silver | white | yellow
   color: blue

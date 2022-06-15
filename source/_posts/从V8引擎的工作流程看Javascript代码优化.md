@@ -12,6 +12,7 @@ tags:
 官方文档这么介绍：V8是谷歌开源高性能JavaScript和WebAssembly引擎，用C++编写。它主要用在Chrome和Node.js中，等等。
 
 简单的来说，我们知道，JavaScript是解释型的语言，需要逐行解释执行
+
 V8则是一种C++开发的JavaScript解释器，它将JavaScript编译成可执行代码，即机器码。
 
 ## 1. V8工作流程概述

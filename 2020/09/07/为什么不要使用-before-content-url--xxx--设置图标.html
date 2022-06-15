@@ -152,7 +152,7 @@
         <div class="site-overview-wrap sidebar-panel">
           <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="白茶SyraTi"
-      src="/assets/images/avatar.jpg">
+      src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">白茶SyraTi</p>
   <div class="site-description" itemprop="description"></div>
 </div>
@@ -232,7 +232,7 @@
     <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/2020/09/07/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8-before-content-url--xxx--%E8%AE%BE%E7%BD%AE%E5%9B%BE%E6%A0%87.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/assets/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="白茶SyraTi">
     </span>
 
@@ -295,7 +295,7 @@
   </button>
   <div class="post-reward">
       <div>
-        <img src="/assets/images/afdian.jpg" alt="白茶SyraTi 爱发电">
+        <img src="/images/afdian.jpg" alt="白茶SyraTi 爱发电">
         <span>爱发电</span>
       </div>
 
@@ -381,9 +381,9 @@
 <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pixi.js@5.3.6/dist/pixi.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/index.min.js"></script>
+<script src="/scripts/pixi-live2d-display/index.js"></script>
 <!-- 如果只需要 Cubism 4 -->
-<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/cubism4.min.js"></script>
+<script src="/scripts/pixi-live2d-display/cubism4.js"></script>
 
 <script>
   async function main() {
@@ -392,17 +392,23 @@
       view: document.getElementById("live2dCanvas"),
       autoStart: true,
       width: 1500,
-      height: 1500,
+      height: 2500,
       transparent: true,
     });
 
     const model = await PIXI.live2d.Live2DModel.from('/assets/live2d/models/object_live2d_002_101.asset/object_live2d_002_101.asset.model3.json');
-    // model.scale.set(.2)
     app.stage.addChild(model);
-    // document.getElementById('canvas').addEventListener('click', () => {
-    //
-    //   model.motion('motion');
-    // })
+    model.motion('Entry');
+    let idleCounter
+    let index = 0
+    document.getElementById('live2dCanvas').addEventListener('click', () => {
+      index = index % 5
+      model.motion('Tap',index++);
+      clearTimeout(idleCounter)
+      idleCounter = setTimeout(() => {
+        model.motion('Entry');
+      }, 5000)
+    })
 
     // 变换
     // model.x = 100;

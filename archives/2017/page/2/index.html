@@ -426,8 +426,8 @@
     const app = new PIXI.Application({
       view: document.getElementById("live2dCanvas"),
       autoStart: true,
-      width: 1500,
-      height: 2500,
+      width: 1600,
+      height: 2600,
       transparent: true,
     });
 
@@ -436,14 +436,16 @@
     model.motion('Entry');
     let idleCounter
     let index = 0
-    document.getElementById('live2dCanvas').addEventListener('click', () => {
+    const changeMotion = () => {
       index = index % 5
       model.motion('Tap',index++);
       clearTimeout(idleCounter)
       idleCounter = setTimeout(() => {
         model.motion('Entry');
       }, 5000)
-    })
+    }
+    document.getElementById('live2dCanvas').addEventListener('click', changeMotion)
+    document.getElementById('live2dCanvas').addEventListener('touchstart', changeMotion)
 
     // 变换
     // model.x = 100;

@@ -2898,8 +2898,8 @@ article .inline-block {
   display: inline-block;
 }
 canvas#live2dCanvas {
-  width: 300px;
-  height: 500px;
+  width: 320px;
+  height: 520px;
 }
 .post-reward img {
   width: 400px;
@@ -2907,7 +2907,7 @@ canvas#live2dCanvas {
 @media (max-width: 767px) {
   canvas#live2dCanvas {
     width: 200px;
-    height: 200px;
+    height: 325px;
   }
 }
 @media (prefers-color-scheme: dark) {

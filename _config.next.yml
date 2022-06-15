@@ -162,12 +162,13 @@ links_settings:
   icon: fa fa-globe
   title: Links
   # Available values: block | inline
-  layout: inline
+  layout: block
 
 links:
   #Title: https://example.com
-  爱丽丝的人偶屋: https://alicem.top
-  王乌龟的跳板机吧: https://stlab.ar.gp
+  爱丽丝的人偶屋@沢城アリス: https://alicem.top
+  王乌龟的跳板机吧@乌龟吃鳖3rd: https://stlab.ar.gp
+  /dev/null@神楽坂南音: https://www.minamion.com
 
 # Table of Contents in the Sidebar
 # Front-matter variable (nonsupport wrap expand_all).
@@ -832,7 +833,7 @@ mermaid:
 # Use Animate.css to animate everything.
 # For more information: https://animate.style
 motion:
-  enable: true
+  enable: false
   async: false
   transition:
     # All available transition variants: https://theme-next.js.org/animate/

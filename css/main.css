@@ -2909,6 +2909,7 @@ canvas#live2dCanvas {
   .gitalk-container .gt-container .gt-comment-content:hover {
     box-shadow: none;
   }
+  .gitalk-container .gt-container .gt-header-preview,
   .gitalk-container .gt-container .gt-comment-body {
     color: var(--text-color) !important;
   }

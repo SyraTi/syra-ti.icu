@@ -183,8 +183,7 @@
   <entry>
     <title>apt-get临时设置代理方式</title>
     <url>/2021/08/11/apt-get%E4%B8%B4%E6%97%B6%E8%AE%BE%E7%BD%AE%E4%BB%A3%E7%90%86%E6%96%B9%E5%BC%8F.html</url>
-    <content><![CDATA[<p>&#96;&#96;&#96;<br>sudo apt-get -o Acquire::http::proxy&#x3D;”<a href="http://host:port/&quot;">http://host:port/&quot;</a> install xxx</p>
-]]></content>
+    <content><![CDATA[<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt-get -o Acquire::http::proxy=&quot;http://host:port/&quot; install xxx</span><br></pre></td></tr></table></figure>]]></content>
   </entry>
   <entry>
     <title>css椭圆轨迹运动动画</title>

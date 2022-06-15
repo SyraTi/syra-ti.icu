@@ -6,3 +6,4 @@ tags:
 
 ```
 sudo apt-get -o Acquire::http::proxy="http://host:port/" install xxx
+```

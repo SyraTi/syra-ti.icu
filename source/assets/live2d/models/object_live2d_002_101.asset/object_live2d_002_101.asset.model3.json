@@ -6,27 +6,28 @@
       "textures/texture_00.png"
     ],
     "Physics": "object_live2d_002_101.asset.physics3.json",
+    "Pose": "object_live2d_002_101.asset.pose3.json",
     "Motions": {
       "Entry": [
         {
-          "File": "motions/LIVE2D_002_101_11.motion3.json"
+          "File": "motions/LIVE2D_002_101_21.motion3.json"
         }
       ],
       "Tap": [
         {
-          "File": "motions/LIVE2D_002_101_12.motion3.json"
+          "File": "motions/LIVE2D_002_101_22.motion3.json"
         },
         {
-          "File": "motions/LIVE2D_002_101_15.motion3.json"
+          "File": "motions/LIVE2D_002_101_25.motion3.json"
         },
         {
-          "File": "motions/LIVE2D_002_101_13.motion3.json"
+          "File": "motions/LIVE2D_002_101_23.motion3.json"
         },
         {
-          "File": "motions/LIVE2D_002_101_14.motion3.json"
+          "File": "motions/LIVE2D_002_101_24.motion3.json"
         },
         {
-          "File": "motions/LIVE2D_002_101_11.motion3.json"
+          "File": "motions/LIVE2D_002_101_21.motion3.json"
         }
       ],
       "motion": [

@@ -460,6 +460,12 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
+    <title>一个Mui Demo仓库</title>
+    <url>/2017/08/10/%E4%B8%80%E4%B8%AAMui-Demo%E4%BB%93%E5%BA%93.html</url>
+    <content><![CDATA[<p>链接 <a href="https://github.com/zhaomenghuan/mui-demo">https://github.com/zhaomenghuan/mui-demo</a></p>
+]]></content>
+  </entry>
+  <entry>
     <title>一根网线同时搭载电信itv及网络 解决方案</title>
     <url>/2019/02/10/%E4%B8%80%E6%A0%B9%E7%BD%91%E7%BA%BF%E5%90%8C%E6%97%B6%E6%90%AD%E8%BD%BD%E7%94%B5%E4%BF%A1itv%E5%8F%8A%E7%BD%91%E7%BB%9C-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
     <content><![CDATA[<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv</p>
@@ -621,12 +627,6 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
-    <title>一个Mui Demo仓库</title>
-    <url>/2017/08/10/%E4%B8%80%E4%B8%AAMui-Demo%E4%BB%93%E5%BA%93.html</url>
-    <content><![CDATA[<p>链接 <a href="https://github.com/zhaomenghuan/mui-demo">https://github.com/zhaomenghuan/mui-demo</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>为什么不要使用 ::before{content:url(&#39;xxx&#39;)} 设置图标</title>
     <url>/2020/09/07/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8-before-content-url--xxx--%E8%AE%BE%E7%BD%AE%E5%9B%BE%E6%A0%87.html</url>
     <content><![CDATA[<p>项目中遇到 随手记录<br>::before ::after等伪类中使用content:url()中的图片无法设置宽高</p>
@@ -666,18 +666,18 @@ requestAnimationFrame(repeatOften);
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Point</span>(<span class="params">x,y</span>) &#123; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">x</span> = x; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">y</span> = y; </span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">const</span> obj = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
 
 <p>一旦声明了一个新的方法实例，Javascript就会创建一个隐藏类C0。</p>
-<p><img data-src="http://pic.yupoo.com/syra-ti/75020ec7/de92f2f8.png" alt="image-20220609100921408"></p>
+<p><img data-src="/images/posts/de92f2f8.png"></p>
 <p>在此时还没有声明任何的属性，所以C0现在为空。<br>一旦第一个语句“this.x&#x3D;x”被执行，V8将会基于C0创建第二个隐藏类C1。C1记录了可以找到属性x在内存中的位置。</p>
 <p>在这个例子中，x保存在偏移量为0的位置，这表示可以将一个内存中的对象目标看作是一段连续的空间。而这段空间中的第一段偏移代表着属性x。与此同时，V8将会用“类偏移”操作更新C0，这代表着属性x已经添加到了目标对象。之后，目标对象所对应的隐藏类指针将指向C1。</p>
-<p><img data-src="http://pic.yupoo.com/syra-ti/3a28213c/1b25a842.png" alt="image-20220609101620685"></p>
+<p><img data-src="/images/posts/1b25a842.png"></p>
 <p>每当目标对象添加一个新的属性，对象的旧的隐藏类就会变换路径到一个新的隐藏类。隐藏类的重要之处在于可以使经过相同创建过程创建的对象共享隐藏类。假如两个对象共享一个隐藏类，并向两个对象中同时添加相同的属性，那么这种变换将会保证变换后得到相同的隐藏类，这样代码就得到了优化。<br>当“this.y&#x3D;y”执行时将重复上面的操作。一个新的叫C2的隐藏类将被创建，然后对C1进行类变换表明属性y已经添加到了目标对象，最后将隐藏类指向C2。这样目标对象的隐藏类就更新到了C2。</p>
-<p><img data-src="http://pic.yupoo.com/syra-ti/d68b4140/4943fa23.png" alt="image-20220609102128520"></p>
+<p><img data-src="/images/posts/4943fa23.png"></p>
 <p>注意：隐藏类的变换取决于对目标对象的属性添加顺序。请注意下面的代码：</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Point</span>(<span class="params">x,y</span>) &#123; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">x</span> = x; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">y</span> = y;</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">var</span> obj1 = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">var</span> obj2 = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line"><span class="comment">// 至此为止 obj1和obj2都共享同一个隐藏类</span></span><br><span class="line">obj1.<span class="property">a</span> = <span class="number">5</span>; </span><br><span class="line">obj1.<span class="property">b</span> = <span class="number">10</span>; </span><br><span class="line">obj2.<span class="property">b</span> = <span class="number">10</span>; </span><br><span class="line">obj2.<span class="property">a</span> = <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
 
 
 <p>直到第6行为止，obj1和obj2都共享同一个隐藏类。但是，当属性a和b以相反的顺序添加到了两个对象中，这导致最后两个对象以不同的变换路径产生了两个不同的的隐藏类。</p>
-<p><img data-src="http://pic.yupoo.com/syra-ti/845431d8/0c995993.png" alt="image-20220609103423223"></p>
+<p><img data-src="/images/posts/0c995993.png"></p>
 <p><strong>因此，隐藏类更希望开发者不要频繁添加对象的属性，更希望对象的属性实例化顺序是固定的。像上述的例子，希望你只按照相同的顺序添加属性，先添加a，后添加b，这样obj1与obj2就可以共享同一个隐藏类。如果经常毫无规律的变动对象的内部成员，就会保存越来越多的隐藏类，带来不必要的性能开销。</strong></p>
 <h3 id="3-2-Inline-Cache"><a href="#3-2-Inline-Cache" class="headerlink" title="3.2 Inline Cache"></a>3.2 Inline Cache</h3><p>inline cache 提升了 JavaScript 的运行性能，但对于使用次数较少的 JavaScript 函数使用 inline cache 不会带来太多的性能，反而影响 V8 的性能。因此 V8 规定，函数调用次数超过 8 次时才开启 inline cache。<br>例如有以下函数：</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getfoo</span>(<span class="params">obj</span>)&#123;</span><br><span class="line"> <span class="keyword">return</span> obj.<span class="property">foo</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> o1 = &#123;<span class="string">&quot;x&quot;</span>:<span class="number">42</span>,<span class="string">&quot;y&quot;</span>:<span class="number">43</span>,<span class="string">&quot;foo&quot;</span>,<span class="string">&quot;41&quot;</span>&#125;;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++)&#123;</span><br><span class="line"> <span class="title function_">getfoo</span>(o1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -697,13 +697,10 @@ requestAnimationFrame(repeatOften);
 </ol>
 <hr>
 <h2 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h2><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/514716577">《Chrome V8 源码》55. 优化技术综述，如何提升 JS 运行速度
-</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/514716577">《Chrome V8 源码》55. 优化技术综述，如何提升 JS 运行速度</a></li>
 <li><a href="https://blog.sessionstack.com/how-javascript-works-inside-the-v8-engine-5-tips-on-how-to-write-optimized-code-ac089e62b12e">How JavaScript works: inside the V8 engine + 5 tips on how to write optimized code</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/469962133">V8中的隐藏类（Hidden Classes）和内联缓存（Inline Caching）
-</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/491369553">浅析V8引擎，让你更懂JavaScript！
-</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/469962133">V8中的隐藏类（Hidden Classes）和内联缓存（Inline Caching）</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/491369553">浅析V8引擎，让你更懂JavaScript！</a></li>
 </ol>
 <p>以上！まいど～</p>
 <hr>

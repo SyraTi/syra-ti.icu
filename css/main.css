@@ -2875,6 +2875,11 @@ mark.search-keyword {
   }
 }
 canvas#live2dCanvas {
+  position: fixed;
+  background: transparent;
+  left: 0;
+  bottom: 0;
+  z-index: 999;
   width: 320px;
   height: 520px;
 }

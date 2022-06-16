@@ -91,19 +91,19 @@ const obj = new Point(1,2);
 
 一旦声明了一个新的方法实例，Javascript就会创建一个隐藏类C0。
 
-![image-20220609100921408](http://pic.yupoo.com/syra-ti/75020ec7/de92f2f8.png)
+![](/images/posts/de92f2f8.png)
 
 在此时还没有声明任何的属性，所以C0现在为空。
 一旦第一个语句“this.x=x”被执行，V8将会基于C0创建第二个隐藏类C1。C1记录了可以找到属性x在内存中的位置。
 
 在这个例子中，x保存在偏移量为0的位置，这表示可以将一个内存中的对象目标看作是一段连续的空间。而这段空间中的第一段偏移代表着属性x。与此同时，V8将会用“类偏移”操作更新C0，这代表着属性x已经添加到了目标对象。之后，目标对象所对应的隐藏类指针将指向C1。
 
-![image-20220609101620685](http://pic.yupoo.com/syra-ti/3a28213c/1b25a842.png)
+![](/images/posts/1b25a842.png)
 
 每当目标对象添加一个新的属性，对象的旧的隐藏类就会变换路径到一个新的隐藏类。隐藏类的重要之处在于可以使经过相同创建过程创建的对象共享隐藏类。假如两个对象共享一个隐藏类，并向两个对象中同时添加相同的属性，那么这种变换将会保证变换后得到相同的隐藏类，这样代码就得到了优化。
 当“this.y=y”执行时将重复上面的操作。一个新的叫C2的隐藏类将被创建，然后对C1进行类变换表明属性y已经添加到了目标对象，最后将隐藏类指向C2。这样目标对象的隐藏类就更新到了C2。
 
-![image-20220609102128520](http://pic.yupoo.com/syra-ti/d68b4140/4943fa23.png)
+![](/images/posts/4943fa23.png)
 
 注意：隐藏类的变换取决于对目标对象的属性添加顺序。请注意下面的代码：
 
@@ -124,7 +124,7 @@ obj2.a = 5;
 
 直到第6行为止，obj1和obj2都共享同一个隐藏类。但是，当属性a和b以相反的顺序添加到了两个对象中，这导致最后两个对象以不同的变换路径产生了两个不同的的隐藏类。
 
-![image-20220609103423223](http://pic.yupoo.com/syra-ti/845431d8/0c995993.png)
+![](/images/posts/0c995993.png)
 
 **因此，隐藏类更希望开发者不要频繁添加对象的属性，更希望对象的属性实例化顺序是固定的。像上述的例子，希望你只按照相同的顺序添加属性，先添加a，后添加b，这样obj1与obj2就可以共享同一个隐藏类。如果经常毫无规律的变动对象的内部成员，就会保存越来越多的隐藏类，带来不必要的性能开销。**
 
@@ -175,13 +175,10 @@ Turbofan 针对 add(1,2) 优化时，它笃定你的 add() 只用于整数加法
 
 ---
 ## 参考内容：
-1. [《Chrome V8 源码》55. 优化技术综述，如何提升 JS 运行速度
-   ](https://zhuanlan.zhihu.com/p/514716577)
+1. [《Chrome V8 源码》55. 优化技术综述，如何提升 JS 运行速度](https://zhuanlan.zhihu.com/p/514716577)
 2. [How JavaScript works: inside the V8 engine + 5 tips on how to write optimized code](https://blog.sessionstack.com/how-javascript-works-inside-the-v8-engine-5-tips-on-how-to-write-optimized-code-ac089e62b12e)
-3. [V8中的隐藏类（Hidden Classes）和内联缓存（Inline Caching）
-   ](https://zhuanlan.zhihu.com/p/469962133)
-4. [浅析V8引擎，让你更懂JavaScript！
-   ](https://zhuanlan.zhihu.com/p/491369553)
+3. [V8中的隐藏类（Hidden Classes）和内联缓存（Inline Caching）](https://zhuanlan.zhihu.com/p/469962133)
+4. [浅析V8引擎，让你更懂JavaScript！](https://zhuanlan.zhihu.com/p/491369553)
 
 
 以上！まいど～

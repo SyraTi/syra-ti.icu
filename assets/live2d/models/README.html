@@ -23,15 +23,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"syra-ti.icu","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="本文件夹存放的是live2d的模型由于文件名是游戏内dump等原因导致不好修改，在此记录对应关系如下   Character Folder Note    魔理沙 object_live2d_002_101.asset 东方Canonball   芙兰朵露 object_live2d_011_101.asset 东方Canonball 普通版   芙兰朵露 object_live2d_011_50">
+    <meta name="description" content="本文件夹存放的是live2d的模型由于文件名是游戏内dump等原因导致不好修改，在此记录对应关系如下   Character Folder Note Processed    魔理沙 object_live2d_002_101.asset 东方Canonball yes   芙兰朵露 object_live2d_011_101.asset 东方Canonball 普通版 no   芙兰朵露 obj">
 <meta property="og:type" content="website">
 <meta property="og:title" content="SyraTi.ICU">
 <meta property="og:url" content="https://syra-ti.icu/assets/live2d/models/README.html">
 <meta property="og:site_name" content="SyraTi.ICU">
-<meta property="og:description" content="本文件夹存放的是live2d的模型由于文件名是游戏内dump等原因导致不好修改，在此记录对应关系如下   Character Folder Note    魔理沙 object_live2d_002_101.asset 东方Canonball   芙兰朵露 object_live2d_011_101.asset 东方Canonball 普通版   芙兰朵露 object_live2d_011_50">
+<meta property="og:description" content="本文件夹存放的是live2d的模型由于文件名是游戏内dump等原因导致不好修改，在此记录对应关系如下   Character Folder Note Processed    魔理沙 object_live2d_002_101.asset 东方Canonball yes   芙兰朵露 object_live2d_011_101.asset 东方Canonball 普通版 no   芙兰朵露 obj">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-06-16T03:59:55.651Z">
-<meta property="article:modified_time" content="2022-06-16T03:59:55.651Z">
+<meta property="article:published_time" content="2022-06-16T06:25:33.531Z">
+<meta property="article:modified_time" content="2022-06-16T06:25:33.531Z">
 <meta property="article:author" content="白茶SyraTi">
 <meta name="twitter:card" content="summary">
 
@@ -255,24 +255,38 @@
 <th>Character</th>
 <th>Folder</th>
 <th>Note</th>
+<th>Processed</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>魔理沙</td>
 <td>object_live2d_002_101.asset</td>
 <td>东方Canonball</td>
+<td>yes</td>
 </tr>
 <tr>
 <td>芙兰朵露</td>
 <td>object_live2d_011_101.asset</td>
 <td>东方Canonball 普通版</td>
+<td>no</td>
 </tr>
 <tr>
 <td>芙兰朵露</td>
 <td>object_live2d_011_501.asset</td>
 <td>东方Canonball 活动皮肤</td>
+<td>no</td>
 </tr>
 </tbody></table>
+<p>注：上表最后一列为模型处理情况，模型需要处理过才能正常显示，处理步骤如下：</p>
+<ol>
+<li>为不同的手部创建Pose组，即：添加pose3.json文件</li>
+<li>model3中需要添加Pose字段</li>
+<li>model3中的motion需要整理，目前使用的是<ul>
+<li>Entry组（会在打开页面时调用一次, 并且闲置一段时间后也会调用一次）</li>
+<li>Tap组（会在点击时调用）</li>
+</ul>
+</li>
+</ol>
 
       </div>
       
@@ -359,9 +373,9 @@
 <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pixi.js@5.3.6/dist/pixi.min.js"></script>
-<script src="/scripts/pixi-live2d-display/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/index.min.js"></script>
 <!-- 如果只需要 Cubism 4 -->
-<script src="/scripts/pixi-live2d-display/cubism4.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/cubism4.min.js"></script>
 
 <script>
   async function main() {

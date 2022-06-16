@@ -249,6 +249,14 @@ post_meta:
 symbols_count_time:
   separated_meta: true
   item_text_total: false
+  symbols: true
+  time: true
+  total_symbols: true
+  total_time: true
+  exclude_codeblock: false
+  awl: 2
+  wpm: 300
+  suffix: "mins."
 
 # Use icon instead of the symbol # to indicate the tag at the bottom of the post
 tag_icon: false
@@ -621,7 +629,7 @@ gitalk:
   client_id: 9b208922e8ef1e613ff5 # GitHub Application Client ID
   client_secret: bfcedd4fc22b80cfca1fdc953e503395b2de774a # GitHub Application Client Secret
   admin_user: SyraTi # GitHub repo owner and collaborators, only these guys can initialize gitHub issues
-  distraction_free_mode: true # Facebook-like distraction free mode
+  distraction_free_mode: false # Facebook-like distraction free mode
   # When the official proxy is not available, you can change it to your own proxy address
   proxy: https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token # This is official proxy address
   # Gitalk's display language depends on user's browser or system environment

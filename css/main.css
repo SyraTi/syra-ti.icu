@@ -2876,12 +2876,6 @@ mark.search-keyword {
     padding: 10px 12px;
   }
 }
-article p {
-  text-indent: 2em;
-}
-article .inline-block {
-  display: inline-block;
-}
 canvas#live2dCanvas {
   width: 320px;
   height: 520px;

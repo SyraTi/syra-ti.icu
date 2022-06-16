@@ -1,18 +1,27 @@
 article {
 }
-canvas#live2dCanvas{
+
+canvas#live2dCanvas {
+  position: fixed;
+  background: transparent;
+  left: 0;
+  bottom: 0;
+  z-index: 999;
   width: 320px
   height: 520px
 }
-.post-reward img{
+
+.post-reward img {
   width: 400px
 }
-@media (max-width: 767px){
+
+@media (max-width: 767px) {
   canvas#live2dCanvas {
     width: 200px
     height: 325px
   }
 }
+
 @media (prefers-color-scheme: dark) {
   .gitalk-container {
     .gt-container {

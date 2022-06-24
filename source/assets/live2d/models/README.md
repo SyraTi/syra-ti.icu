@@ -19,5 +19,4 @@
    1. 使用Cubism Viewer点击［ファイル］メニュー→［読み込み］→［表情用モーション(motion3.json / exp3.json)］
    2. 导出expression文件夹
    3. 在model3.json中添加Expression字段
-   4. *目前不清楚为什么ParamEyeScale有0和负值出现时导致眼球变得非常小，和官方的表现不一致，有待发掘问题所在，[关联Issue](https://github.com/guansss/pixi-live2d-display/issues/67)
    - 具体可参见[表情の設定と書き出し](https://docs.live2d.com/cubism-editor-manual/setting-and-exporting-facial-expressions/)

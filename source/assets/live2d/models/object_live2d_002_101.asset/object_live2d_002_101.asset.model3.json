@@ -7,6 +7,40 @@
     ],
     "Physics": "object_live2d_002_101.asset.physics3.json",
     "Pose": "object_live2d_002_101.asset.pose3.json",
+    "Expressions": [
+      {
+        "Name": "F01",
+        "File": "expressions/LIVE2D_002_101_01.exp3.json"
+      },
+      {
+        "Name": "F02",
+        "File": "expressions/LIVE2D_002_101_02.exp3.json"
+      },
+      {
+        "Name": "F03",
+        "File": "expressions/LIVE2D_002_101_03.exp3.json"
+      },
+      {
+        "Name": "F04",
+        "File": "expressions/LIVE2D_002_101_04.exp3.json"
+      },
+      {
+        "Name": "F05",
+        "File": "expressions/LIVE2D_002_101_05.exp3.json"
+      },
+      {
+        "Name": "F06",
+        "File": "expressions/LIVE2D_002_101_06.exp3.json"
+      },
+      {
+        "Name": "F07",
+        "File": "expressions/LIVE2D_002_101_07.exp3.json"
+      },
+      {
+        "Name": "F08",
+        "File": "expressions/LIVE2D_002_101_08.exp3.json"
+      }
+    ],
     "Motions": {
       "Entry": [
         {

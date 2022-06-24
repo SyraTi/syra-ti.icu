@@ -15,3 +15,9 @@
 3. model3中的motion需要整理，目前使用的是
    - Entry组（会在打开页面时调用一次, 并且闲置一段时间后也会调用一次）
    - Tap组（会在点击时调用）
+4. 将motion序号为01-08的motion3文件，导出为exp3.json表情文件，具体步骤如下
+   1. 使用Cubism Viewer点击［ファイル］メニュー→［読み込み］→［表情用モーション(motion3.json / exp3.json)］
+   2. 导出expression文件夹
+   3. 在model3.json中添加Expression字段
+   4. *目前不清楚为什么ParamEyeScale有0和负值出现时导致眼球变得非常小，和官方的表现不一致，有待发掘问题所在，[关联Issue](https://github.com/guansss/pixi-live2d-display/issues/67)
+   - 具体可参见[表情の設定と書き出し](https://docs.live2d.com/cubism-editor-manual/setting-and-exporting-facial-expressions/)

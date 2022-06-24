@@ -310,63 +310,6 @@ Base.call(o1)
 ]]></content>
   </entry>
   <entry>
-    <title>openwrt部署openvpn server以及群晖连接（DSM7）完成内网穿透</title>
-    <url>/2022/01/20/openwrt%E9%83%A8%E7%BD%B2openvpn-server%E4%BB%A5%E5%8F%8A%E7%BE%A4%E6%99%96%E8%BF%9E%E6%8E%A5%EF%BC%88DSM7%EF%BC%89%E5%AE%8C%E6%88%90%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F.html</url>
-    <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>公司里放了一台黑裙，但是没有公网IP，想到用openvpn拨到家里的路由器，再进行端口转发达到内网穿透，公网访问的目的。</p>
-<p><strong>总之的总之三步走，需要openwrt上有server，以及群晖能够有client进行拨入，最后配置端口转发</strong></p>
-<hr>
-<h2 id="1-openwrt部署openvpn-server"><a href="#1-openwrt部署openvpn-server" class="headerlink" title="1. openwrt部署openvpn server"></a>1. openwrt部署openvpn server</h2><blockquote>
-<p>openwrt官方提供了详实的文档，如下<br><a href="https://openwrt.org/docs/guide-user/services/vpn/openvpn/server">[OpenWrt Wiki] OpenVPN server</a></p>
-</blockquote>
-<p>但是这个版本生成的配置，因为用到了<code>&lt;tls-crypt-v2&gt;</code>，群晖没法识别。可以使用下面这个<code> previous version of OpenWrt</code> 的旧版本。</p>
-<blockquote>
-<p><img data-src="https://img-blog.csdnimg.cn/8196fece92354dfda722165d47ba5c54.png" alt="在这里插入图片描述"><br>链接在这里↓<br><a href="https://openwrt.org/docs/guide-user/services/vpn/openvpn/server?rev=1632708683">[OpenWrt Wiki] OpenVPN server (old)</a></p>
-</blockquote>
-<hr>
-<p>接下来就是跟着文档走一遍, 我会对官方的文档进行一个翻译和加注：</p>
-<blockquote>
-<p><strong>1. 准备</strong><br>如果需要请先设置DDNS客户端。 安装依赖包. 指定一些临时的环境变量</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装包</span></span><br><span class="line">opkg update</span><br><span class="line">opkg install openvpn-openssl openvpn-easy-rsa</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">OVPN_DIR=<span class="string">&quot;/etc/openvpn&quot;</span></span><br><span class="line">OVPN_PKI=<span class="string">&quot;/etc/easy-rsa/pki&quot;</span></span><br><span class="line">OVPN_PORT=<span class="string">&quot;1194&quot;</span></span><br><span class="line">OVPN_PROTO=<span class="string">&quot;udp&quot;</span></span><br><span class="line">OVPN_POOL=<span class="string">&quot;192.168.8.0 255.255.255.0&quot;</span>  <span class="comment"># 注：这里可以指定openvpn的网段</span></span><br><span class="line">OVPN_DNS=<span class="string">&quot;<span class="variable">$&#123;OVPN_POOL%.* *&#125;</span>.1&quot;</span></span><br><span class="line">OVPN_DOMAIN=<span class="string">&quot;<span class="subst">$(uci get dhcp.@dnsmasq[0].domain)</span>&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 拿到外网ip作为外网地址</span></span><br><span class="line">. /lib/functions/network.sh</span><br><span class="line">network_flush_cache</span><br><span class="line">network_find_wan NET_IF</span><br><span class="line">network_get_ipaddr NET_ADDR <span class="string">&quot;<span class="variable">$&#123;NET_IF&#125;</span>&quot;</span></span><br><span class="line">OVPN_SERV=<span class="string">&quot;<span class="variable">$&#123;NET_ADDR&#125;</span>&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 如果有ddns 则从ddns拿到全域名(FQDN)作为外网地址</span></span><br><span class="line">NET_FQDN=<span class="string">&quot;<span class="subst">$(uci -q get ddns.@service[0].lookup_host)</span>&quot;</span></span><br><span class="line"><span class="keyword">if</span> [ -n <span class="string">&quot;<span class="variable">$&#123;NET_FQDN&#125;</span>&quot;</span> ]</span><br><span class="line"><span class="keyword">then</span> OVPN_SERV=<span class="string">&quot;<span class="variable">$&#123;NET_FQDN&#125;</span>&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>2. 秘钥管理</strong><br>使用 EasyRSA 管理 PKI. 必要时使用私钥密码保护.</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_PKI=<span class="string">&quot;<span class="variable">$&#123;OVPN_PKI&#125;</span>&quot;</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_REQ_CN=<span class="string">&quot;ovpnca&quot;</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_BATCH=<span class="string">&quot;1&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 移除并且重新初始化pki目录</span></span><br><span class="line">easyrsa init-pki</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 生成DH变量</span></span><br><span class="line">easyrsa gen-dh</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 创建新的CA</span></span><br><span class="line">easyrsa build-ca nopass</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 为服务端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-server-full server nopass</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 为客户端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-client-full client nopass  </span><br><span class="line"><span class="comment">#注：此处为生成客户端配置必要，如果需要多个客户端的，可以多次运行本行 只需要更改“client”, 如：</span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client1 nopass </span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client2 nopass </span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client-dsm nopass</span></span><br><span class="line"><span class="comment">#注：更改后的名称会作为生成后配置文件的名称 </span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 生成TLS PSK</span></span><br><span class="line">openvpn --genkey --secret <span class="variable">$&#123;OVPN_PKI&#125;</span>/tc.pem</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>3. 防火墙</strong><br>将VPN网络视为私有网络，将VPN接口分配到LAN区域，以减少防火墙的设置。允许从WAN区域访问VPN服务器。</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置防火墙</span></span><br><span class="line">uci rename firewall.@zone[0]=<span class="string">&quot;lan&quot;</span></span><br><span class="line">uci rename firewall.@zone[1]=<span class="string">&quot;wan&quot;</span></span><br><span class="line">uci del_list firewall.lan.device=<span class="string">&quot;tun+&quot;</span></span><br><span class="line">uci add_list firewall.lan.device=<span class="string">&quot;tun+&quot;</span></span><br><span class="line">uci -q delete firewall.ovpn</span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn=<span class="string">&quot;rule&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.name=<span class="string">&quot;Allow-OpenVPN&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.src=<span class="string">&quot;wan&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.dest_port=<span class="string">&quot;<span class="variable">$&#123;OVPN_PORT&#125;</span>&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.proto=<span class="string">&quot;<span class="variable">$&#123;OVPN_PROTO&#125;</span>&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.target=<span class="string">&quot;ACCEPT&quot;</span></span><br><span class="line">uci commit firewall</span><br><span class="line">/etc/init.d/firewall restart</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>4. VPN服务</strong><br>配置VPN服务，生成客户端配置文件。</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">OVPN_DH=<span class="string">&quot;<span class="subst">$(cat $&#123;OVPN_PKI&#125;/dh.pem)</span>&quot;</span></span><br><span class="line">OVPN_TC=<span class="string">&quot;<span class="subst">$(sed -e <span class="string">&quot;/^#/d;/^\w/N;s/\n//&quot;</span> $&#123;OVPN_PKI&#125;/tc.pem)</span>&quot;</span></span><br><span class="line">OVPN_CA=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/ca.crt)</span>&quot;</span></span><br><span class="line">NL=$<span class="string">&#x27;\n&#x27;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 配置VPN服务，生成客户端配置文件。 </span></span><br><span class="line"><span class="comment">#注：如果你清楚的知道你在做什么，可以更改下方ovpn配置相关的代码，可以省掉后续多个客户端单独修改配置的工作量</span></span><br><span class="line"><span class="built_in">umask</span> go=</span><br><span class="line"><span class="built_in">ls</span> <span class="variable">$&#123;OVPN_PKI&#125;</span>/issued \</span><br><span class="line">| sed -e <span class="string">&quot;s/\.\w*$//&quot;</span> \</span><br><span class="line">| <span class="keyword">while</span> <span class="built_in">read</span> -r OVPN_ID</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">OVPN_KEY=<span class="string">&quot;<span class="subst">$(cat $&#123;OVPN_PKI&#125;/private/$&#123;OVPN_ID&#125;.key)</span>&quot;</span></span><br><span class="line">OVPN_CERT=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt)</span>&quot;</span></span><br><span class="line">OVPN_EKU=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt -purpose)</span>&quot;</span></span><br><span class="line"><span class="keyword">case</span> <span class="variable">$&#123;OVPN_EKU&#125;</span> <span class="keyword">in</span></span><br><span class="line">(*<span class="string">&quot;SSL server : Yes&quot;</span>*)</span><br><span class="line">OVPN_CONF=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">port <span class="variable">$&#123;OVPN_PORT&#125;</span></span></span><br><span class="line"><span class="string">proto <span class="variable">$&#123;OVPN_PROTO&#125;</span></span></span><br><span class="line"><span class="string">server <span class="variable">$&#123;OVPN_POOL&#125;</span></span></span><br><span class="line"><span class="string">topology subnet</span></span><br><span class="line"><span class="string">client-to-client</span></span><br><span class="line"><span class="string">keepalive 10 60</span></span><br><span class="line"><span class="string">persist-tun</span></span><br><span class="line"><span class="string">persist-key</span></span><br><span class="line"><span class="string">push \&quot;dhcp-option DNS <span class="variable">$&#123;OVPN_DNS&#125;</span>\&quot;</span></span><br><span class="line"><span class="string">push \&quot;dhcp-option DOMAIN <span class="variable">$&#123;OVPN_DOMAIN&#125;</span>\&quot;</span></span><br><span class="line"><span class="string">push \&quot;redirect-gateway def1\&quot;</span></span><br><span class="line"><span class="string">push \&quot;persist-tun\&quot;</span></span><br><span class="line"><span class="string">push \&quot;persist-key\&quot;</span></span><br><span class="line"><span class="string">&lt;dh&gt;<span class="variable">$&#123;NL&#125;</span><span class="variable">$&#123;OVPN_DH&#125;</span><span class="variable">$&#123;NL&#125;</span>&lt;/dh&gt;&quot;</span></span><br><span class="line">OVPN_EXT=<span class="string">&quot;conf&quot;</span> ;;</span><br><span class="line">(*<span class="string">&quot;SSL client : Yes&quot;</span>*)</span><br><span class="line">OVPN_CONF=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">nobind</span></span><br><span class="line"><span class="string">client</span></span><br><span class="line"><span class="string">remote <span class="variable">$&#123;OVPN_SERV&#125;</span> <span class="variable">$&#123;OVPN_PORT&#125;</span> <span class="variable">$&#123;OVPN_PROTO&#125;</span></span></span><br><span class="line"><span class="string">auth-nocache</span></span><br><span class="line"><span class="string">remote-cert-tls server&quot;</span></span><br><span class="line">OVPN_EXT=<span class="string">&quot;ovpn&quot;</span> ;;</span><br><span class="line"><span class="keyword">esac</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt; <span class="string">EOF &gt; $&#123;OVPN_DIR&#125;/$&#123;OVPN_ID&#125;.$&#123;OVPN_EXT&#125;</span></span><br><span class="line"><span class="string">user nobody</span></span><br><span class="line"><span class="string">group nogroup</span></span><br><span class="line"><span class="string">dev tun</span></span><br><span class="line"><span class="string">$&#123;OVPN_CONF&#125;</span></span><br><span class="line"><span class="string">&lt;tls-crypt&gt;$&#123;NL&#125;$&#123;OVPN_TC&#125;$&#123;NL&#125;&lt;/tls-crypt&gt;</span></span><br><span class="line"><span class="string">&lt;key&gt;$&#123;NL&#125;$&#123;OVPN_KEY&#125;$&#123;NL&#125;&lt;/key&gt;</span></span><br><span class="line"><span class="string">&lt;cert&gt;$&#123;NL&#125;$&#123;OVPN_CERT&#125;$&#123;NL&#125;&lt;/cert&gt;</span></span><br><span class="line"><span class="string">&lt;ca&gt;$&#123;NL&#125;$&#123;OVPN_CA&#125;$&#123;NL&#125;&lt;/ca&gt;</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">/etc/init.d/openvpn restart</span><br><span class="line"><span class="comment"># 此处就能够看到client.ovpn 把这个文件通过openwrt的备份功能导出来，上传到群晖即可</span></span><br><span class="line"><span class="built_in">ls</span> <span class="variable">$&#123;OVPN_DIR&#125;</span>/*.ovpn</span><br></pre></td></tr></table></figure>
-<p>到这里openwrt的openvpn服务端配置完毕，可以使用openvpn的备份功能（<code>System -&gt; Backup/Flash Firmware</code>）. 从备份包导出客户端的配置文件。</p>
-<hr>
-<h2 id="2-群晖连接openvpn"><a href="#2-群晖连接openvpn" class="headerlink" title="2. 群晖连接openvpn"></a>2. 群晖连接openvpn</h2><p>到了群晖这一步就比较简单，按照官网的流程，打开 <code>控制面板-&gt;网络-&gt;网络界面-&gt;新增-&gt;创建VPN配置文件</code>，把刚才导出的client.ovpn上传即可</p>
-<blockquote>
-<p>注：其实这里因为群晖的错误提示非常的“友好”，连接失败只会提示“失败，请检查配置”或者“认证错误”，导致排错非常的困难，踩了不少坑。比如不支持的标签，属性等等，总之注意点都写在第一步了。如果还是有问题，请自行前往<code>/var/log/messages</code>进行openvpn相关日志的排查。</p>
-</blockquote>
-<p>按照下图位置上传client.ovpn<br><img data-src="https://img-blog.csdnimg.cn/db605dfb49fe49aebf6ac6fe52d3c13c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>这里只需要填写 “导入.ovpn” 文件这一项<br><img data-src="https://img-blog.csdnimg.cn/3a403e5c14fe4f0493d5e95118e79b6c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_19,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>记得勾选这两个选项<br><img data-src="https://img-blog.csdnimg.cn/88e52cab7a7144d9a9d482b3391b4903.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>到这一步 openvpn的连接可以正常建立了。</p>
-<hr>
-<h2 id="3-配置端口转发"><a href="#3-配置端口转发" class="headerlink" title="3.配置端口转发"></a>3.配置端口转发</h2><p>需要完成端口转发，首先我们得先把群晖的ip固定下来，否则ip一变动，端口转发规则就失效了。<br>需要完成openvpn客户端的ip固定，我们需要在server配置中添加规则。</p>
-<p><strong>编辑服务端配置</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim <span class="variable">$&#123;OVPN_DIR&#125;</span>/server.ovpn</span><br></pre></td></tr></table></figure>
-<p><strong>添加下面这一行，用来指定客户端config文件夹</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 这里的文件夹路径可以自定</span></span><br><span class="line">client-config-dir /etc/openvpn/ccd</span><br></pre></td></tr></table></figure>
-<p><strong>保存后新增客户端config 注意这里的“client”需要和.ovpn文件名相符，也就是easyrsa创建客户端秘钥时的名字</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim /etc/openvpn/ccd/client</span><br></pre></td></tr></table></figure>
-<p><strong>添加下面这一行，来绑定ip</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 这里的192.168.8.108 即为你想要绑定的ip</span></span><br><span class="line">ifconfig-push 192.168.8.108 255.255.255.0</span><br></pre></td></tr></table></figure>
-<p><strong>保存后重启openvpn</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/etc/init.d/openvpn restart</span><br></pre></td></tr></table></figure>
-<hr>
-<p>接下来正式开始配置端口转发，进入openwrt,  菜单选择 <code>Network-&gt;Firewall-&gt;Port Forwards</code><br><img data-src="https://img-blog.csdnimg.cn/b76d34e11f01421aaf38f7c9a4c6c0cb.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>新增一条端口转发，按照下图填写<br><img data-src="https://img-blog.csdnimg.cn/2df447f9ae0a470c8d3a3f65c98dba4a.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>至此，应该就能够使用openwrt的端口转发达到内网穿透的目的了。</p>
-<p>以上！まいど～</p>
-<hr>
-]]></content>
-  </entry>
-  <entry>
     <title>修复gitCI中文件的创建时间与修改时间</title>
     <url>/2022/04/10/restore-atime-mtime-in-git-CI.html</url>
     <content><![CDATA[<h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>hexo发现经过CI之后，所有文章的 <strong>更新时间(mtime)</strong> 变成了CI运行的时间。</p>
@@ -466,251 +409,11 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
-    <title>一根网线同时搭载电信itv及网络 解决方案</title>
-    <url>/2019/02/10/%E4%B8%80%E6%A0%B9%E7%BD%91%E7%BA%BF%E5%90%8C%E6%97%B6%E6%90%AD%E8%BD%BD%E7%94%B5%E4%BF%A1itv%E5%8F%8A%E7%BD%91%E7%BB%9C-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
-    <content><![CDATA[<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv</p>
-<p><strong>原拓扑图如下</strong><br><img data-src="https://img-blog.csdnimg.cn/20190210155452299.png#pic_center" alt="原拓扑图"></p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>材料：</strong><br>1、水星Mercury SG105Pro 五口千兆网管交换机 价格 98 元 放置在客厅（下称SW5）<br>2、水星Mercury SG108Pro 八口千兆网管交换机 价格 169 元 放置在弱电箱（下称SW8）</p>
-<p><strong>整体解决思路：</strong><br>在弱电箱端，使用一台交换机，将itv和网络的数据包合并至一条主干道网线上，到使用端（客厅）使用另一台交换机进行识别后拆分为两条线使用——达到墙内一条线，实际承载两条线路的目的。</p>
-<p><strong>实际解决方案（看不明白可以先往下看）：</strong><br>利用802.1Q VLAN的Tag机制划分两路VLAN：一路走itv（下称VLAN2）一路走网络（下称VLAN3），由交换机为收到的包打Tag后送入网线，进入Tag所示VLAN传输，由另一台交换机判断Tag，送入指定设备——达到目的。</p>
-<p><strong>先行说明：</strong><br>在说明解决步骤之前先说明几个概念，po也是用了不少时间加实践去理解了VLAN、802.1Q标准中的Tag、Untagged、VLAN ID、PVID等概念，在这里做简单的讲述</p>
-<p>*<strong>这里我们先打个比方，方便讲概念：</strong></p>
-<blockquote>
-<p>我们把数据包在交换机中的传输比作一场从出发地到目的地传送小球的游戏</p>
-<ul>
-<li>数据包比作小球；</li>
-<li>交换机是一个小球的中转站，决定来到这里的小球应该去到哪里；</li>
-<li>交换机的端口是小球的出入口，我们将它比作检查站，每个检查站都有一把刷子和一把水枪（至于为什么是刷子和水枪？后面会说到），可以对小球进行上色和洗色；</li>
-</ul>
-</blockquote>
-<p>*<strong>下面开始讲概念：</strong><br><em>VLAN——是一条传送小球的管道：</em></p>
-<blockquote>
-<p>VLAN（Virtual Local Area Network）的中文名为”虚拟局域网”。划分到同一VLAN下的端口可以互相通信，不同VLAN不能互相通信。</p>
-<p>——如果我们把数据传输比作小球过管道，数据包是小球，那么VLAN就好比是管道，进入A管道的球是不能去到B管道的。</p>
-</blockquote>
-<p><em>802.1Q——是制作管道的标准:</em></p>
-<blockquote>
-<p>802.1Q是VLAN标准的一种。<br>——你可以理解为制作管道的标准。</p>
-</blockquote>
-<p><em>VLAN ID——是颜色：</em></p>
-<blockquote>
-<p>802.1Q标准中为数据包附加的一个值 标识该包在VLAN ID所示的VLAN中传输<br>——标准规定管道必须涂上颜色（VLAN ID），里面只能通过管道对应颜色（VLAN ID）的球。</p>
-</blockquote>
-<p><em>TAG帧——带颜色的小球：</em></p>
-<blockquote>
-<p>带有VLAN ID的数据包<br>——带颜色（VLAN ID）的小球</p>
-</blockquote>
-<p><em>UNTAG帧——白色的小球：</em></p>
-<blockquote>
-<p>不带有VLAN ID的数据包<br>——不带颜色（VLAN ID）的小球</p>
-</blockquote>
-<p><em>PVID——是检查站刷子上的油漆：</em></p>
-<blockquote>
-<p>Port VLAN ID，即端口缺省VLAN ID  ，在交换机中提前配置<br>当端口接收到数据包时，可以为该包打上等于该端口PVID值的VLAN ID，此后该包成为TAG帧，在该VLAN ID所表示的VLAN中传输，是否打上tag由端口模式决定（Tagged&#x2F;Untagged）。<br>——每个检查站都有一把刷子，刷子上都沾了我们指定颜色的油漆（PVID），当遇到小球的时候，可以把它刷成油漆的颜色(VLAN ID)，接下来小球就只能进到对应颜色的管道里了，是不是要涂色，根据检查站的模式来决定。</p>
-</blockquote>
-<p><em>Tagged与Untagged及端口收发包逻辑——检查站的两种模式</em></p>
-<blockquote>
-<h6 id="端口处理数据有两种方式：Tagged-x2F-Untagged"><a href="#端口处理数据有两种方式：Tagged-x2F-Untagged" class="headerlink" title="端口处理数据有两种方式：Tagged&#x2F;Untagged"></a><em>端口处理数据有两种方式：Tagged&#x2F;Untagged</em></h6><p><strong>端口接收数据时：</strong></p>
-<ul>
-<li>如果端口是tagged方式<br>- 当数据包为UNTAG帧的话，就加上该端口的PVID，送入PVID所示的VLAN中传输；<br>- 如果数据包为TAG帧，那么就不再添加，直接送入TAG所示的VLAN中传输；</li>
-<li>如果是untagged方式，<ul>
-<li>输入的数据包全部都要加上该端口的PVID。不管输入的数据包是TAG帧还是UNTAG帧。</li>
-</ul>
-</li>
-</ul>
-<p><strong>端口发送数据时：</strong></p>
-<ul>
-<li>如果端口是tagged方式<ul>
-<li>如果端口PVID等于发送的数据包所含的VLAN ID，那么就会将VLAN ID从发送的数据包中去掉；</li>
-<li>如果不相等，则数据包将保持原样发送出去。</li>
-</ul>
-</li>
-<li>如果端口是untagged方式<ul>
-<li>则不管端口PVID为多少，是否等于要输出的数据包的VLAN，都会将VLAN ID从数据包中去掉。</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h6 id="检查站有两种模式：Tagged和Untagged"><a href="#检查站有两种模式：Tagged和Untagged" class="headerlink" title="检查站有两种模式：Tagged和Untagged"></a><em>检查站有两种模式：Tagged和Untagged</em></h6><p><strong>检查站遇到外面来的小球：</strong></p>
-<ul>
-<li>如果检查站是tagged模式<ul>
-<li>如果小球是白色的，就用刷子为小球涂上油漆的颜色，送进对应颜色的管道里传输；</li>
-<li>如果小球有颜色，那就不再处理小球，直接送到小球对应颜色的管道里传输；</li>
-</ul>
-</li>
-<li>如果检查站在untagged模式<ul>
-<li>碰到的小球全部用刷子刷上油漆，强行送进对应的管道传输；</li>
-</ul>
-</li>
-</ul>
-<p><strong>检查站准备送走从管子里出来的小球时</strong></p>
-<ul>
-<li>如果检查站是tagged模式<ul>
-<li>如果油漆的颜色和小球的颜色一致，就把小球的油漆用水枪洗掉再送走。</li>
-<li>如果油漆的颜色和小球的颜色不一致，就把小球原样送走。</li>
-</ul>
-</li>
-<li>如果检查站是untagged方式<ul>
-<li>不管油漆颜色还是小球颜色，都将小球的油漆用水枪洗掉再送走。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p>讲解完概念后，我们再回来看解决方案</p>
-<blockquote>
-<p><strong>实际解决方案（看不明白可以先往下看）：</strong><br>利用802.1Q VLAN的Tag机制划分两路VLAN：一路走itv（下称VLAN2）一路走网络（下称VLAN3），由交换机为收到的包打Tag后送入网线，进入Tag所示VLAN传输，由另一台交换机判断Tag，送入指定设备——达到目的。</p>
-</blockquote>
-<p><strong>如果你还是看不懂，我们再换成传送小球：</strong></p>
-<blockquote>
-<p>我们按照标准制造了两根管道，一根涂成红色（itv），一根涂成蓝色（网络），将这两条管道埋设到一条网线中，由一头的中转站为光猫送来的白色小球上色，分别送入两条管道，经过同一条网线，另一头的中转站判断颜色，送到指定的目的地——达到目的。</p>
-</blockquote>
-<p><strong>具体解决步骤：</strong></p>
-<ul>
-<li><p>1、配置SW8的VLAN</p>
-<ul>
-<li><p>VLAN划分如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210233114958.png#pic_center" alt="SW8 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,7端口配置为itv交换<br>VLAN3 将1-6 以及8 端口配置为网络交换</p>
-<p><strong>将端口1作为主干道端口<br>*此端口连接SW5<br>**接收：由SW5发送过来的TAG帧 并根据TAG帧中的VLAN ID 决定送入VLAN2还是VLAN3（即广播至VLAN2的7端口或VLAN3的2-6、8端口）<br>**发送：由SW8其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW5</strong></p>
-</li>
-<li><p>PVID配置如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210161628593.png#pic_center" alt="VLAN PVID配置"><br>端口1：接SW5 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口7：接光猫ITV口 PVID设置为2 接收光猫ITV口发送来的UNTAG帧 送入VLAN2<br>端口8：接光猫千兆口 PVID设置为3 接收光猫千兆网络口发送来的UNTAG帧 送入VLAN3<br>端口2-6：接其他房间电脑 PVID设置为3 接收其他房间电脑发送来的UNTAG帧 送入VLAN3 与端口8光猫千兆口相互通信</p>
-</li>
-</ul>
-</li>
-<li><p>2、配置SW5的VLAN</p>
-<ul>
-<li><p>VLAN划分如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210223800782.png#pic_center" alt="SW5 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,4 端口配置为itv交换 令4端口可以与主干道端口进行通信<br>VLAN3 将1,5 端口配置为网络交换 令5端口可以与主干道端口进行通信</p>
-<p><strong>将端口1作为主干道端口<br>**接收：由SW8发送过来的TAG帧 并根据TAG帧中的VLAN ID 决定送入VLAN2还是VLAN3（即 广播至VLAN2的4端口或VLAN3的5端口）<br>**发送：由SW5其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW8</strong></p>
-</li>
-<li><p>PVID配置如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210224225870.png#pic_center" alt="SW5 PVID配置"><br>端口1：接SW8 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口4：接机顶盒 PVID设置为2 接收机顶盒发来的UNTAG帧 打上VLAN ID值为2后将该TAG帧交由端口1<br>端口5：接路由器 PVID设置为3 接收路由器发送来的UNTAG帧 打上VLAN ID值为3后将该TAG帧交由端口1<br>端口2-3：闲置 可无视</p>
-</li>
-<li><p>最终VLAN端口一览<br>VLAN2（ITV）：SW8P1、SW8P7、SW5P1、SW5P4<br>VLAN3（网络）：SW8P1、SW8P2-6、SW8P8、SW5P1、SW5P5</p>
-</li>
-</ul>
-<blockquote>
-<p>至此ITV通过SW5P4与SW8P7可互相通信 网络通过SW5P5与SW8P8可互相通信<br>ITV与网络互不干扰 但通过SW8P1与SW5P1之间只连接了一根网线 目的达成</p>
-</blockquote>
-</li>
-<li><p>3、连接拓扑图<br><img data-src="https://img-blog.csdnimg.cn/20190210230243826.png#pic_center" alt="连接拓扑图"></p>
-</li>
-<li><p>4、问题解决</p>
-</li>
-</ul>
-<p><strong>交换逻辑：</strong></p>
-<p><em>网络数据帧传输：</em></p>
-<p>1.去程 光猫千兆口-&gt;客厅路由器</p>
-<blockquote>
-<p>1.光猫千兆口发送UNTAG帧 到达SW8 8端口<br>2.判断8端口PVID为3 为数据帧打上VLAN ID标记值为3 转为TAG帧 传入VLAN3 交换至1-6端口<br>3.TAG帧到达2-6端口 与其他房间各电脑通信直接拨号上网；同时，TAG帧到达1端口 送至SW5<br>5.TAG帧到达SW5的1端口 判断TAG帧中VLAN ID为3 送入VLAN3 交换至5端口<br>6.TAG帧到达5端口 送至客厅路由器<br>7.完成光猫千兆口-&gt;客厅路由器的传输 全程数据帧在VLAN3中传输 与SW8 7端口ITV无关</p>
-</blockquote>
-<p>2.回程 客厅路由器-&gt;光猫千兆口</p>
-<blockquote>
-<p>1.客厅路由器发送UNTAG帧 到达SW5 5端口<br>2.判断5端口PVID为3 为数据帧打上VLAN ID标记值为3 转为TAG帧 传入VLAN3 交换至1端口 送至SW8<br>3.TAG帧到达SW8的1端口 判断TAG帧中VLAN ID为3 送入VLAN3 交换至1-6端口<br>4.TAG帧到达2-6端口 实现客厅路由器与其他各房间的局域网通信；同时TAG帧到达8端口 送至光猫千兆口<br>5.完成客厅路由器-&gt;光猫千兆口的传输 全程数据帧在VLAN3中传输 与SW8 7端口ITV无关</p>
-</blockquote>
-<p><em>ITV数据帧传输：</em></p>
-<p>1.去程 光猫ITV口-&gt;客厅机顶盒</p>
-<blockquote>
-<p>1.光猫ITV口发送UNTAG帧 到达SW8 7端口<br>2.判断7端口PVID为2 为数据帧打上VLAN ID标记值为2 转为TAG帧 传入VLAN2 交换至1-6端口<br>3.TAG帧到达1端口 送至SW5<br>5.TAG帧到达SW5的1端口 判断TAG帧中VLAN ID为2 送入VLAN2 交换至4端口<br>6.TAG帧到达4端口 送至机顶盒<br>7.完成光猫ITV口-&gt;客厅机顶盒的传输 全程数据帧在VLAN2中传输 与SW8 8端口网络无关</p>
-</blockquote>
-<p>2.回程 客厅机顶盒-&gt;光猫ITV口</p>
-<blockquote>
-<p>1.客厅机顶盒发送UNTAG帧 到达SW5 4端口<br>2.判断4端口PVID为2 为数据帧打上VLAN ID标记值为2 转为TAG帧 传入VLAN2 交换至1端口 送至SW8<br>3.TAG帧到达SW8的1端口 判断TAG帧中VLAN ID为2 送入VLAN2 交换至7端口<br>4.TAG帧到达7端口 送至光猫ITV口<br>5.完成客厅路由器-&gt;光猫ITV口的传输 全程数据帧在VLAN2中传输  与SW8 8端口网络无关</p>
-</blockquote>
-<h4 id="至此问题解决！-也是钻研了三四天-临时起意肯定有写的不对的地方-欢迎各位在评论指出！"><a href="#至此问题解决！-也是钻研了三四天-临时起意肯定有写的不对的地方-欢迎各位在评论指出！" class="headerlink" title="至此问题解决！ 也是钻研了三四天 临时起意肯定有写的不对的地方 欢迎各位在评论指出！"></a>至此问题解决！ 也是钻研了三四天 临时起意肯定有写的不对的地方 欢迎各位在评论指出！</h4><hr>
-<p>参考资料</p>
-<ol>
-<li><a href="http://blog.chinaunix.net/uid-24020646-id-3065954.html">交换机Vlan中 tagged和untagged的区别-platinaluo-ChinaUnix博客</a></li>
-<li><a href="https://blog.csdn.net/xiaohaijiejie/article/details/70208549">802.1Q VLAN 技术原理—理解PVID和VID - 小海的专栏 - CSDN博客</a></li>
-<li><a href="https://www.chiphell.com/thread-1670251-1-1.html">一根网线走iptv及网络的实践经验 - 电脑讨论 -  Chiphell - 分享与交流用户体验</a></li>
-<li><a href="https://www.chiphell.com/thread-1524134-1-1.html">一根网线怎么走局域网和iptv - 电脑讨论 -  Chiphell - 分享与交流用户体验</a></li>
-</ol>
-<hr>
-<p>2019年10月13日：有读者来问问题，似乎还是看的不太明白，加了小球的比方，希望能有助于理解吧！各位看官如果有啥不明白的，评论私信都可以哈！多多的来！</p>
-<hr>
-]]></content>
-  </entry>
-  <entry>
     <title>为什么不要使用 ::before{content:url(&#39;xxx&#39;)} 设置图标</title>
     <url>/2020/09/07/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8-before-content-url--xxx--%E8%AE%BE%E7%BD%AE%E5%9B%BE%E6%A0%87.html</url>
     <content><![CDATA[<p>项目中遇到 随手记录<br>::before ::after等伪类中使用content:url()中的图片无法设置宽高</p>
 <hr>
 ]]></content>
-  </entry>
-  <entry>
-    <title>从V8引擎的工作流程看Javascript代码优化</title>
-    <url>/2022/06/14/%E4%BB%8EV8%E5%BC%95%E6%93%8E%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E7%9C%8BJavascript%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96.html</url>
-    <content><![CDATA[<h2 id="0-V8介绍"><a href="#0-V8介绍" class="headerlink" title="0. V8介绍"></a>0. V8介绍</h2><p>官方文档这么介绍：V8是谷歌开源高性能JavaScript和WebAssembly引擎，用C++编写。它主要用在Chrome和Node.js中，等等。</p>
-<p>简单的来说，我们知道，JavaScript是解释型的语言，需要逐行解释执行</p>
-<p>V8则是一种C++开发的JavaScript解释器，它将JavaScript编译成可执行代码，即机器码。</p>
-<h2 id="1-V8工作流程概述"><a href="#1-V8工作流程概述" class="headerlink" title="1. V8工作流程概述"></a>1. V8工作流程概述</h2><p>JavaScript是解释型的语言，解释型的语言先天就有执行效率上的不足。为此，V8引擎同时采用了解释执行和编译执行这两种方式，也就是在解释执行的同时进行编译，这种方式称为<strong>JIT (Just in Time) 即时编译</strong>。</p>
-<p><strong>解释执行</strong>：V8在执行JavaScript源码时，会先通过解析器Parser将源码解析成AST，解释器Ignition会将AST转化为字节码，一边解释一遍执行。</p>
-<p><strong>即时编译</strong>：Ignition同时会记录某一代码片段的执行次数，如果执行次数超过了某个阈值，这段代码便会被标记为热点代码(HotSpot)，同时将运行信息反馈给<strong>优化编译器TurboFan</strong>，会将这部分热点代码的字节码优化并编译，生成机器码更高效地运行。</p>
-<pre class="mermaid">graph LR
-  源代码 --Parser--> AST
-  AST --Ignition--> 字节码
-  字节码 --Ignition--> 逐行解释为机器码执行
-  字节码 -.Ignition高频执行.-> HotSpot
-  HotSpot --TurboFan--> 编译为机器码执行</pre>
-
-<h3 id="1-1-Parser-解析器-生成语法抽象树（AST）"><a href="#1-1-Parser-解析器-生成语法抽象树（AST）" class="headerlink" title="1.1 Parser 解析器 生成语法抽象树（AST）"></a>1.1 Parser 解析器 生成语法抽象树（AST）</h3><p>生成AST中的一个优化是惰性解析(Lazy Parsing)，因为源码在执行前如果全部完全解析的话，不仅执行时间过长，而且会消耗更多的内存。<br>惰性解析就是指如果遇到并不是立即执行的函数，只会对其进行预解析(Pre-Parser)，当函数被调用时，才会对其完全解析。<br>预解析时，只会验证函数的语法是否有效、解析函数声明以及确定函数作用域，并不会生成AST，这项工作由Pre-Parser预解析器完成。</p>
-<h3 id="1-2-Ignition-解释器-生成字节码及解释执行"><a href="#1-2-Ignition-解释器-生成字节码及解释执行" class="headerlink" title="1.2 Ignition 解释器 生成字节码及解释执行"></a>1.2 Ignition 解释器 生成字节码及解释执行</h3><p>Ignition 是 V8 的解释器，负责生成和执行字节码。字节码与平台无关，也就是说无论 X86 架构或 ARM 架构，同一份 JavaScript 源码生成的字节码序列是相同的，解释器逐条读取字节码并执行。</p>
-<p>字节码是机器码的抽象，可以看作是小型的构建块。相比机器码，字节码不仅占用内存少，而且生成字节码的时间很快，提升了启动速度。</p>
-<h3 id="1-3-Turbofan-优化编译器-对部分代码直接编译执行"><a href="#1-3-Turbofan-优化编译器-对部分代码直接编译执行" class="headerlink" title="1.3 Turbofan 优化编译器 对部分代码直接编译执行"></a>1.3 Turbofan 优化编译器 对部分代码直接编译执行</h3><p>Turbofan 是 V8 的优化编译器，它使 JavaScript 执行的更快，但比Ignition需要更多的编译时间，所以 V8 只对热点代码（HotCode）使用 Turbofan。</p>
-<p>JavaScript 代码先由 Ignition 执行，并判断当该代码片段执行次数达到设定值时变为热点代码，由TurboFan把它编译为更高效的机器码储存起来，等到下次再执行到这段代码时，就会用现在的机器码替换原来的字节码进行执行，这样大大提升了代码的执行效率。</p>
-<h2 id="2-V8工作流程中一些具体实现"><a href="#2-V8工作流程中一些具体实现" class="headerlink" title="2.  V8工作流程中一些具体实现"></a>2.  V8工作流程中一些具体实现</h2><h3 id="2-1-隐藏类-JavaScript-动态类型"><a href="#2-1-隐藏类-JavaScript-动态类型" class="headerlink" title="2.1 隐藏类  JavaScript 动态类型"></a>2.1 隐藏类  JavaScript 动态类型</h3><p>我们知道，JavaScript是动态类型语言，运行时数据类型会发生变化。V8 采用 C++ 编写，C++ 是强类型语言，要求类型确定。类型确定的 C++ 是如何表达类型不确定的 JavaScript 呢？</p>
-<p>答案是：C++ 申请一块内存，这块是 JavaScript 的一个对象，并约定这块内存的开始位置保存内存的解读方式，操作这块内存之前先查解读方法，通过改变解读方式来模拟 JavaScript 对象的动态变化。</p>
-<p>具体来说：操作 JS 数据前先查询类型，再操作。为此，V8采用了隐藏类（Hidden Class），因为 JavaScript 程序员看不到这个 class，所以称为隐藏类。注意： 隐藏类的术语是 Map，它的含义是地图，说明如何解读内存，不是 JavaScript Map 机制。</p>
-<p>V8通过查询存储空间的第一个位置，就可以找到Map。这个Map大小是80byte，存储信息的格式与位置也是固定的，存储信息包括：JavaScript 对象的存储空间有哪些成员，成员类型，成员偏移地址等。所以说，Map 就是地图。</p>
-<h3 id="2-2-Inline-Cache-内联缓存"><a href="#2-2-Inline-Cache-内联缓存" class="headerlink" title="2.2 Inline Cache 内联缓存"></a>2.2 Inline Cache 内联缓存</h3><p>我们已经知道，V8在查找对象的属性（例如obj.x）时流程是这样的：查找对象 obj 的隐藏类，再通过隐藏类查找 x 属性偏移量，然后根据偏移量获取属性值。</p>
-<p>我们把上面这个获取 x 属性偏移量的过程称为寻址方法。</p>
-<p>简单的来说：IC负责缓存对象的寻址方法，下次执行该函数时，直接使用寻址方法（V8 中的术语是 Handler），节省了计算寻址方法的时间。</p>
-<h2 id="3-如何编写优化的-JavaScript"><a href="#3-如何编写优化的-JavaScript" class="headerlink" title="3. 如何编写优化的 JavaScript"></a>3. 如何编写优化的 JavaScript</h2><h3 id="3-1-隐藏类"><a href="#3-1-隐藏类" class="headerlink" title="3.1 隐藏类"></a>3.1 隐藏类</h3><p>我们已经知道，V8 通过查询 Map，可以知道存储空间内存放了什么，怎么存放的，进而正确操作该对象。</p>
-<p>例如有以下代码：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Point</span>(<span class="params">x,y</span>) &#123; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">x</span> = x; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">y</span> = y; </span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">const</span> obj = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
-
-<p>一旦声明了一个新的方法实例，Javascript就会创建一个隐藏类C0。</p>
-<p><img data-src="/images/posts/de92f2f8.png"></p>
-<p>在此时还没有声明任何的属性，所以C0现在为空。<br>一旦第一个语句“this.x&#x3D;x”被执行，V8将会基于C0创建第二个隐藏类C1。C1记录了可以找到属性x在内存中的位置。</p>
-<p>在这个例子中，x保存在偏移量为0的位置，这表示可以将一个内存中的对象目标看作是一段连续的空间。而这段空间中的第一段偏移代表着属性x。与此同时，V8将会用“类偏移”操作更新C0，这代表着属性x已经添加到了目标对象。之后，目标对象所对应的隐藏类指针将指向C1。</p>
-<p><img data-src="/images/posts/1b25a842.png"></p>
-<p>每当目标对象添加一个新的属性，对象的旧的隐藏类就会变换路径到一个新的隐藏类。隐藏类的重要之处在于可以使经过相同创建过程创建的对象共享隐藏类。假如两个对象共享一个隐藏类，并向两个对象中同时添加相同的属性，那么这种变换将会保证变换后得到相同的隐藏类，这样代码就得到了优化。<br>当“this.y&#x3D;y”执行时将重复上面的操作。一个新的叫C2的隐藏类将被创建，然后对C1进行类变换表明属性y已经添加到了目标对象，最后将隐藏类指向C2。这样目标对象的隐藏类就更新到了C2。</p>
-<p><img data-src="/images/posts/4943fa23.png"></p>
-<p>注意：隐藏类的变换取决于对目标对象的属性添加顺序。请注意下面的代码：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Point</span>(<span class="params">x,y</span>) &#123; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">x</span> = x; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">y</span> = y;</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">var</span> obj1 = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">var</span> obj2 = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line"><span class="comment">// 至此为止 obj1和obj2都共享同一个隐藏类</span></span><br><span class="line">obj1.<span class="property">a</span> = <span class="number">5</span>; </span><br><span class="line">obj1.<span class="property">b</span> = <span class="number">10</span>; </span><br><span class="line">obj2.<span class="property">b</span> = <span class="number">10</span>; </span><br><span class="line">obj2.<span class="property">a</span> = <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
-
-
-<p>直到第6行为止，obj1和obj2都共享同一个隐藏类。但是，当属性a和b以相反的顺序添加到了两个对象中，这导致最后两个对象以不同的变换路径产生了两个不同的的隐藏类。</p>
-<p><img data-src="/images/posts/0c995993.png"></p>
-<p><strong>因此，隐藏类更希望开发者不要频繁添加对象的属性，更希望对象的属性实例化顺序是固定的。像上述的例子，希望你只按照相同的顺序添加属性，先添加a，后添加b，这样obj1与obj2就可以共享同一个隐藏类。如果经常毫无规律的变动对象的内部成员，就会保存越来越多的隐藏类，带来不必要的性能开销。</strong></p>
-<h3 id="3-2-Inline-Cache"><a href="#3-2-Inline-Cache" class="headerlink" title="3.2 Inline Cache"></a>3.2 Inline Cache</h3><p>inline cache 提升了 JavaScript 的运行性能，但对于使用次数较少的 JavaScript 函数使用 inline cache 不会带来太多的性能，反而影响 V8 的性能。因此 V8 规定，函数调用次数超过 8 次时才开启 inline cache。<br>例如有以下函数：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getfoo</span>(<span class="params">obj</span>)&#123;</span><br><span class="line"> <span class="keyword">return</span> obj.<span class="property">foo</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> o1 = &#123;<span class="string">&quot;x&quot;</span>:<span class="number">42</span>,<span class="string">&quot;y&quot;</span>:<span class="number">43</span>,<span class="string">&quot;foo&quot;</span>,<span class="string">&quot;41&quot;</span>&#125;;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++)&#123;</span><br><span class="line"> <span class="title function_">getfoo</span>(o1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行getfoo时，V8会先读取obj的Map，找到foo的偏移量，然后才能获取foo。 当运行超过8次时，obj.foo的寻址方法会被缓存。</p>
-<p><strong>所以inline cache更希望开发者不要变动o1的结构，更希望开发者对 o1 的读写操作是固定的。具体在本例中，希望你只对 foo 操作，inline cache 只需保存属性 foo 的寻址方式即可，如果经常变动o1的内部成员，inline cache就会保存越来越多的寻址方法，并且增加很多不必要的判断过程。影响性能。</strong></p>
-<h3 id="3-3-TurboFan"><a href="#3-3-TurboFan" class="headerlink" title="3.3 TurboFan"></a>3.3 TurboFan</h3><p>TurboFan将字节码编译为机器码并存储起来执行，来使得JavaScript运行的更快，但相比解释执行也需要更多的首次编译时间，这也是为什么V8只针对热点代码使用TurboFan。</p>
-<p>TurboFan不希望程序的行为发生变化，例如我们有以下代码：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">add</span>(<span class="params">x,y</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> x+y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add</span>(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add</span>(<span class="string">&quot;hello &quot;</span>, <span class="string">&quot;world&quot;</span>));</span><br></pre></td></tr></table></figure>
-<p>我们知道 add() 是多态的，可以传入多种类型的参数。但是灵活也就意味着效率不高，需要判断类型，越界检测等等…</p>
-<p>Turbofan 针对 add(1,2) 优化时，它笃定你的 add() 只用于整数加法运行，把其编译为本地机器码的加法运算，去掉了各种不必要的判断。针对 add(“hello “,”world”) 优化时，TurboFan会把其编译为字符串的拼接操作。add() 的多态方便了开发者，减少了代码量，<strong>但如果 add() 毫无规律地在不同操作数之间使用，会导致TurboFan编译更多的时间，存储更多的机器码，优化效果很差，所以 Turbofan 不希望程序行为变化。</strong></p>
-<h2 id="优化建议"><a href="#优化建议" class="headerlink" title="优化建议"></a>优化建议</h2><ol>
-<li>对象属性： 以相同顺序实例化对象的成员，以便于共享隐藏类。</li>
-<li>对象结构： 不要变动对象的结构，减少寻址方法内联缓存造成的额外开销。</li>
-<li>无规律的程序行为：减少无规律的程序行为，例如随意的多态调用，减少turbofan编译和存储机器码的额外开销。</li>
-<li>可复用的方法：方法尽量复用，提高使用频次，增加热点代码，使turbofan能够介入进行编译运行，提高程序运行效率</li>
-</ol>
-<hr>
-<h2 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h2><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/514716577">《Chrome V8 源码》55. 优化技术综述，如何提升 JS 运行速度</a></li>
-<li><a href="https://blog.sessionstack.com/how-javascript-works-inside-the-v8-engine-5-tips-on-how-to-write-optimized-code-ac089e62b12e">How JavaScript works: inside the V8 engine + 5 tips on how to write optimized code</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/469962133">V8中的隐藏类（Hidden Classes）和内联缓存（Inline Caching）</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/491369553">浅析V8引擎，让你更懂JavaScript！</a></li>
-</ol>
-<p>以上！まいど～</p>
-<hr>
-]]></content>
-      <tags>
-        <tag>v8</tag>
-        <tag>javascript</tag>
-        <tag>node.js</tag>
-        <tag>chrome</tag>
-      </tags>
   </entry>
   <entry>
     <title>使用canvas实现图片压缩</title>
@@ -1167,5 +870,302 @@ requestAnimationFrame(repeatOften);
     <title>获取元素到页面顶部的距离</title>
     <url>/2020/03/12/%E8%8E%B7%E5%8F%96%E5%85%83%E7%B4%A0%E5%88%B0%E9%A1%B5%E9%9D%A2%E9%A1%B6%E9%83%A8%E7%9A%84%E8%B7%9D%E7%A6%BB.html</url>
     <content><![CDATA[<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> offsetTop = targetElement.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span> + <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span></span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+  <entry>
+    <title>从V8引擎的工作流程看Javascript代码优化</title>
+    <url>/2022/06/14/%E4%BB%8EV8%E5%BC%95%E6%93%8E%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E7%9C%8BJavascript%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96.html</url>
+    <content><![CDATA[<h2 id="0-V8介绍"><a href="#0-V8介绍" class="headerlink" title="0. V8介绍"></a>0. V8介绍</h2><p>官方文档这么介绍：V8是谷歌开源高性能JavaScript和WebAssembly引擎，用C++编写。它主要用在Chrome和Node.js中，等等。</p>
+<p>简单的来说，我们知道，JavaScript是解释型的语言，需要逐行解释执行</p>
+<p>V8则是一种C++开发的JavaScript解释器，它将JavaScript编译成可执行代码，即机器码。</p>
+<h2 id="1-V8工作流程概述"><a href="#1-V8工作流程概述" class="headerlink" title="1. V8工作流程概述"></a>1. V8工作流程概述</h2><p>JavaScript是解释型的语言，解释型的语言先天就有执行效率上的不足。为此，V8引擎同时采用了解释执行和编译执行这两种方式，也就是在解释执行的同时进行编译，这种方式称为<strong>JIT (Just in Time) 即时编译</strong>。</p>
+<p><strong>解释执行</strong>：V8在执行JavaScript源码时，会先通过解析器Parser将源码解析成AST，解释器Ignition会将AST转化为字节码，一边解释一遍执行。</p>
+<p><strong>即时编译</strong>：Ignition同时会记录某一代码片段的执行次数，如果执行次数超过了某个阈值，这段代码便会被标记为热点代码(HotSpot)，同时将运行信息反馈给<strong>优化编译器TurboFan</strong>，会将这部分热点代码的字节码优化并编译，生成机器码更高效地运行。</p>
+<pre class="mermaid">graph LR
+  源代码 --Parser--> AST
+  AST --Ignition--> 字节码
+  字节码 --Ignition--> 逐行解释为机器码执行
+  字节码 -.Ignition高频执行.-> HotSpot
+  HotSpot --TurboFan--> 编译为机器码执行</pre>
+
+<h3 id="1-1-Parser-解析器-生成语法抽象树（AST）"><a href="#1-1-Parser-解析器-生成语法抽象树（AST）" class="headerlink" title="1.1 Parser 解析器 生成语法抽象树（AST）"></a>1.1 Parser 解析器 生成语法抽象树（AST）</h3><p>生成AST中的一个优化是惰性解析(Lazy Parsing)，因为源码在执行前如果全部完全解析的话，不仅执行时间过长，而且会消耗更多的内存。<br>惰性解析就是指如果遇到并不是立即执行的函数，只会对其进行预解析(Pre-Parser)，当函数被调用时，才会对其完全解析。<br>预解析时，只会验证函数的语法是否有效、解析函数声明以及确定函数作用域，并不会生成AST，这项工作由Pre-Parser预解析器完成。</p>
+<h3 id="1-2-Ignition-解释器-生成字节码及解释执行"><a href="#1-2-Ignition-解释器-生成字节码及解释执行" class="headerlink" title="1.2 Ignition 解释器 生成字节码及解释执行"></a>1.2 Ignition 解释器 生成字节码及解释执行</h3><p>Ignition 是 V8 的解释器，负责生成和执行字节码。字节码与平台无关，也就是说无论 X86 架构或 ARM 架构，同一份 JavaScript 源码生成的字节码序列是相同的，解释器逐条读取字节码并执行。</p>
+<p>字节码是机器码的抽象，可以看作是小型的构建块。相比机器码，字节码不仅占用内存少，而且生成字节码的时间很快，提升了启动速度。</p>
+<h3 id="1-3-Turbofan-优化编译器-对部分代码直接编译执行"><a href="#1-3-Turbofan-优化编译器-对部分代码直接编译执行" class="headerlink" title="1.3 Turbofan 优化编译器 对部分代码直接编译执行"></a>1.3 Turbofan 优化编译器 对部分代码直接编译执行</h3><p>Turbofan 是 V8 的优化编译器，它使 JavaScript 执行的更快，但比Ignition需要更多的编译时间，所以 V8 只对热点代码（HotCode）使用 Turbofan。</p>
+<p>JavaScript 代码先由 Ignition 执行，并判断当该代码片段执行次数达到设定值时变为热点代码，由TurboFan把它编译为更高效的机器码储存起来，等到下次再执行到这段代码时，就会用现在的机器码替换原来的字节码进行执行，这样大大提升了代码的执行效率。</p>
+<h2 id="2-V8工作流程中一些具体实现"><a href="#2-V8工作流程中一些具体实现" class="headerlink" title="2.  V8工作流程中一些具体实现"></a>2.  V8工作流程中一些具体实现</h2><h3 id="2-1-隐藏类-JavaScript-动态类型"><a href="#2-1-隐藏类-JavaScript-动态类型" class="headerlink" title="2.1 隐藏类  JavaScript 动态类型"></a>2.1 隐藏类  JavaScript 动态类型</h3><p>我们知道，JavaScript是动态类型语言，运行时数据类型会发生变化。V8 采用 C++ 编写，C++ 是强类型语言，要求类型确定。类型确定的 C++ 是如何表达类型不确定的 JavaScript 呢？</p>
+<p>答案是：C++ 申请一块内存，这块是 JavaScript 的一个对象，并约定这块内存的开始位置保存内存的解读方式，操作这块内存之前先查解读方法，通过改变解读方式来模拟 JavaScript 对象的动态变化。</p>
+<p>具体来说：操作 JS 数据前先查询类型，再操作。为此，V8采用了隐藏类（Hidden Class），因为 JavaScript 程序员看不到这个 class，所以称为隐藏类。注意： 隐藏类的术语是 Map，它的含义是地图，说明如何解读内存，不是 JavaScript Map 机制。</p>
+<p>V8通过查询存储空间的第一个位置，就可以找到Map。这个Map大小是80byte，存储信息的格式与位置也是固定的，存储信息包括：JavaScript 对象的存储空间有哪些成员，成员类型，成员偏移地址等。所以说，Map 就是地图。</p>
+<h3 id="2-2-Inline-Cache-内联缓存"><a href="#2-2-Inline-Cache-内联缓存" class="headerlink" title="2.2 Inline Cache 内联缓存"></a>2.2 Inline Cache 内联缓存</h3><p>我们已经知道，V8在查找对象的属性（例如obj.x）时流程是这样的：查找对象 obj 的隐藏类，再通过隐藏类查找 x 属性偏移量，然后根据偏移量获取属性值。</p>
+<p>我们把上面这个获取 x 属性偏移量的过程称为寻址方法。</p>
+<p>简单的来说：IC负责缓存对象的寻址方法，下次执行该函数时，直接使用寻址方法（V8 中的术语是 Handler），节省了计算寻址方法的时间。</p>
+<h2 id="3-如何编写优化的-JavaScript"><a href="#3-如何编写优化的-JavaScript" class="headerlink" title="3. 如何编写优化的 JavaScript"></a>3. 如何编写优化的 JavaScript</h2><h3 id="3-1-隐藏类"><a href="#3-1-隐藏类" class="headerlink" title="3.1 隐藏类"></a>3.1 隐藏类</h3><p>我们已经知道，V8 通过查询 Map，可以知道存储空间内存放了什么，怎么存放的，进而正确操作该对象。</p>
+<p>例如有以下代码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Point</span>(<span class="params">x,y</span>) &#123; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">x</span> = x; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">y</span> = y; </span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">const</span> obj = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<p>一旦声明了一个新的方法实例，Javascript就会创建一个隐藏类C0。</p>
+<p><img data-src="/images/posts/de92f2f8.png"></p>
+<p>在此时还没有声明任何的属性，所以C0现在为空。<br>一旦第一个语句“this.x&#x3D;x”被执行，V8将会基于C0创建第二个隐藏类C1。C1记录了可以找到属性x在内存中的位置。</p>
+<p>在这个例子中，x保存在偏移量为0的位置，这表示可以将一个内存中的对象目标看作是一段连续的空间。而这段空间中的第一段偏移代表着属性x。与此同时，V8将会用“类偏移”操作更新C0，这代表着属性x已经添加到了目标对象。之后，目标对象所对应的隐藏类指针将指向C1。</p>
+<p><img data-src="/images/posts/1b25a842.png"></p>
+<p>每当目标对象添加一个新的属性，对象的旧的隐藏类就会变换路径到一个新的隐藏类。隐藏类的重要之处在于可以使经过相同创建过程创建的对象共享隐藏类。假如两个对象共享一个隐藏类，并向两个对象中同时添加相同的属性，那么这种变换将会保证变换后得到相同的隐藏类，这样代码就得到了优化。<br>当“this.y&#x3D;y”执行时将重复上面的操作。一个新的叫C2的隐藏类将被创建，然后对C1进行类变换表明属性y已经添加到了目标对象，最后将隐藏类指向C2。这样目标对象的隐藏类就更新到了C2。</p>
+<p><img data-src="/images/posts/4943fa23.png"></p>
+<p>注意：隐藏类的变换取决于对目标对象的属性添加顺序。请注意下面的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Point</span>(<span class="params">x,y</span>) &#123; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">x</span> = x; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">y</span> = y;</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">var</span> obj1 = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">var</span> obj2 = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line"><span class="comment">// 至此为止 obj1和obj2都共享同一个隐藏类</span></span><br><span class="line">obj1.<span class="property">a</span> = <span class="number">5</span>; </span><br><span class="line">obj1.<span class="property">b</span> = <span class="number">10</span>; </span><br><span class="line">obj2.<span class="property">b</span> = <span class="number">10</span>; </span><br><span class="line">obj2.<span class="property">a</span> = <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
+
+
+<p>直到第6行为止，obj1和obj2都共享同一个隐藏类。但是，当属性a和b以相反的顺序添加到了两个对象中，这导致最后两个对象以不同的变换路径产生了两个不同的的隐藏类。</p>
+<p><img data-src="/images/posts/0c995993.png"></p>
+<p><strong>因此，隐藏类更希望开发者不要频繁添加对象的属性，更希望对象的属性实例化顺序是固定的。像上述的例子，希望你只按照相同的顺序添加属性，先添加a，后添加b，这样obj1与obj2就可以共享同一个隐藏类。如果经常毫无规律的变动对象的内部成员，就会保存越来越多的隐藏类，带来不必要的性能开销。</strong></p>
+<h3 id="3-2-Inline-Cache"><a href="#3-2-Inline-Cache" class="headerlink" title="3.2 Inline Cache"></a>3.2 Inline Cache</h3><p>inline cache 提升了 JavaScript 的运行性能，但对于使用次数较少的 JavaScript 函数使用 inline cache 不会带来太多的性能，反而影响 V8 的性能。因此 V8 规定，函数调用次数超过 8 次时才开启 inline cache。<br>例如有以下函数：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getfoo</span>(<span class="params">obj</span>)&#123;</span><br><span class="line"> <span class="keyword">return</span> obj.<span class="property">foo</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> o1 = &#123;<span class="string">&quot;x&quot;</span>:<span class="number">42</span>,<span class="string">&quot;y&quot;</span>:<span class="number">43</span>,<span class="string">&quot;foo&quot;</span>,<span class="string">&quot;41&quot;</span>&#125;;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++)&#123;</span><br><span class="line"> <span class="title function_">getfoo</span>(o1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行getfoo时，V8会先读取obj的Map，找到foo的偏移量，然后才能获取foo。 当运行超过8次时，obj.foo的寻址方法会被缓存。</p>
+<p><strong>所以inline cache更希望开发者不要变动o1的结构，更希望开发者对 o1 的读写操作是固定的。具体在本例中，希望你只对 foo 操作，inline cache 只需保存属性 foo 的寻址方式即可，如果经常变动o1的内部成员，inline cache就会保存越来越多的寻址方法，并且增加很多不必要的判断过程。影响性能。</strong></p>
+<h3 id="3-3-TurboFan"><a href="#3-3-TurboFan" class="headerlink" title="3.3 TurboFan"></a>3.3 TurboFan</h3><p>TurboFan将字节码编译为机器码并存储起来执行，来使得JavaScript运行的更快，但相比解释执行也需要更多的首次编译时间，这也是为什么V8只针对热点代码使用TurboFan。</p>
+<p>TurboFan不希望程序的行为发生变化，例如我们有以下代码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">add</span>(<span class="params">x,y</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> x+y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add</span>(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add</span>(<span class="string">&quot;hello &quot;</span>, <span class="string">&quot;world&quot;</span>));</span><br></pre></td></tr></table></figure>
+<p>我们知道 add() 是多态的，可以传入多种类型的参数。但是灵活也就意味着效率不高，需要判断类型，越界检测等等…</p>
+<p>Turbofan 针对 add(1,2) 优化时，它笃定你的 add() 只用于整数加法运行，把其编译为本地机器码的加法运算，去掉了各种不必要的判断。针对 add(“hello “,”world”) 优化时，TurboFan会把其编译为字符串的拼接操作。add() 的多态方便了开发者，减少了代码量，<strong>但如果 add() 毫无规律地在不同操作数之间使用，会导致TurboFan编译更多的时间，存储更多的机器码，优化效果很差，所以 Turbofan 不希望程序行为变化。</strong></p>
+<h2 id="优化建议"><a href="#优化建议" class="headerlink" title="优化建议"></a>优化建议</h2><ol>
+<li>对象属性： 以相同顺序实例化对象的成员，以便于共享隐藏类。</li>
+<li>对象结构： 不要变动对象的结构，减少寻址方法内联缓存造成的额外开销。</li>
+<li>无规律的程序行为：减少无规律的程序行为，例如随意的多态调用，减少turbofan编译和存储机器码的额外开销。</li>
+<li>可复用的方法：方法尽量复用，提高使用频次，增加热点代码，使turbofan能够介入进行编译运行，提高程序运行效率</li>
+</ol>
+<hr>
+<h2 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h2><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/514716577">《Chrome V8 源码》55. 优化技术综述，如何提升 JS 运行速度</a></li>
+<li><a href="https://blog.sessionstack.com/how-javascript-works-inside-the-v8-engine-5-tips-on-how-to-write-optimized-code-ac089e62b12e">How JavaScript works: inside the V8 engine + 5 tips on how to write optimized code</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/469962133">V8中的隐藏类（Hidden Classes）和内联缓存（Inline Caching）</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/491369553">浅析V8引擎，让你更懂JavaScript！</a></li>
+</ol>
+<p>以上！まいど～</p>
+<hr>
+]]></content>
+      <tags>
+        <tag>v8</tag>
+        <tag>javascript</tag>
+        <tag>node.js</tag>
+        <tag>chrome</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一根网线同时搭载电信itv及网络 解决方案</title>
+    <url>/2019/02/10/%E4%B8%80%E6%A0%B9%E7%BD%91%E7%BA%BF%E5%90%8C%E6%97%B6%E6%90%AD%E8%BD%BD%E7%94%B5%E4%BF%A1itv%E5%8F%8A%E7%BD%91%E7%BB%9C-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
+    <content><![CDATA[<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv</p>
+<p><strong>原拓扑图如下</strong><br><img data-src="https://img-blog.csdnimg.cn/20190210155452299.png#pic_center" alt="原拓扑图"></p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>材料：</strong><br>1、水星Mercury SG105Pro 五口千兆网管交换机 价格 98 元 放置在客厅（下称SW5）<br>2、水星Mercury SG108Pro 八口千兆网管交换机 价格 169 元 放置在弱电箱（下称SW8）</p>
+<p><strong>整体解决思路：</strong><br>在弱电箱端，使用一台交换机，将itv和网络的数据包合并至一条主干道网线上，到使用端（客厅）使用另一台交换机进行识别后拆分为两条线使用——达到墙内一条线，实际承载两条线路的目的。</p>
+<p><strong>实际解决方案（看不明白可以先往下看）：</strong><br>利用802.1Q VLAN的Tag机制划分两路VLAN：一路走itv（下称VLAN2）一路走网络（下称VLAN3），由交换机为收到的包打Tag后送入网线，进入Tag所示VLAN传输，由另一台交换机判断Tag，送入指定设备——达到目的。</p>
+<p><strong>先行说明：</strong><br>在说明解决步骤之前先说明几个概念，po也是用了不少时间加实践去理解了VLAN、802.1Q标准中的Tag、Untagged、VLAN ID、PVID等概念，在这里做简单的讲述</p>
+<p>*<strong>这里我们先打个比方，方便讲概念：</strong></p>
+<blockquote>
+<p>我们把数据包在交换机中的传输比作一场从出发地到目的地传送小球的游戏</p>
+<ul>
+<li>数据包比作小球；</li>
+<li>交换机是一个小球的中转站，决定来到这里的小球应该去到哪里；</li>
+<li>交换机的端口是小球的出入口，我们将它比作检查站，每个检查站都有一把刷子和一把水枪（至于为什么是刷子和水枪？后面会说到），可以对小球进行上色和洗色；</li>
+</ul>
+</blockquote>
+<p>*<strong>下面开始讲概念：</strong><br><em>VLAN——是一条传送小球的管道：</em></p>
+<blockquote>
+<p>VLAN（Virtual Local Area Network）的中文名为”虚拟局域网”。划分到同一VLAN下的端口可以互相通信，不同VLAN不能互相通信。</p>
+<p>——如果我们把数据传输比作小球过管道，数据包是小球，那么VLAN就好比是管道，进入A管道的球是不能去到B管道的。</p>
+</blockquote>
+<p><em>802.1Q——是制作管道的标准:</em></p>
+<blockquote>
+<p>802.1Q是VLAN标准的一种。<br>——你可以理解为制作管道的标准。</p>
+</blockquote>
+<p><em>VLAN ID——是颜色：</em></p>
+<blockquote>
+<p>802.1Q标准中为数据包附加的一个值 标识该包在VLAN ID所示的VLAN中传输<br>——标准规定管道必须涂上颜色（VLAN ID），里面只能通过管道对应颜色（VLAN ID）的球。</p>
+</blockquote>
+<p><em>TAG帧——带颜色的小球：</em></p>
+<blockquote>
+<p>带有VLAN ID的数据包<br>——带颜色（VLAN ID）的小球</p>
+</blockquote>
+<p><em>UNTAG帧——白色的小球：</em></p>
+<blockquote>
+<p>不带有VLAN ID的数据包<br>——不带颜色（VLAN ID）的小球</p>
+</blockquote>
+<p><em>PVID——是检查站刷子上的油漆：</em></p>
+<blockquote>
+<p>Port VLAN ID，即端口缺省VLAN ID  ，在交换机中提前配置<br>当端口接收到数据包时，可以为该包打上等于该端口PVID值的VLAN ID，此后该包成为TAG帧，在该VLAN ID所表示的VLAN中传输，是否打上tag由端口模式决定（Tagged&#x2F;Untagged）。<br>——每个检查站都有一把刷子，刷子上都沾了我们指定颜色的油漆（PVID），当遇到小球的时候，可以把它刷成油漆的颜色(VLAN ID)，接下来小球就只能进到对应颜色的管道里了，是不是要涂色，根据检查站的模式来决定。</p>
+</blockquote>
+<p><em>Tagged与Untagged及端口收发包逻辑——检查站的两种模式</em></p>
+<blockquote>
+<h6 id="端口处理数据有两种方式：Tagged-x2F-Untagged"><a href="#端口处理数据有两种方式：Tagged-x2F-Untagged" class="headerlink" title="端口处理数据有两种方式：Tagged&#x2F;Untagged"></a><em>端口处理数据有两种方式：Tagged&#x2F;Untagged</em></h6><p><strong>端口接收数据时：</strong></p>
+<ul>
+<li>如果端口是tagged方式<br>- 当数据包为UNTAG帧的话，就加上该端口的PVID，送入PVID所示的VLAN中传输；<br>- 如果数据包为TAG帧，那么就不再添加，直接送入TAG所示的VLAN中传输；</li>
+<li>如果是untagged方式，<ul>
+<li>输入的数据包全部都要加上该端口的PVID。不管输入的数据包是TAG帧还是UNTAG帧。</li>
+</ul>
+</li>
+</ul>
+<p><strong>端口发送数据时：</strong></p>
+<ul>
+<li>如果端口是tagged方式<ul>
+<li>如果端口PVID等于发送的数据包所含的VLAN ID，那么就会将VLAN ID从发送的数据包中去掉；</li>
+<li>如果不相等，则数据包将保持原样发送出去。</li>
+</ul>
+</li>
+<li>如果端口是untagged方式<ul>
+<li>则不管端口PVID为多少，是否等于要输出的数据包的VLAN，都会将VLAN ID从数据包中去掉。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h6 id="检查站有两种模式：Tagged和Untagged"><a href="#检查站有两种模式：Tagged和Untagged" class="headerlink" title="检查站有两种模式：Tagged和Untagged"></a><em>检查站有两种模式：Tagged和Untagged</em></h6><p><strong>检查站遇到外面来的小球：</strong></p>
+<ul>
+<li>如果检查站是tagged模式<ul>
+<li>如果小球是白色的，就用刷子为小球涂上油漆的颜色，送进对应颜色的管道里传输；</li>
+<li>如果小球有颜色，那就不再处理小球，直接送到小球对应颜色的管道里传输；</li>
+</ul>
+</li>
+<li>如果检查站在untagged模式<ul>
+<li>碰到的小球全部用刷子刷上油漆，强行送进对应的管道传输；</li>
+</ul>
+</li>
+</ul>
+<p><strong>检查站准备送走从管子里出来的小球时</strong></p>
+<ul>
+<li>如果检查站是tagged模式<ul>
+<li>如果油漆的颜色和小球的颜色一致，就把小球的油漆用水枪洗掉再送走。</li>
+<li>如果油漆的颜色和小球的颜色不一致，就把小球原样送走。</li>
+</ul>
+</li>
+<li>如果检查站是untagged方式<ul>
+<li>不管油漆颜色还是小球颜色，都将小球的油漆用水枪洗掉再送走。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>讲解完概念后，我们再回来看解决方案</p>
+<blockquote>
+<p><strong>实际解决方案（看不明白可以先往下看）：</strong><br>利用802.1Q VLAN的Tag机制划分两路VLAN：一路走itv（下称VLAN2）一路走网络（下称VLAN3），由交换机为收到的包打Tag后送入网线，进入Tag所示VLAN传输，由另一台交换机判断Tag，送入指定设备——达到目的。</p>
+</blockquote>
+<p><strong>如果你还是看不懂，我们再换成传送小球：</strong></p>
+<blockquote>
+<p>我们按照标准制造了两根管道，一根涂成红色（itv），一根涂成蓝色（网络），将这两条管道埋设到一条网线中，由一头的中转站为光猫送来的白色小球上色，分别送入两条管道，经过同一条网线，另一头的中转站判断颜色，送到指定的目的地——达到目的。</p>
+</blockquote>
+<p><strong>具体解决步骤：</strong></p>
+<ul>
+<li><p>1、配置SW8的VLAN</p>
+<ul>
+<li><p>VLAN划分如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210233114958.png#pic_center" alt="SW8 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,7端口配置为itv交换<br>VLAN3 将1-6 以及8 端口配置为网络交换</p>
+<p><strong>将端口1作为主干道端口<br>*此端口连接SW5<br>**接收：由SW5发送过来的TAG帧 并根据TAG帧中的VLAN ID 决定送入VLAN2还是VLAN3（即广播至VLAN2的7端口或VLAN3的2-6、8端口）<br>**发送：由SW8其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW5</strong></p>
+</li>
+<li><p>PVID配置如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210161628593.png#pic_center" alt="VLAN PVID配置"><br>端口1：接SW5 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口7：接光猫ITV口 PVID设置为2 接收光猫ITV口发送来的UNTAG帧 送入VLAN2<br>端口8：接光猫千兆口 PVID设置为3 接收光猫千兆网络口发送来的UNTAG帧 送入VLAN3<br>端口2-6：接其他房间电脑 PVID设置为3 接收其他房间电脑发送来的UNTAG帧 送入VLAN3 与端口8光猫千兆口相互通信</p>
+</li>
+</ul>
+</li>
+<li><p>2、配置SW5的VLAN</p>
+<ul>
+<li><p>VLAN划分如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210223800782.png#pic_center" alt="SW5 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,4 端口配置为itv交换 令4端口可以与主干道端口进行通信<br>VLAN3 将1,5 端口配置为网络交换 令5端口可以与主干道端口进行通信</p>
+<p><strong>将端口1作为主干道端口<br>**接收：由SW8发送过来的TAG帧 并根据TAG帧中的VLAN ID 决定送入VLAN2还是VLAN3（即 广播至VLAN2的4端口或VLAN3的5端口）<br>**发送：由SW5其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW8</strong></p>
+</li>
+<li><p>PVID配置如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210224225870.png#pic_center" alt="SW5 PVID配置"><br>端口1：接SW8 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口4：接机顶盒 PVID设置为2 接收机顶盒发来的UNTAG帧 打上VLAN ID值为2后将该TAG帧交由端口1<br>端口5：接路由器 PVID设置为3 接收路由器发送来的UNTAG帧 打上VLAN ID值为3后将该TAG帧交由端口1<br>端口2-3：闲置 可无视</p>
+</li>
+<li><p>最终VLAN端口一览<br>VLAN2（ITV）：SW8P1、SW8P7、SW5P1、SW5P4<br>VLAN3（网络）：SW8P1、SW8P2-6、SW8P8、SW5P1、SW5P5</p>
+</li>
+</ul>
+<blockquote>
+<p>至此ITV通过SW5P4与SW8P7可互相通信 网络通过SW5P5与SW8P8可互相通信<br>ITV与网络互不干扰 但通过SW8P1与SW5P1之间只连接了一根网线 目的达成</p>
+</blockquote>
+</li>
+<li><p>3、连接拓扑图<br><img data-src="https://img-blog.csdnimg.cn/20190210230243826.png#pic_center" alt="连接拓扑图"></p>
+</li>
+<li><p>4、问题解决</p>
+</li>
+</ul>
+<p><strong>交换逻辑：</strong></p>
+<p><em>网络数据帧传输：</em></p>
+<p>1.去程 光猫千兆口-&gt;客厅路由器</p>
+<blockquote>
+<p>1.光猫千兆口发送UNTAG帧 到达SW8 8端口<br>2.判断8端口PVID为3 为数据帧打上VLAN ID标记值为3 转为TAG帧 传入VLAN3 交换至1-6端口<br>3.TAG帧到达2-6端口 与其他房间各电脑通信直接拨号上网；同时，TAG帧到达1端口 送至SW5<br>5.TAG帧到达SW5的1端口 判断TAG帧中VLAN ID为3 送入VLAN3 交换至5端口<br>6.TAG帧到达5端口 送至客厅路由器<br>7.完成光猫千兆口-&gt;客厅路由器的传输 全程数据帧在VLAN3中传输 与SW8 7端口ITV无关</p>
+</blockquote>
+<p>2.回程 客厅路由器-&gt;光猫千兆口</p>
+<blockquote>
+<p>1.客厅路由器发送UNTAG帧 到达SW5 5端口<br>2.判断5端口PVID为3 为数据帧打上VLAN ID标记值为3 转为TAG帧 传入VLAN3 交换至1端口 送至SW8<br>3.TAG帧到达SW8的1端口 判断TAG帧中VLAN ID为3 送入VLAN3 交换至1-6端口<br>4.TAG帧到达2-6端口 实现客厅路由器与其他各房间的局域网通信；同时TAG帧到达8端口 送至光猫千兆口<br>5.完成客厅路由器-&gt;光猫千兆口的传输 全程数据帧在VLAN3中传输 与SW8 7端口ITV无关</p>
+</blockquote>
+<p><em>ITV数据帧传输：</em></p>
+<p>1.去程 光猫ITV口-&gt;客厅机顶盒</p>
+<blockquote>
+<p>1.光猫ITV口发送UNTAG帧 到达SW8 7端口<br>2.判断7端口PVID为2 为数据帧打上VLAN ID标记值为2 转为TAG帧 传入VLAN2 交换至1-6端口<br>3.TAG帧到达1端口 送至SW5<br>5.TAG帧到达SW5的1端口 判断TAG帧中VLAN ID为2 送入VLAN2 交换至4端口<br>6.TAG帧到达4端口 送至机顶盒<br>7.完成光猫ITV口-&gt;客厅机顶盒的传输 全程数据帧在VLAN2中传输 与SW8 8端口网络无关</p>
+</blockquote>
+<p>2.回程 客厅机顶盒-&gt;光猫ITV口</p>
+<blockquote>
+<p>1.客厅机顶盒发送UNTAG帧 到达SW5 4端口<br>2.判断4端口PVID为2 为数据帧打上VLAN ID标记值为2 转为TAG帧 传入VLAN2 交换至1端口 送至SW8<br>3.TAG帧到达SW8的1端口 判断TAG帧中VLAN ID为2 送入VLAN2 交换至7端口<br>4.TAG帧到达7端口 送至光猫ITV口<br>5.完成客厅路由器-&gt;光猫ITV口的传输 全程数据帧在VLAN2中传输  与SW8 8端口网络无关</p>
+</blockquote>
+<h4 id="至此问题解决！-也是钻研了三四天-临时起意肯定有写的不对的地方-欢迎各位在评论指出！"><a href="#至此问题解决！-也是钻研了三四天-临时起意肯定有写的不对的地方-欢迎各位在评论指出！" class="headerlink" title="至此问题解决！ 也是钻研了三四天 临时起意肯定有写的不对的地方 欢迎各位在评论指出！"></a>至此问题解决！ 也是钻研了三四天 临时起意肯定有写的不对的地方 欢迎各位在评论指出！</h4><hr>
+<p>参考资料</p>
+<ol>
+<li><a href="http://blog.chinaunix.net/uid-24020646-id-3065954.html">交换机Vlan中 tagged和untagged的区别-platinaluo-ChinaUnix博客</a></li>
+<li><a href="https://blog.csdn.net/xiaohaijiejie/article/details/70208549">802.1Q VLAN 技术原理—理解PVID和VID - 小海的专栏 - CSDN博客</a></li>
+<li><a href="https://www.chiphell.com/thread-1670251-1-1.html">一根网线走iptv及网络的实践经验 - 电脑讨论 -  Chiphell - 分享与交流用户体验</a></li>
+<li><a href="https://www.chiphell.com/thread-1524134-1-1.html">一根网线怎么走局域网和iptv - 电脑讨论 -  Chiphell - 分享与交流用户体验</a></li>
+</ol>
+<hr>
+<p>2019年10月13日：有读者来问问题，似乎还是看的不太明白，加了小球的比方，希望能有助于理解吧！各位看官如果有啥不明白的，评论私信都可以哈！多多的来！</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>openwrt部署openvpn server以及群晖连接（DSM7）完成内网穿透</title>
+    <url>/2022/01/20/openwrt%E9%83%A8%E7%BD%B2openvpn-server%E4%BB%A5%E5%8F%8A%E7%BE%A4%E6%99%96%E8%BF%9E%E6%8E%A5%EF%BC%88DSM7%EF%BC%89%E5%AE%8C%E6%88%90%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F.html</url>
+    <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>公司里放了一台黑裙，但是没有公网IP，想到用openvpn拨到家里的路由器，再进行端口转发达到内网穿透，公网访问的目的。</p>
+<p><strong>总之的总之三步走，需要openwrt上有server，以及群晖能够有client进行拨入，最后配置端口转发</strong></p>
+<hr>
+<h2 id="1-openwrt部署openvpn-server"><a href="#1-openwrt部署openvpn-server" class="headerlink" title="1. openwrt部署openvpn server"></a>1. openwrt部署openvpn server</h2><blockquote>
+<p>openwrt官方提供了详实的文档，如下<br><a href="https://openwrt.org/docs/guide-user/services/vpn/openvpn/server">[OpenWrt Wiki] OpenVPN server</a></p>
+</blockquote>
+<p>但是这个版本生成的配置，因为用到了<code>&lt;tls-crypt-v2&gt;</code>，群晖没法识别。可以使用下面这个<code> previous version of OpenWrt</code> 的旧版本。</p>
+<blockquote>
+<p><img data-src="https://img-blog.csdnimg.cn/8196fece92354dfda722165d47ba5c54.png" alt="在这里插入图片描述"><br>链接在这里↓<br><a href="https://openwrt.org/docs/guide-user/services/vpn/openvpn/server?rev=1632708683">[OpenWrt Wiki] OpenVPN server (old)</a></p>
+</blockquote>
+<hr>
+<p>接下来就是跟着文档走一遍, 我会对官方的文档进行一个翻译和加注：</p>
+<blockquote>
+<p><strong>1. 准备</strong><br>如果需要请先设置DDNS客户端。 安装依赖包. 指定一些临时的环境变量</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装包</span></span><br><span class="line">opkg update</span><br><span class="line">opkg install openvpn-openssl openvpn-easy-rsa</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">OVPN_DIR=<span class="string">&quot;/etc/openvpn&quot;</span></span><br><span class="line">OVPN_PKI=<span class="string">&quot;/etc/easy-rsa/pki&quot;</span></span><br><span class="line">OVPN_PORT=<span class="string">&quot;1194&quot;</span></span><br><span class="line">OVPN_PROTO=<span class="string">&quot;udp&quot;</span></span><br><span class="line">OVPN_POOL=<span class="string">&quot;192.168.8.0 255.255.255.0&quot;</span>  <span class="comment"># 注：这里可以指定openvpn的网段</span></span><br><span class="line">OVPN_DNS=<span class="string">&quot;<span class="variable">$&#123;OVPN_POOL%.* *&#125;</span>.1&quot;</span></span><br><span class="line">OVPN_DOMAIN=<span class="string">&quot;<span class="subst">$(uci get dhcp.@dnsmasq[0].domain)</span>&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 拿到外网ip作为外网地址</span></span><br><span class="line">. /lib/functions/network.sh</span><br><span class="line">network_flush_cache</span><br><span class="line">network_find_wan NET_IF</span><br><span class="line">network_get_ipaddr NET_ADDR <span class="string">&quot;<span class="variable">$&#123;NET_IF&#125;</span>&quot;</span></span><br><span class="line">OVPN_SERV=<span class="string">&quot;<span class="variable">$&#123;NET_ADDR&#125;</span>&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 如果有ddns 则从ddns拿到全域名(FQDN)作为外网地址</span></span><br><span class="line">NET_FQDN=<span class="string">&quot;<span class="subst">$(uci -q get ddns.@service[0].lookup_host)</span>&quot;</span></span><br><span class="line"><span class="keyword">if</span> [ -n <span class="string">&quot;<span class="variable">$&#123;NET_FQDN&#125;</span>&quot;</span> ]</span><br><span class="line"><span class="keyword">then</span> OVPN_SERV=<span class="string">&quot;<span class="variable">$&#123;NET_FQDN&#125;</span>&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>2. 秘钥管理</strong><br>使用 EasyRSA 管理 PKI. 必要时使用私钥密码保护.</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_PKI=<span class="string">&quot;<span class="variable">$&#123;OVPN_PKI&#125;</span>&quot;</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_REQ_CN=<span class="string">&quot;ovpnca&quot;</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_BATCH=<span class="string">&quot;1&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 移除并且重新初始化pki目录</span></span><br><span class="line">easyrsa init-pki</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 生成DH变量</span></span><br><span class="line">easyrsa gen-dh</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 创建新的CA</span></span><br><span class="line">easyrsa build-ca nopass</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 为服务端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-server-full server nopass</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 为客户端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-client-full client nopass  </span><br><span class="line"><span class="comment">#注：此处为生成客户端配置必要，如果需要多个客户端的，可以多次运行本行 只需要更改“client”, 如：</span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client1 nopass </span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client2 nopass </span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client-dsm nopass</span></span><br><span class="line"><span class="comment">#注：更改后的名称会作为生成后配置文件的名称 </span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 生成TLS PSK</span></span><br><span class="line">openvpn --genkey --secret <span class="variable">$&#123;OVPN_PKI&#125;</span>/tc.pem</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>3. 防火墙</strong><br>将VPN网络视为私有网络，将VPN接口分配到LAN区域，以减少防火墙的设置。允许从WAN区域访问VPN服务器。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置防火墙</span></span><br><span class="line">uci rename firewall.@zone[0]=<span class="string">&quot;lan&quot;</span></span><br><span class="line">uci rename firewall.@zone[1]=<span class="string">&quot;wan&quot;</span></span><br><span class="line">uci del_list firewall.lan.device=<span class="string">&quot;tun+&quot;</span></span><br><span class="line">uci add_list firewall.lan.device=<span class="string">&quot;tun+&quot;</span></span><br><span class="line">uci -q delete firewall.ovpn</span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn=<span class="string">&quot;rule&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.name=<span class="string">&quot;Allow-OpenVPN&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.src=<span class="string">&quot;wan&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.dest_port=<span class="string">&quot;<span class="variable">$&#123;OVPN_PORT&#125;</span>&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.proto=<span class="string">&quot;<span class="variable">$&#123;OVPN_PROTO&#125;</span>&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.target=<span class="string">&quot;ACCEPT&quot;</span></span><br><span class="line">uci commit firewall</span><br><span class="line">/etc/init.d/firewall restart</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>4. VPN服务</strong><br>配置VPN服务，生成客户端配置文件。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">OVPN_DH=<span class="string">&quot;<span class="subst">$(cat $&#123;OVPN_PKI&#125;/dh.pem)</span>&quot;</span></span><br><span class="line">OVPN_TC=<span class="string">&quot;<span class="subst">$(sed -e <span class="string">&quot;/^#/d;/^\w/N;s/\n//&quot;</span> $&#123;OVPN_PKI&#125;/tc.pem)</span>&quot;</span></span><br><span class="line">OVPN_CA=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/ca.crt)</span>&quot;</span></span><br><span class="line">NL=$<span class="string">&#x27;\n&#x27;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 配置VPN服务，生成客户端配置文件。 </span></span><br><span class="line"><span class="comment">#注：如果你清楚的知道你在做什么，可以更改下方ovpn配置相关的代码，可以省掉后续多个客户端单独修改配置的工作量</span></span><br><span class="line"><span class="built_in">umask</span> go=</span><br><span class="line"><span class="built_in">ls</span> <span class="variable">$&#123;OVPN_PKI&#125;</span>/issued \</span><br><span class="line">| sed -e <span class="string">&quot;s/\.\w*$//&quot;</span> \</span><br><span class="line">| <span class="keyword">while</span> <span class="built_in">read</span> -r OVPN_ID</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">OVPN_KEY=<span class="string">&quot;<span class="subst">$(cat $&#123;OVPN_PKI&#125;/private/$&#123;OVPN_ID&#125;.key)</span>&quot;</span></span><br><span class="line">OVPN_CERT=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt)</span>&quot;</span></span><br><span class="line">OVPN_EKU=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt -purpose)</span>&quot;</span></span><br><span class="line"><span class="keyword">case</span> <span class="variable">$&#123;OVPN_EKU&#125;</span> <span class="keyword">in</span></span><br><span class="line">(*<span class="string">&quot;SSL server : Yes&quot;</span>*)</span><br><span class="line">OVPN_CONF=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">port <span class="variable">$&#123;OVPN_PORT&#125;</span></span></span><br><span class="line"><span class="string">proto <span class="variable">$&#123;OVPN_PROTO&#125;</span></span></span><br><span class="line"><span class="string">server <span class="variable">$&#123;OVPN_POOL&#125;</span></span></span><br><span class="line"><span class="string">topology subnet</span></span><br><span class="line"><span class="string">client-to-client</span></span><br><span class="line"><span class="string">keepalive 10 60</span></span><br><span class="line"><span class="string">persist-tun</span></span><br><span class="line"><span class="string">persist-key</span></span><br><span class="line"><span class="string">push \&quot;dhcp-option DNS <span class="variable">$&#123;OVPN_DNS&#125;</span>\&quot;</span></span><br><span class="line"><span class="string">push \&quot;dhcp-option DOMAIN <span class="variable">$&#123;OVPN_DOMAIN&#125;</span>\&quot;</span></span><br><span class="line"><span class="string">push \&quot;redirect-gateway def1\&quot;</span></span><br><span class="line"><span class="string">push \&quot;persist-tun\&quot;</span></span><br><span class="line"><span class="string">push \&quot;persist-key\&quot;</span></span><br><span class="line"><span class="string">&lt;dh&gt;<span class="variable">$&#123;NL&#125;</span><span class="variable">$&#123;OVPN_DH&#125;</span><span class="variable">$&#123;NL&#125;</span>&lt;/dh&gt;&quot;</span></span><br><span class="line">OVPN_EXT=<span class="string">&quot;conf&quot;</span> ;;</span><br><span class="line">(*<span class="string">&quot;SSL client : Yes&quot;</span>*)</span><br><span class="line">OVPN_CONF=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">nobind</span></span><br><span class="line"><span class="string">client</span></span><br><span class="line"><span class="string">remote <span class="variable">$&#123;OVPN_SERV&#125;</span> <span class="variable">$&#123;OVPN_PORT&#125;</span> <span class="variable">$&#123;OVPN_PROTO&#125;</span></span></span><br><span class="line"><span class="string">auth-nocache</span></span><br><span class="line"><span class="string">remote-cert-tls server&quot;</span></span><br><span class="line">OVPN_EXT=<span class="string">&quot;ovpn&quot;</span> ;;</span><br><span class="line"><span class="keyword">esac</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt; <span class="string">EOF &gt; $&#123;OVPN_DIR&#125;/$&#123;OVPN_ID&#125;.$&#123;OVPN_EXT&#125;</span></span><br><span class="line"><span class="string">user nobody</span></span><br><span class="line"><span class="string">group nogroup</span></span><br><span class="line"><span class="string">dev tun</span></span><br><span class="line"><span class="string">$&#123;OVPN_CONF&#125;</span></span><br><span class="line"><span class="string">&lt;tls-crypt&gt;$&#123;NL&#125;$&#123;OVPN_TC&#125;$&#123;NL&#125;&lt;/tls-crypt&gt;</span></span><br><span class="line"><span class="string">&lt;key&gt;$&#123;NL&#125;$&#123;OVPN_KEY&#125;$&#123;NL&#125;&lt;/key&gt;</span></span><br><span class="line"><span class="string">&lt;cert&gt;$&#123;NL&#125;$&#123;OVPN_CERT&#125;$&#123;NL&#125;&lt;/cert&gt;</span></span><br><span class="line"><span class="string">&lt;ca&gt;$&#123;NL&#125;$&#123;OVPN_CA&#125;$&#123;NL&#125;&lt;/ca&gt;</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">/etc/init.d/openvpn restart</span><br><span class="line"><span class="comment"># 此处就能够看到client.ovpn 把这个文件通过openwrt的备份功能导出来，上传到群晖即可</span></span><br><span class="line"><span class="built_in">ls</span> <span class="variable">$&#123;OVPN_DIR&#125;</span>/*.ovpn</span><br></pre></td></tr></table></figure>
+<p>到这里openwrt的openvpn服务端配置完毕，可以使用openvpn的备份功能（<code>System -&gt; Backup/Flash Firmware</code>）. 从备份包导出客户端的配置文件。</p>
+<hr>
+<h2 id="2-群晖连接openvpn"><a href="#2-群晖连接openvpn" class="headerlink" title="2. 群晖连接openvpn"></a>2. 群晖连接openvpn</h2><p>到了群晖这一步就比较简单，按照官网的流程，打开 <code>控制面板-&gt;网络-&gt;网络界面-&gt;新增-&gt;创建VPN配置文件</code>，把刚才导出的client.ovpn上传即可</p>
+<blockquote>
+<p>注：其实这里因为群晖的错误提示非常的“友好”，连接失败只会提示“失败，请检查配置”或者“认证错误”，导致排错非常的困难，踩了不少坑。比如不支持的标签，属性等等，总之注意点都写在第一步了。如果还是有问题，请自行前往<code>/var/log/messages</code>进行openvpn相关日志的排查。</p>
+</blockquote>
+<p>按照下图位置上传client.ovpn<br><img data-src="https://img-blog.csdnimg.cn/db605dfb49fe49aebf6ac6fe52d3c13c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>这里只需要填写 “导入.ovpn” 文件这一项<br><img data-src="https://img-blog.csdnimg.cn/3a403e5c14fe4f0493d5e95118e79b6c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_19,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>记得勾选这两个选项<br><img data-src="https://img-blog.csdnimg.cn/88e52cab7a7144d9a9d482b3391b4903.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>到这一步 openvpn的连接可以正常建立了。</p>
+<hr>
+<h2 id="3-配置端口转发"><a href="#3-配置端口转发" class="headerlink" title="3.配置端口转发"></a>3.配置端口转发</h2><p>需要完成端口转发，首先我们得先把群晖的ip固定下来，否则ip一变动，端口转发规则就失效了。<br>需要完成openvpn客户端的ip固定，我们需要在server配置中添加规则。</p>
+<p><strong>编辑服务端配置</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim <span class="variable">$&#123;OVPN_DIR&#125;</span>/server.ovpn</span><br></pre></td></tr></table></figure>
+<p><strong>添加下面这一行，用来指定客户端config文件夹</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 这里的文件夹路径可以自定</span></span><br><span class="line">client-config-dir /etc/openvpn/ccd</span><br></pre></td></tr></table></figure>
+<p><strong>保存后新增客户端config 注意这里的“client”需要和.ovpn文件名相符，也就是easyrsa创建客户端秘钥时的名字</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim /etc/openvpn/ccd/client</span><br></pre></td></tr></table></figure>
+<p><strong>添加下面这一行，来绑定ip</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 这里的192.168.8.108 即为你想要绑定的ip</span></span><br><span class="line">ifconfig-push 192.168.8.108 255.255.255.0</span><br></pre></td></tr></table></figure>
+<p><strong>保存后重启openvpn</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/etc/init.d/openvpn restart</span><br></pre></td></tr></table></figure>
+<hr>
+<p>接下来正式开始配置端口转发，进入openwrt,  菜单选择 <code>Network-&gt;Firewall-&gt;Port Forwards</code><br><img data-src="https://img-blog.csdnimg.cn/b76d34e11f01421aaf38f7c9a4c6c0cb.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>新增一条端口转发，按照下图填写<br><img data-src="https://img-blog.csdnimg.cn/2df447f9ae0a470c8d3a3f65c98dba4a.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>至此，应该就能够使用openwrt的端口转发达到内网穿透的目的了。</p>
+<p>以上！まいど～</p>
+<hr>
+]]></content>
   </entry>
 </search>

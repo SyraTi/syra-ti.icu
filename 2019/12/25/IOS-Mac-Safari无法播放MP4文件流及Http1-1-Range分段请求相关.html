@@ -510,6 +510,7 @@
     const changeMotion = () => {
       index = index % 5
       model.motion('Tap',index++);
+
       clearTimeout(idleCounter)
       idleCounter = setTimeout(() => {
         model.motion('Entry');

@@ -1415,6 +1415,7 @@ slider.stopped = true; //关闭滑动切换
     const changeMotion = () => {
       index = index % 5
       model.motion('Tap',index++);
+
       clearTimeout(idleCounter)
       idleCounter = setTimeout(() => {
         model.motion('Entry');

@@ -30,8 +30,8 @@
 <meta property="og:site_name" content="SyraTi.ICU">
 <meta property="og:description" content="本文件夹存放的是live2d的模型由于文件名是游戏内dump等原因导致不好修改，在此记录对应关系如下   Character Folder Note Processed    魔理沙 object_live2d_002_101.asset 东方Canonball yes   芙兰朵露 object_live2d_011_101.asset 东方Canonball 普通版 no   芙兰朵露 obj">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-06-24T07:39:18.818Z">
-<meta property="article:modified_time" content="2022-06-24T07:39:18.818Z">
+<meta property="article:published_time" content="2022-06-24T09:50:06.075Z">
+<meta property="article:modified_time" content="2022-06-24T09:50:06.075Z">
 <meta property="article:author" content="白茶SyraTi">
 <meta name="twitter:card" content="summary">
 
@@ -293,7 +293,6 @@
 <li>使用Cubism Viewer点击［ファイル］メニュー→［読み込み］→［表情用モーション(motion3.json &#x2F; exp3.json)］</li>
 <li>导出expression文件夹</li>
 <li>在model3.json中添加Expression字段</li>
-<li>*目前不清楚为什么ParamEyeScale有0和负值出现时导致眼球变得非常小，和官方的表现不一致，有待发掘问题所在，<a target="_blank" rel="noopener" href="https://github.com/guansss/pixi-live2d-display/issues/67">关联Issue</a></li>
 </ol>
 <ul>
 <li>具体可参见<a target="_blank" rel="noopener" href="https://docs.live2d.com/cubism-editor-manual/setting-and-exporting-facial-expressions/">表情の設定と書き出し</a></li>
@@ -428,7 +427,6 @@
     const changeMotion = () => {
       index = index % 5
       model.motion('Tap',index++);
-
       clearTimeout(idleCounter)
       idleCounter = setTimeout(() => {
         model.motion('Entry');

@@ -44,15 +44,38 @@
     "Motions": {
       "Entry": [
         {
-          "File": "motions/LIVE2D_002_101_21.motion3.json"
+          "File": "motions/LIVE2D_002_101_11.motion3.json"
         }
       ],
-      "Tap": [
+      "1":[
         {
-          "File": "motions/LIVE2D_002_101_22.motion3.json"
+          "File": "motions/LIVE2D_002_101_10.motion3.json"
         },
         {
-          "File": "motions/LIVE2D_002_101_25.motion3.json"
+          "File": "motions/LIVE2D_002_101_11.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_12.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_13.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_14.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_15.motion3.json"
+        }
+      ],
+      "2":[
+        {
+          "File": "motions/LIVE2D_002_101_20.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_21.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_22.motion3.json"
         },
         {
           "File": "motions/LIVE2D_002_101_23.motion3.json"
@@ -61,7 +84,84 @@
           "File": "motions/LIVE2D_002_101_24.motion3.json"
         },
         {
-          "File": "motions/LIVE2D_002_101_21.motion3.json"
+          "File": "motions/LIVE2D_002_101_25.motion3.json"
+        }
+      ],
+      "3":[
+        {
+          "File": "motions/LIVE2D_002_101_30.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_31.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_32.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_33.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_34.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_35.motion3.json"
+        }
+      ],
+      "4":[
+        {
+          "File": "motions/LIVE2D_002_101_40.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_41.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_42.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_43.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_44.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_45.motion3.json"
+        }
+      ],
+      "5":[
+        {
+          "File": "motions/LIVE2D_002_101_50.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_51.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_52.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_53.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_54.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_55.motion3.json"
+        }
+      ],
+      "Hand": [
+        {
+          "File": "motions/LIVE2D_002_101_10.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_20.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_30.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_40.motion3.json"
+        },
+        {
+          "File": "motions/LIVE2D_002_101_50.motion3.json"
         }
       ],
       "motion": [

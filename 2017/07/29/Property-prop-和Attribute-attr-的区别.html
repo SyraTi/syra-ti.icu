@@ -515,8 +515,10 @@
       motionState = target
       clearTimeout(idleCounter)
       idleCounter = setTimeout(() => {
-        model.motion(`${motionState}`,1);
-        motionState = 1
+        if(motionState !== 1){
+          model.motion(`${motionState}`,1);
+          motionState = 1
+        }
       }, 5000)
     }
     document.getElementById('live2dCanvas').addEventListener('click', changeMotion)

@@ -31,7 +31,7 @@
 <meta property="og:description" content="一生懸命マリフラ">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-06-16T02:49:47.000Z">
-<meta property="article:modified_time" content="2022-07-01T08:17:38.383Z">
+<meta property="article:modified_time" content="2022-07-01T09:09:30.907Z">
 <meta property="article:author" content="白茶SyraTi">
 <meta name="twitter:card" content="summary">
 
@@ -381,8 +381,10 @@
       motionState = target
       clearTimeout(idleCounter)
       idleCounter = setTimeout(() => {
-        model.motion(`${motionState}`,1);
-        motionState = 1
+        if(motionState !== 1){
+          model.motion(`${motionState}`,1);
+          motionState = 1
+        }
       }, 5000)
     }
     document.getElementById('live2dCanvas').addEventListener('click', changeMotion)

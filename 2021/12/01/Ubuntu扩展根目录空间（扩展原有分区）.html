@@ -486,7 +486,11 @@
     let idleCounter
     let motionState = 1
     const changeMotion = () => {
-      const target = 1 + Math.floor(Math.random() * 5)
+      let target = 1 + Math.floor(Math.random() * 4)
+      if(target === motionState){
+        // 防止重复动作
+        target++
+      }
       model.motion(`${motionState}`,target);
       motionState = target
       clearTimeout(idleCounter)

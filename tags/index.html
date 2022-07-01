@@ -31,7 +31,7 @@
 <meta property="og:description" content="一生懸命マリフラ">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-06-16T02:49:47.000Z">
-<meta property="article:modified_time" content="2022-07-01T08:08:47.271Z">
+<meta property="article:modified_time" content="2022-07-01T08:17:38.383Z">
 <meta property="article:author" content="白茶SyraTi">
 <meta name="twitter:card" content="summary">
 
@@ -372,7 +372,11 @@
     let idleCounter
     let motionState = 1
     const changeMotion = () => {
-      const target = 1 + Math.floor(Math.random() * 5)
+      let target = 1 + Math.floor(Math.random() * 4)
+      if(target === motionState){
+        // 防止重复动作
+        target++
+      }
       model.motion(`${motionState}`,target);
       motionState = target
       clearTimeout(idleCounter)

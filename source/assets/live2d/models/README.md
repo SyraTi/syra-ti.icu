@@ -10,7 +10,7 @@
 
 注：上表最后一列为模型处理情况，模型需要处理过才能正常显示，处理步骤见[模型处理步骤](#模型处理步骤)
 
-### *motion的命名规则
+### motion3文件的命名规则
 目前能够判明的编号命名规则如下
 - 序号为 01-08 的motion3文件： 表情文件，需要生成exp3文件使用
 - 序号为 [1-5]0 的motions3文件： 应该只包含了手部的样式切换
@@ -27,5 +27,5 @@
 4. 将motion序号为01-08的motion3文件，导出为exp3表情文件，具体步骤如下
    1. 使用Cubism Viewer点击［ファイル］メニュー→［読み込み］→［表情用モーション(motion3.json / exp3.json)］
    2. 导出expression文件夹
-   3. 在model3.json中添加Expression字段
+   3. 在model3.json中添加Expression字段，指定使用的exp3文件
    - 具体可参见[表情の設定と書き出し](https://docs.live2d.com/cubism-editor-manual/setting-and-exporting-facial-expressions/)

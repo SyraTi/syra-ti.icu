@@ -1,16 +1,16 @@
 ---
-title: 群辉使用BGmi+Aria2+Emby完成蜜柑的番剧订阅与自动下载
+title: 群晖使用BGmi+Aria2+Emby完成蜜柑的番剧订阅与自动下载
 date: 2022-07-29 15:58:59
-tags: 群辉 BGmi Aria2 Emby
+tags: 群晖 BGmi Aria2 Emby
 ---
 ## 前情提要
-已经在群辉部署了Emby+Aria2，但是番剧一直是手动下载，比较麻烦。想着能不能订阅自动下载之类的，翻了一遍Github看到了[BGmi](https://github.com/BGmi/BGmi)这个仓库，尝试下来体验还算不错。
+已经在群晖部署了Emby+Aria2，但是番剧一直是手动下载，比较麻烦。想着能不能订阅自动下载之类的，翻了一遍Github看到了[BGmi](https://github.com/BGmi/BGmi)这个仓库，尝试下来体验还算不错。
 
 ## 部署
-由于是在群辉部署，自然能用docker就用docker，BGmi也贴心提供了[docker镜像](https://github.com/BGmi/bgmi-docker-all-in-one)。镜像除了BGmi本体之外，还包含了一个Transmission，如果没有安装Aria2的姥爷们，也可以直接使用Transmission。 
+由于是在群晖部署，自然能用docker就用docker，BGmi也贴心提供了[docker镜像](https://github.com/BGmi/bgmi-docker-all-in-one)。镜像除了BGmi本体之外，还包含了一个Transmission，如果没有安装Aria2的姥爷们，也可以直接使用Transmission。 
 
 ok，那么下面开始正式部署：
-1. 打开群辉的```docker-注册表```，搜索```codysk/bgmi-all-in-one```，下载并启动。
+1. 打开群晖的```docker-注册表```，搜索```codysk/bgmi-all-in-one```，下载并启动。
   ![下载](/images/posts/20220729162316.jpg)
   ![启动](/images/posts/20220729162521.jpg)
 2. 选择高级设置，进行相关配置
@@ -18,7 +18,7 @@ ok，那么下面开始正式部署：
 3. 配置应用开机自启
      ![开机自启](../images/posts/20220729162810.jpg)
 4. 配置文件映射，这里有两个文件夹需要映射，
-   - 首先是```/bgmi```这是所有数据文件以及配置文件所在的地方，映射到群辉方便管理。
+   - 首先是```/bgmi```这是所有数据文件以及配置文件所在的地方，映射到群晖方便管理。
    - 其次是将Emby的资源文件夹映射到docker内，**需要注意的是，由于BGmi的配置项中下载路径只有一个，所以这里的路径要与Aria访问的路径保持一致。**
    ![文件映射](../images/posts/20220729163000.jpg)
 5. 配置端口映射，这里也有两个端口需要映射：

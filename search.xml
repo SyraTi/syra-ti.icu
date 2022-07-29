@@ -1164,17 +1164,22 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
-    <title>群辉使用BGmi+Aria2+Emby完成蜜柑的番剧订阅与自动下载</title>
+    <title>获取元素到页面顶部的距离</title>
+    <url>/13c3ceb89ee0.html</url>
+    <content><![CDATA[<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> offsetTop = targetElement.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span> + <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span></span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+  <entry>
+    <title>群晖使用BGmi+Aria2+Emby完成蜜柑的番剧订阅与自动下载</title>
     <url>/fe08bf43fac1.html</url>
-    <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>已经在群辉部署了Emby+Aria2，但是番剧一直是手动下载，比较麻烦。想着能不能订阅自动下载之类的，翻了一遍Github看到了<a href="https://github.com/BGmi/BGmi">BGmi</a>这个仓库，尝试下来体验还算不错。</p>
-<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>由于是在群辉部署，自然能用docker就用docker，BGmi也贴心提供了<a href="https://github.com/BGmi/bgmi-docker-all-in-one">docker镜像</a>。镜像除了BGmi本体之外，还包含了一个Transmission，如果没有安装Aria2的姥爷们，也可以直接使用Transmission。 </p>
+    <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>已经在群晖部署了Emby+Aria2，但是番剧一直是手动下载，比较麻烦。想着能不能订阅自动下载之类的，翻了一遍Github看到了<a href="https://github.com/BGmi/BGmi">BGmi</a>这个仓库，尝试下来体验还算不错。</p>
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>由于是在群晖部署，自然能用docker就用docker，BGmi也贴心提供了<a href="https://github.com/BGmi/bgmi-docker-all-in-one">docker镜像</a>。镜像除了BGmi本体之外，还包含了一个Transmission，如果没有安装Aria2的姥爷们，也可以直接使用Transmission。 </p>
 <p>ok，那么下面开始正式部署：</p>
 <ol>
-<li>打开群辉的<code>docker-注册表</code>，搜索<code>codysk/bgmi-all-in-one</code>，下载并启动。<br>  <img data-src="/images/posts/20220729162316.jpg" alt="下载"><br>  <img data-src="/images/posts/20220729162521.jpg" alt="启动"></li>
+<li>打开群晖的<code>docker-注册表</code>，搜索<code>codysk/bgmi-all-in-one</code>，下载并启动。<br>  <img data-src="/images/posts/20220729162316.jpg" alt="下载"><br>  <img data-src="/images/posts/20220729162521.jpg" alt="启动"></li>
 <li>选择高级设置，进行相关配置<br><img data-src="/../images/posts/20220729162719.jpg" alt="高级设置"></li>
 <li>配置应用开机自启<br>  <img data-src="/../images/posts/20220729162810.jpg" alt="开机自启"></li>
 <li>配置文件映射，这里有两个文件夹需要映射，<ul>
-<li>首先是<code>/bgmi</code>这是所有数据文件以及配置文件所在的地方，映射到群辉方便管理。</li>
+<li>首先是<code>/bgmi</code>这是所有数据文件以及配置文件所在的地方，映射到群晖方便管理。</li>
 <li>其次是将Emby的资源文件夹映射到docker内，<strong>需要注意的是，由于BGmi的配置项中下载路径只有一个，所以这里的路径要与Aria访问的路径保持一致。</strong><br><img data-src="/../images/posts/20220729163000.jpg" alt="文件映射"></li>
 </ul>
 </li>
@@ -1210,12 +1215,7 @@ requestAnimationFrame(repeatOften);
 <hr>
 ]]></content>
       <tags>
-        <tag>群辉 BGmi Aria2 Emby</tag>
+        <tag>群晖 BGmi Aria2 Emby</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>获取元素到页面顶部的距离</title>
-    <url>/13c3ceb89ee0.html</url>
-    <content><![CDATA[<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> offsetTop = targetElement.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span> + <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span></span><br></pre></td></tr></table></figure>]]></content>
   </entry>
 </search>

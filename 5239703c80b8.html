@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"syra-ti.icu","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前情提要公司里放了一台黑裙，但是没有公网IP，想到用openvpn拨到家里的路由器，再进行端口转发达到内网穿透，公网访问的目的。 总之的总之三步走，需要openwrt上有server，以及群晖能够有client进行拨入，最后配置端口转发  1. openwrt部署openvpn server openwrt官方提供了详实的文档，如下[OpenWrt Wiki] OpenVPN server  但是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="openwrt部署openvpn server以及群晖连接（DSM7）完成内网穿透">
+<meta property="og:url" content="https://syra-ti.icu/5239703c80b8.html">
+<meta property="og:site_name" content="SyraTi.ICU">
+<meta property="og:description" content="前情提要公司里放了一台黑裙，但是没有公网IP，想到用openvpn拨到家里的路由器，再进行端口转发达到内网穿透，公网访问的目的。 总之的总之三步走，需要openwrt上有server，以及群晖能够有client进行拨入，最后配置端口转发  1. openwrt部署openvpn server openwrt官方提供了详实的文档，如下[OpenWrt Wiki] OpenVPN server  但是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/8196fece92354dfda722165d47ba5c54.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/db605dfb49fe49aebf6ac6fe52d3c13c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/3a403e5c14fe4f0493d5e95118e79b6c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_19,color_FFFFFF,t_70,g_se,x_16">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/88e52cab7a7144d9a9d482b3391b4903.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/b76d34e11f01421aaf38f7c9a4c6c0cb.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2df447f9ae0a470c8d3a3f65c98dba4a.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16">
+<meta property="article:published_time" content="2022-01-20T07:46:11.000Z">
+<meta property="article:modified_time" content="2022-02-01T06:24:50.000Z">
+<meta property="article:author" content="白茶SyraTi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/8196fece92354dfda722165d47ba5c54.png">
+
+
+<link rel="canonical" href="https://syra-ti.icu/5239703c80b8.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://syra-ti.icu/5239703c80b8.html","path":"5239703c80b8.html","title":"openwrt部署openvpn server以及群晖连接（DSM7）完成内网穿透"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>openwrt部署openvpn server以及群晖连接（DSM7）完成内网穿透 | SyraTi.ICU</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SyraTi.ICU</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">霧雨魔法店 下属</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E6%83%85%E6%8F%90%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">前情提要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-openwrt%E9%83%A8%E7%BD%B2openvpn-server"><span class="nav-number">2.</span> <span class="nav-text">1. openwrt部署openvpn server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%BE%A4%E6%99%96%E8%BF%9E%E6%8E%A5openvpn"><span class="nav-number">3.</span> <span class="nav-text">2. 群晖连接openvpn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E9%85%8D%E7%BD%AE%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91"><span class="nav-number">4.</span> <span class="nav-text">3.配置端口转发</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="白茶SyraTi"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">白茶SyraTi</p>
+  <div class="site-description" itemprop="description">一生懸命マリフラ</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/SyraTi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;SyraTi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/GenyaShiroko" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;GenyaShiroko" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:marisa@koumakan.vip" title="E-Mail → mailto:marisa@koumakan.vip" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-star fa-fw"></i>
+      魔法店の常連客
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://alicem.top/" title="https:&#x2F;&#x2F;alicem.top" rel="noopener" target="_blank">爱丽丝的人偶屋@沢城アリス</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stlab.ar.gp/" title="https:&#x2F;&#x2F;stlab.ar.gp" rel="noopener" target="_blank">王乌龟的跳板机吧@乌龟吃鳖3rd</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.minamion.com/" title="https:&#x2F;&#x2F;www.minamion.com" rel="noopener" target="_blank">/dev/null@神楽坂南音</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/5239703c80b8.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="白茶SyraTi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SyraTi.ICU">
+      <meta itemprop="description" content="一生懸命マリフラ">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="openwrt部署openvpn server以及群晖连接（DSM7）完成内网穿透 | SyraTi.ICU">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          openwrt部署openvpn server以及群晖连接（DSM7）完成内网穿透
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-01-20 15:46:11" itemprop="dateCreated datePublished" datetime="2022-01-20T15:46:11+08:00">2022-01-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-02-01 14:24:50" itemprop="dateModified" datetime="2022-02-01T14:24:50+08:00">2022-02-01</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>公司里放了一台黑裙，但是没有公网IP，想到用openvpn拨到家里的路由器，再进行端口转发达到内网穿透，公网访问的目的。</p>
+<p><strong>总之的总之三步走，需要openwrt上有server，以及群晖能够有client进行拨入，最后配置端口转发</strong></p>
+<hr>
+<h2 id="1-openwrt部署openvpn-server"><a href="#1-openwrt部署openvpn-server" class="headerlink" title="1. openwrt部署openvpn server"></a>1. openwrt部署openvpn server</h2><blockquote>
+<p>openwrt官方提供了详实的文档，如下<br><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/services/vpn/openvpn/server">[OpenWrt Wiki] OpenVPN server</a></p>
+</blockquote>
+<p>但是这个版本生成的配置，因为用到了<code>&lt;tls-crypt-v2&gt;</code>，群晖没法识别。可以使用下面这个<code> previous version of OpenWrt</code> 的旧版本。</p>
+<blockquote>
+<p><img data-src="https://img-blog.csdnimg.cn/8196fece92354dfda722165d47ba5c54.png" alt="在这里插入图片描述"><br>链接在这里↓<br><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/services/vpn/openvpn/server?rev=1632708683">[OpenWrt Wiki] OpenVPN server (old)</a></p>
+</blockquote>
+<hr>
+<p>接下来就是跟着文档走一遍, 我会对官方的文档进行一个翻译和加注：</p>
+<blockquote>
+<p><strong>1. 准备</strong><br>如果需要请先设置DDNS客户端。 安装依赖包. 指定一些临时的环境变量</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装包</span></span><br><span class="line">opkg update</span><br><span class="line">opkg install openvpn-openssl openvpn-easy-rsa</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">OVPN_DIR=<span class="string">&quot;/etc/openvpn&quot;</span></span><br><span class="line">OVPN_PKI=<span class="string">&quot;/etc/easy-rsa/pki&quot;</span></span><br><span class="line">OVPN_PORT=<span class="string">&quot;1194&quot;</span></span><br><span class="line">OVPN_PROTO=<span class="string">&quot;udp&quot;</span></span><br><span class="line">OVPN_POOL=<span class="string">&quot;192.168.8.0 255.255.255.0&quot;</span>  <span class="comment"># 注：这里可以指定openvpn的网段</span></span><br><span class="line">OVPN_DNS=<span class="string">&quot;<span class="variable">$&#123;OVPN_POOL%.* *&#125;</span>.1&quot;</span></span><br><span class="line">OVPN_DOMAIN=<span class="string">&quot;<span class="subst">$(uci get dhcp.@dnsmasq[0].domain)</span>&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 拿到外网ip作为外网地址</span></span><br><span class="line">. /lib/functions/network.sh</span><br><span class="line">network_flush_cache</span><br><span class="line">network_find_wan NET_IF</span><br><span class="line">network_get_ipaddr NET_ADDR <span class="string">&quot;<span class="variable">$&#123;NET_IF&#125;</span>&quot;</span></span><br><span class="line">OVPN_SERV=<span class="string">&quot;<span class="variable">$&#123;NET_ADDR&#125;</span>&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 如果有ddns 则从ddns拿到全域名(FQDN)作为外网地址</span></span><br><span class="line">NET_FQDN=<span class="string">&quot;<span class="subst">$(uci -q get ddns.@service[0].lookup_host)</span>&quot;</span></span><br><span class="line"><span class="keyword">if</span> [ -n <span class="string">&quot;<span class="variable">$&#123;NET_FQDN&#125;</span>&quot;</span> ]</span><br><span class="line"><span class="keyword">then</span> OVPN_SERV=<span class="string">&quot;<span class="variable">$&#123;NET_FQDN&#125;</span>&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>2. 秘钥管理</strong><br>使用 EasyRSA 管理 PKI. 必要时使用私钥密码保护.</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_PKI=<span class="string">&quot;<span class="variable">$&#123;OVPN_PKI&#125;</span>&quot;</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_REQ_CN=<span class="string">&quot;ovpnca&quot;</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_BATCH=<span class="string">&quot;1&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 移除并且重新初始化pki目录</span></span><br><span class="line">easyrsa init-pki</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 生成DH变量</span></span><br><span class="line">easyrsa gen-dh</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 创建新的CA</span></span><br><span class="line">easyrsa build-ca nopass</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 为服务端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-server-full server nopass</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 为客户端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-client-full client nopass  </span><br><span class="line"><span class="comment">#注：此处为生成客户端配置必要，如果需要多个客户端的，可以多次运行本行 只需要更改“client”, 如：</span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client1 nopass </span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client2 nopass </span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client-dsm nopass</span></span><br><span class="line"><span class="comment">#注：更改后的名称会作为生成后配置文件的名称 </span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 生成TLS PSK</span></span><br><span class="line">openvpn --genkey --secret <span class="variable">$&#123;OVPN_PKI&#125;</span>/tc.pem</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>3. 防火墙</strong><br>将VPN网络视为私有网络，将VPN接口分配到LAN区域，以减少防火墙的设置。允许从WAN区域访问VPN服务器。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置防火墙</span></span><br><span class="line">uci rename firewall.@zone[0]=<span class="string">&quot;lan&quot;</span></span><br><span class="line">uci rename firewall.@zone[1]=<span class="string">&quot;wan&quot;</span></span><br><span class="line">uci del_list firewall.lan.device=<span class="string">&quot;tun+&quot;</span></span><br><span class="line">uci add_list firewall.lan.device=<span class="string">&quot;tun+&quot;</span></span><br><span class="line">uci -q delete firewall.ovpn</span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn=<span class="string">&quot;rule&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.name=<span class="string">&quot;Allow-OpenVPN&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.src=<span class="string">&quot;wan&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.dest_port=<span class="string">&quot;<span class="variable">$&#123;OVPN_PORT&#125;</span>&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.proto=<span class="string">&quot;<span class="variable">$&#123;OVPN_PROTO&#125;</span>&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.target=<span class="string">&quot;ACCEPT&quot;</span></span><br><span class="line">uci commit firewall</span><br><span class="line">/etc/init.d/firewall restart</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>4. VPN服务</strong><br>配置VPN服务，生成客户端配置文件。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">OVPN_DH=<span class="string">&quot;<span class="subst">$(cat $&#123;OVPN_PKI&#125;/dh.pem)</span>&quot;</span></span><br><span class="line">OVPN_TC=<span class="string">&quot;<span class="subst">$(sed -e <span class="string">&quot;/^#/d;/^\w/N;s/\n//&quot;</span> $&#123;OVPN_PKI&#125;/tc.pem)</span>&quot;</span></span><br><span class="line">OVPN_CA=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/ca.crt)</span>&quot;</span></span><br><span class="line">NL=$<span class="string">&#x27;\n&#x27;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 配置VPN服务，生成客户端配置文件。 </span></span><br><span class="line"><span class="comment">#注：如果你清楚的知道你在做什么，可以更改下方ovpn配置相关的代码，可以省掉后续多个客户端单独修改配置的工作量</span></span><br><span class="line"><span class="built_in">umask</span> go=</span><br><span class="line"><span class="built_in">ls</span> <span class="variable">$&#123;OVPN_PKI&#125;</span>/issued \</span><br><span class="line">| sed -e <span class="string">&quot;s/\.\w*$//&quot;</span> \</span><br><span class="line">| <span class="keyword">while</span> <span class="built_in">read</span> -r OVPN_ID</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">OVPN_KEY=<span class="string">&quot;<span class="subst">$(cat $&#123;OVPN_PKI&#125;/private/$&#123;OVPN_ID&#125;.key)</span>&quot;</span></span><br><span class="line">OVPN_CERT=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt)</span>&quot;</span></span><br><span class="line">OVPN_EKU=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt -purpose)</span>&quot;</span></span><br><span class="line"><span class="keyword">case</span> <span class="variable">$&#123;OVPN_EKU&#125;</span> <span class="keyword">in</span></span><br><span class="line">(*<span class="string">&quot;SSL server : Yes&quot;</span>*)</span><br><span class="line">OVPN_CONF=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">port <span class="variable">$&#123;OVPN_PORT&#125;</span></span></span><br><span class="line"><span class="string">proto <span class="variable">$&#123;OVPN_PROTO&#125;</span></span></span><br><span class="line"><span class="string">server <span class="variable">$&#123;OVPN_POOL&#125;</span></span></span><br><span class="line"><span class="string">topology subnet</span></span><br><span class="line"><span class="string">client-to-client</span></span><br><span class="line"><span class="string">keepalive 10 60</span></span><br><span class="line"><span class="string">persist-tun</span></span><br><span class="line"><span class="string">persist-key</span></span><br><span class="line"><span class="string">push \&quot;dhcp-option DNS <span class="variable">$&#123;OVPN_DNS&#125;</span>\&quot;</span></span><br><span class="line"><span class="string">push \&quot;dhcp-option DOMAIN <span class="variable">$&#123;OVPN_DOMAIN&#125;</span>\&quot;</span></span><br><span class="line"><span class="string">push \&quot;redirect-gateway def1\&quot;</span></span><br><span class="line"><span class="string">push \&quot;persist-tun\&quot;</span></span><br><span class="line"><span class="string">push \&quot;persist-key\&quot;</span></span><br><span class="line"><span class="string">&lt;dh&gt;<span class="variable">$&#123;NL&#125;</span><span class="variable">$&#123;OVPN_DH&#125;</span><span class="variable">$&#123;NL&#125;</span>&lt;/dh&gt;&quot;</span></span><br><span class="line">OVPN_EXT=<span class="string">&quot;conf&quot;</span> ;;</span><br><span class="line">(*<span class="string">&quot;SSL client : Yes&quot;</span>*)</span><br><span class="line">OVPN_CONF=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">nobind</span></span><br><span class="line"><span class="string">client</span></span><br><span class="line"><span class="string">remote <span class="variable">$&#123;OVPN_SERV&#125;</span> <span class="variable">$&#123;OVPN_PORT&#125;</span> <span class="variable">$&#123;OVPN_PROTO&#125;</span></span></span><br><span class="line"><span class="string">auth-nocache</span></span><br><span class="line"><span class="string">remote-cert-tls server&quot;</span></span><br><span class="line">OVPN_EXT=<span class="string">&quot;ovpn&quot;</span> ;;</span><br><span class="line"><span class="keyword">esac</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt; <span class="string">EOF &gt; $&#123;OVPN_DIR&#125;/$&#123;OVPN_ID&#125;.$&#123;OVPN_EXT&#125;</span></span><br><span class="line"><span class="string">user nobody</span></span><br><span class="line"><span class="string">group nogroup</span></span><br><span class="line"><span class="string">dev tun</span></span><br><span class="line"><span class="string">$&#123;OVPN_CONF&#125;</span></span><br><span class="line"><span class="string">&lt;tls-crypt&gt;$&#123;NL&#125;$&#123;OVPN_TC&#125;$&#123;NL&#125;&lt;/tls-crypt&gt;</span></span><br><span class="line"><span class="string">&lt;key&gt;$&#123;NL&#125;$&#123;OVPN_KEY&#125;$&#123;NL&#125;&lt;/key&gt;</span></span><br><span class="line"><span class="string">&lt;cert&gt;$&#123;NL&#125;$&#123;OVPN_CERT&#125;$&#123;NL&#125;&lt;/cert&gt;</span></span><br><span class="line"><span class="string">&lt;ca&gt;$&#123;NL&#125;$&#123;OVPN_CA&#125;$&#123;NL&#125;&lt;/ca&gt;</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">/etc/init.d/openvpn restart</span><br><span class="line"><span class="comment"># 此处就能够看到client.ovpn 把这个文件通过openwrt的备份功能导出来，上传到群晖即可</span></span><br><span class="line"><span class="built_in">ls</span> <span class="variable">$&#123;OVPN_DIR&#125;</span>/*.ovpn</span><br></pre></td></tr></table></figure>
+<p>到这里openwrt的openvpn服务端配置完毕，可以使用openvpn的备份功能（<code>System -&gt; Backup/Flash Firmware</code>）. 从备份包导出客户端的配置文件。</p>
+<hr>
+<h2 id="2-群晖连接openvpn"><a href="#2-群晖连接openvpn" class="headerlink" title="2. 群晖连接openvpn"></a>2. 群晖连接openvpn</h2><p>到了群晖这一步就比较简单，按照官网的流程，打开 <code>控制面板-&gt;网络-&gt;网络界面-&gt;新增-&gt;创建VPN配置文件</code>，把刚才导出的client.ovpn上传即可</p>
+<blockquote>
+<p>注：其实这里因为群晖的错误提示非常的“友好”，连接失败只会提示“失败，请检查配置”或者“认证错误”，导致排错非常的困难，踩了不少坑。比如不支持的标签，属性等等，总之注意点都写在第一步了。如果还是有问题，请自行前往<code>/var/log/messages</code>进行openvpn相关日志的排查。</p>
+</blockquote>
+<p>按照下图位置上传client.ovpn<br><img data-src="https://img-blog.csdnimg.cn/db605dfb49fe49aebf6ac6fe52d3c13c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>这里只需要填写 “导入.ovpn” 文件这一项<br><img data-src="https://img-blog.csdnimg.cn/3a403e5c14fe4f0493d5e95118e79b6c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_19,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>记得勾选这两个选项<br><img data-src="https://img-blog.csdnimg.cn/88e52cab7a7144d9a9d482b3391b4903.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>到这一步 openvpn的连接可以正常建立了。</p>
+<hr>
+<h2 id="3-配置端口转发"><a href="#3-配置端口转发" class="headerlink" title="3.配置端口转发"></a>3.配置端口转发</h2><p>需要完成端口转发，首先我们得先把群晖的ip固定下来，否则ip一变动，端口转发规则就失效了。<br>需要完成openvpn客户端的ip固定，我们需要在server配置中添加规则。</p>
+<p><strong>编辑服务端配置</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim <span class="variable">$&#123;OVPN_DIR&#125;</span>/server.ovpn</span><br></pre></td></tr></table></figure>
+<p><strong>添加下面这一行，用来指定客户端config文件夹</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里的文件夹路径可以自定</span></span><br><span class="line">client-config-dir /etc/openvpn/ccd</span><br></pre></td></tr></table></figure>
+<p><strong>保存后新增客户端config 注意这里的“client”需要和.ovpn文件名相符，也就是easyrsa创建客户端秘钥时的名字</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/openvpn/ccd/client</span><br></pre></td></tr></table></figure>
+<p><strong>添加下面这一行，来绑定ip</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里的192.168.8.108 即为你想要绑定的ip</span></span><br><span class="line">ifconfig-push 192.168.8.108 255.255.255.0</span><br></pre></td></tr></table></figure>
+<p><strong>保存后重启openvpn</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/openvpn restart</span><br></pre></td></tr></table></figure>
+<hr>
+<p>接下来正式开始配置端口转发，进入openwrt,  菜单选择 <code>Network-&gt;Firewall-&gt;Port Forwards</code><br><img data-src="https://img-blog.csdnimg.cn/b76d34e11f01421aaf38f7c9a4c6c0cb.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>新增一条端口转发，按照下图填写<br><img data-src="https://img-blog.csdnimg.cn/2df447f9ae0a470c8d3a3f65c98dba4a.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>至此，应该就能够使用openwrt的端口转发达到内网穿透的目的了。</p>
+<p>以上！まいど～</p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>你的东西都会还给你的ZE☆~</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/afdian.jpg" alt="白茶SyraTi 爱发电">
+        <span>爱发电</span>
+      </div>
+
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/ddf76f824c86.html" rel="prev" title="Ubuntu扩展根目录空间（扩展原有分区）">
+                  <i class="fa fa-chevron-left"></i> Ubuntu扩展根目录空间（扩展原有分区）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/befecf49889e.html" rel="next" title="修复gitCI中文件的创建时间与修改时间">
+                  修复gitCI中文件的创建时间与修改时间 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">白茶SyraTi</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">49k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">44 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.5.0/pjax.min.js" integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.1/mermaid.min.js","integrity":"sha256-8L3O8tirFUa8Va4NSTAyIbHJeLd6OnlcxgupV9F77e0="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"SyraTi","repo":"syra-ti.icu","client_id":"9b208922e8ef1e613ff5","client_secret":"bfcedd4fc22b80cfca1fdc953e503395b2de774a","admin_user":"SyraTi","distraction_free_mode":false,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"da0f5b264be646cae49b7981975f6e23"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<canvas id="live2dCanvas"></canvas>
+<script src="/scripts/live2d/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
+<script src="/scripts/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
+<script src="/scripts/npm/pixi.js@5.3.6/dist/pixi.min.js"></script>
+<script src="/scripts/npm/pixi-live2d-display/dist/index.min.js"></script>
+<!-- 如果只需要 Cubism 4 -->
+<script src="/scripts/npm/pixi-live2d-display/dist/cubism4.min.js"></script>
+
+<script>
+  async function main() {
+
+    const app = new PIXI.Application({
+      view: document.getElementById("live2dCanvas"),
+      autoStart: true,
+      width: 1600,
+      height: 2600,
+      transparent: true,
+    });
+
+    const model = await PIXI.live2d.Live2DModel.from('/assets/live2d/models/object_live2d_002_101.asset/object_live2d_002_101.asset.model3.json');
+    app.stage.addChild(model);
+    model.motion('Entry');
+    let idleCounter
+    let motionState = 1
+    const changeMotion = () => {
+      let target = 1 + Math.floor(Math.random() * 4)
+      if(target === motionState){
+        // 防止重复动作
+        target++
+      }
+      model.motion(`${motionState}`,target);
+      motionState = target
+      clearTimeout(idleCounter)
+      idleCounter = setTimeout(() => {
+        if(motionState !== 1){
+          model.motion(`${motionState}`,1);
+          motionState = 1
+        }
+      }, 5000)
+    }
+    document.getElementById('live2dCanvas').addEventListener('click', changeMotion)
+    document.getElementById('live2dCanvas').addEventListener('touchstart', changeMotion)
+
+    // 变换
+    // model.x = 100;
+    // model.y = 100;
+    // model.rotation = Math.PI;
+    // model.skew.x = Math.PI;
+    // model.scale.set(2, 2);
+    // model.anchor.set(0.5, 0.5);
+
+    //
+    // 交互
+    // model.on('hit', hitAreas => {
+    //   console.log(hitAreas);
+    //   if (hitAreas.includes('body')) {
+    //     model.motion('motion');
+    //   }
+    // });
+  }
+  main()
+</script>
+
+</body>
+</html>

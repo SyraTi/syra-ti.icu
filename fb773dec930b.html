@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"syra-ti.icu","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="故事背景公司项目需要将多媒体文件迁移至阿里OSS，原本直接从后端静态文件的&lt;img&gt; &lt;video&gt; 等标签都要改成从OSS获取展示。 于是乎拦截了所有静态链接，调用了OSS接口获取了文件流返回到前台进行展示，简单粗暴，但是也遇到了问题 —— ios的 &lt;video&gt; 标签全军覆没。 由于项目里视频比较少，这问题还是在上线前三天发现的，那个急的，一开始还找不到是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IOS&#x2F;Mac&#x2F;Safari无法播放MP4文件流及Http1.1 Range分段请求相关">
+<meta property="og:url" content="https://syra-ti.icu/fb773dec930b.html">
+<meta property="og:site_name" content="SyraTi.ICU">
+<meta property="og:description" content="故事背景公司项目需要将多媒体文件迁移至阿里OSS，原本直接从后端静态文件的&lt;img&gt; &lt;video&gt; 等标签都要改成从OSS获取展示。 于是乎拦截了所有静态链接，调用了OSS接口获取了文件流返回到前台进行展示，简单粗暴，但是也遇到了问题 —— ios的 &lt;video&gt; 标签全军覆没。 由于项目里视频比较少，这问题还是在上线前三天发现的，那个急的，一开始还找不到是">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-25T17:31:53.000Z">
+<meta property="article:modified_time" content="2022-01-27T13:20:40.000Z">
+<meta property="article:author" content="白茶SyraTi">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://syra-ti.icu/fb773dec930b.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://syra-ti.icu/fb773dec930b.html","path":"fb773dec930b.html","title":"IOS/Mac/Safari无法播放MP4文件流及Http1.1 Range分段请求相关"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>IOS/Mac/Safari无法播放MP4文件流及Http1.1 Range分段请求相关 | SyraTi.ICU</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SyraTi.ICU</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">霧雨魔法店 下属</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%85%E4%BA%8B%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">故事背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E5%A4%B4-Range-%E5%92%8C-%E5%93%8D%E5%BA%94%E5%A4%B4-Content-Range"><span class="nav-number">2.</span> <span class="nav-text">请求头 Range 和 响应头 Content-Range</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E5%A4%B4-Range"><span class="nav-number">3.</span> <span class="nav-text">请求头 Range</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E5%A4%B4-Content-Range"><span class="nav-number">4.</span> <span class="nav-text">响应头 Content-Range</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="白茶SyraTi"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">白茶SyraTi</p>
+  <div class="site-description" itemprop="description">一生懸命マリフラ</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/SyraTi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;SyraTi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/GenyaShiroko" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;GenyaShiroko" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:marisa@koumakan.vip" title="E-Mail → mailto:marisa@koumakan.vip" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-star fa-fw"></i>
+      魔法店の常連客
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://alicem.top/" title="https:&#x2F;&#x2F;alicem.top" rel="noopener" target="_blank">爱丽丝的人偶屋@沢城アリス</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stlab.ar.gp/" title="https:&#x2F;&#x2F;stlab.ar.gp" rel="noopener" target="_blank">王乌龟的跳板机吧@乌龟吃鳖3rd</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.minamion.com/" title="https:&#x2F;&#x2F;www.minamion.com" rel="noopener" target="_blank">/dev/null@神楽坂南音</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/fb773dec930b.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="白茶SyraTi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SyraTi.ICU">
+      <meta itemprop="description" content="一生懸命マリフラ">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="IOS/Mac/Safari无法播放MP4文件流及Http1.1 Range分段请求相关 | SyraTi.ICU">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          IOS/Mac/Safari无法播放MP4文件流及Http1.1 Range分段请求相关
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-12-26 01:31:53" itemprop="dateCreated datePublished" datetime="2019-12-26T01:31:53+08:00">2019-12-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="故事背景"><a href="#故事背景" class="headerlink" title="故事背景"></a>故事背景</h2><p>公司项目需要将多媒体文件迁移至阿里OSS，原本直接从后端静态文件的<code>&lt;img&gt;</code> <code>&lt;video&gt;</code> 等标签都要改成从OSS获取展示。</p>
+<p>于是乎拦截了所有静态链接，调用了OSS接口获取了文件流返回到前台进行展示，简单粗暴，但是也遇到了问题 —— ios的 <code>&lt;video&gt;</code> 标签全军覆没。</p>
+<p>由于项目里视频比较少，这问题还是在上线前三天发现的，那个急的，一开始还找不到是什么问题，找到老版本的代码后发现前端代码毫无区别（亏得还在前端调试了半天），最后发现使用静态文件就没什么问题。</p>
+<p>确定下来大致是文件流的缘故没跑了，百度+谷歌发现safari不支持整个文件流，服务器必须支持分段请求，也就是下面要说的Range分段请求了。</p>
+<hr>
+<h2 id="请求头-Range-和-响应头-Content-Range"><a href="#请求头-Range-和-响应头-Content-Range" class="headerlink" title="请求头 Range 和 响应头 Content-Range"></a>请求头 <code>Range</code> 和 响应头 <code>Content-Range</code></h2><p>Http协议从1.1开始支持获取文件的部分内容，这为并行下载以及断点续传提供了技术支持。该标准分为两个Header，分别为一个请求头<code>Range</code>， 和一个响应头<code>Content-Range</code> 。</p>
+<hr>
+<h2 id="请求头-Range"><a href="#请求头-Range" class="headerlink" title="请求头 Range"></a>请求头 <code>Range</code></h2><p>先来看看请求头，safari对于文件流的请求会带上这个头，服务器需要正确的对其作出响应，浏览器才能正确的展示文件。之前没法播放文件流正是因为没有正确响应这个请求头。</p>
+<ul>
+<li><p><strong>格式</strong><br>该请求头的格式为 <code>Range: bytes=开始字节-结束字节</code><br>示例: <code>Range:bytes=0-499</code> 表示请求开始的500个字节</p>
+<p><strong>除了基本格式以外，<code>Range</code>头还有可能是以下格式：</strong><br>表示第二个500字节：<code>Range:bytes=500-999</code><br>表示最后500个字节：<code>Range:bytes=-500</code><br>表示500字节以后的范围：<code>Range:bytes=500-</code><br>第一个和最后一个字节：<code>Range:bytes=0-0,-1</code><br>同时指定几个范围：<code>Range:bytes=500-600,601-999</code></p>
+</li>
+<li><p><strong>如何回复</strong><br>对于<code>Range</code>头，服务器需要作出正确的响应，返回对应的状态码来告知客户端，服务器是否支持分段请求：</p>
+<p><code>200</code>：不支持分段请求，但是能正常响应。<br><code>206</code>：支持分段请求 ，并返回分段结果，此时还需要在响应头中添加<code>Content-Range</code>头，并且返回对应的字节片段。</p>
+</li>
+</ul>
+<p><strong>即：如果我们需要正确的响应分段请求，需要做以下几步</strong></p>
+<ol>
+<li>解析<code>Range</code>请求头，获取客户端想要的文件片段范围</li>
+<li>返回<code>206</code>状态码</li>
+<li>响应头中<code>Content-Type</code>头需要填写为文件mime类型，如 <code>video/mp4</code></li>
+<li>响应头中添加<code>Content-Range</code>头，告诉客户端字节片段的信息（包含字节起止位置及文件流总大小）</li>
+<li>响应体中添加客户端所请求的字节片段</li>
+</ol>
+<hr>
+<h2 id="响应头-Content-Range"><a href="#响应头-Content-Range" class="headerlink" title="响应头 Content-Range"></a>响应头 <code>Content-Range</code></h2><p>上一步讲到我们除了需要返回<code>206</code>状态码及返回字节片段以外，还需要返回一个<code>Content-Range</code>头，来告诉客户端我们返回了哪一部分的字节片段，来看一下这个响应头相关的一些信息。</p>
+<ul>
+<li><p><strong>格式</strong><br>还是一样先来看格式，<code>Content-Range: bytes 起始字节-末尾字节/总字节数</code><br>示例：<code>Content-Range:bytes 0-499/13521</code> 表示文件总共有13521字节， 本次返回了0-499字节</p>
+<p><strong>针对不同格式的<code>Range</code>头，我们的响应内容也会有相应的变化（*注意，这里一定不是照搬<code>Range</code>头的内容）</strong><br>对于 <code>Range:bytes=500-999</code>，应该返回 <code>Content-Range:bytes 500-999/13521</code><br>对于 <code>Range:bytes=-500</code>，应该返回 <code>Content-Range:bytes 13021-13520/13521</code><br>对于 <code>Range:bytes=500-</code>，应该返回 <code>Content-Range:bytes 500-13520/13521</code></p>
+<p>对于 <code>Range:bytes=0-0,-1</code> 和 <code>Range:bytes=500-600,601-999</code> 这样的多个范围， <code>Content-Type</code> 头需要修改为<code>multipart/byteranges</code> ，并且在响应体内返回每个范围对应的多个 <code>Content-Range</code> 和 <code>Content-Type</code>，这里具体是怎样实现，由于上线比较着急，用到多个范围的场景也非常少，所以没有时间验证及研究，后面再来做补充，如果有大牛能告知这里应该怎么做的，希望能在评论区告知一下，提前谢谢啦！</p>
+</li>
+</ul>
+<hr>
+<p>代码我就不上了，每个语言每个框架都不一样，大家理解了之后按照以下步骤来书写代码，应该不会有什么大问题的。</p>
+<ol>
+<li>判断请求中是否有 <code>Range</code> 头，如果没有，就按普通请求处理，返回整个流</li>
+<li>如果有<code>Range</code>头，则解析<code>Range</code>的内容，获得所需片段的起止位置</li>
+<li>设置响应状态码为 <code>206</code></li>
+<li>设置响应头 <code>Content-Type</code>为文件mime类型</li>
+<li>设置响应头 <code>Content-Range</code>为正确格式的分段起止位置与文件流总字节数</li>
+<li>根据分段起止位置截取文件流，写入响应体</li>
+<li>结束该次请求</li>
+</ol>
+<p>有什么问题欢迎在下面评论，我会及时回复www</p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>你的东西都会还给你的ZE☆~</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/afdian.jpg" alt="白茶SyraTi 爱发电">
+        <span>爱发电</span>
+      </div>
+
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/008ac5b22651.html" rel="prev" title="关于Group By 单个和多个字段">
+                  <i class="fa fa-chevron-left"></i> 关于Group By 单个和多个字段
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/13c3ceb89ee0.html" rel="next" title="获取元素到页面顶部的距离">
+                  获取元素到页面顶部的距离 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">白茶SyraTi</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">49k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">44 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.5.0/pjax.min.js" integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.1/mermaid.min.js","integrity":"sha256-8L3O8tirFUa8Va4NSTAyIbHJeLd6OnlcxgupV9F77e0="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"SyraTi","repo":"syra-ti.icu","client_id":"9b208922e8ef1e613ff5","client_secret":"bfcedd4fc22b80cfca1fdc953e503395b2de774a","admin_user":"SyraTi","distraction_free_mode":false,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"ef58556005cfe47bae2c1220ebf20898"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<canvas id="live2dCanvas"></canvas>
+<script src="/scripts/live2d/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
+<script src="/scripts/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
+<script src="/scripts/npm/pixi.js@5.3.6/dist/pixi.min.js"></script>
+<script src="/scripts/npm/pixi-live2d-display/dist/index.min.js"></script>
+<!-- 如果只需要 Cubism 4 -->
+<script src="/scripts/npm/pixi-live2d-display/dist/cubism4.min.js"></script>
+
+<script>
+  async function main() {
+
+    const app = new PIXI.Application({
+      view: document.getElementById("live2dCanvas"),
+      autoStart: true,
+      width: 1600,
+      height: 2600,
+      transparent: true,
+    });
+
+    const model = await PIXI.live2d.Live2DModel.from('/assets/live2d/models/object_live2d_002_101.asset/object_live2d_002_101.asset.model3.json');
+    app.stage.addChild(model);
+    model.motion('Entry');
+    let idleCounter
+    let motionState = 1
+    const changeMotion = () => {
+      let target = 1 + Math.floor(Math.random() * 4)
+      if(target === motionState){
+        // 防止重复动作
+        target++
+      }
+      model.motion(`${motionState}`,target);
+      motionState = target
+      clearTimeout(idleCounter)
+      idleCounter = setTimeout(() => {
+        if(motionState !== 1){
+          model.motion(`${motionState}`,1);
+          motionState = 1
+        }
+      }, 5000)
+    }
+    document.getElementById('live2dCanvas').addEventListener('click', changeMotion)
+    document.getElementById('live2dCanvas').addEventListener('touchstart', changeMotion)
+
+    // 变换
+    // model.x = 100;
+    // model.y = 100;
+    // model.rotation = Math.PI;
+    // model.skew.x = Math.PI;
+    // model.scale.set(2, 2);
+    // model.anchor.set(0.5, 0.5);
+
+    //
+    // 交互
+    // model.on('hit', hitAreas => {
+    //   console.log(hitAreas);
+    //   if (hitAreas.includes('body')) {
+    //     model.motion('motion');
+    //   }
+    // });
+  }
+  main()
+</script>
+
+</body>
+</html>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"syra-ti.icu","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="0. V8介绍官方文档这么介绍：V8是谷歌开源高性能JavaScript和WebAssembly引擎，用C++编写。它主要用在Chrome和Node.js中，等等。 简单的来说，我们知道，JavaScript是解释型的语言，需要逐行解释执行 V8则是一种C++开发的JavaScript解释器，它将JavaScript编译成可执行代码，即机器码。 1. V8工作流程概述JavaScript是解释型的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从V8引擎的工作流程看Javascript代码优化">
+<meta property="og:url" content="https://syra-ti.icu/1e0c091d29a1.html">
+<meta property="og:site_name" content="SyraTi.ICU">
+<meta property="og:description" content="0. V8介绍官方文档这么介绍：V8是谷歌开源高性能JavaScript和WebAssembly引擎，用C++编写。它主要用在Chrome和Node.js中，等等。 简单的来说，我们知道，JavaScript是解释型的语言，需要逐行解释执行 V8则是一种C++开发的JavaScript解释器，它将JavaScript编译成可执行代码，即机器码。 1. V8工作流程概述JavaScript是解释型的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://syra-ti.icu/images/posts/de92f2f8.png">
+<meta property="og:image" content="https://syra-ti.icu/images/posts/1b25a842.png">
+<meta property="og:image" content="https://syra-ti.icu/images/posts/4943fa23.png">
+<meta property="og:image" content="https://syra-ti.icu/images/posts/0c995993.png">
+<meta property="article:published_time" content="2022-06-14T06:30:06.000Z">
+<meta property="article:modified_time" content="2022-06-16T02:38:51.000Z">
+<meta property="article:author" content="白茶SyraTi">
+<meta property="article:tag" content="v8">
+<meta property="article:tag" content="javascript">
+<meta property="article:tag" content="node.js">
+<meta property="article:tag" content="chrome">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://syra-ti.icu/images/posts/de92f2f8.png">
+
+
+<link rel="canonical" href="https://syra-ti.icu/1e0c091d29a1.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://syra-ti.icu/1e0c091d29a1.html","path":"1e0c091d29a1.html","title":"从V8引擎的工作流程看Javascript代码优化"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>从V8引擎的工作流程看Javascript代码优化 | SyraTi.ICU</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SyraTi.ICU</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">霧雨魔法店 下属</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-V8%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">0. V8介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-V8%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E6%A6%82%E8%BF%B0"><span class="nav-number">2.</span> <span class="nav-text">1. V8工作流程概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-Parser-%E8%A7%A3%E6%9E%90%E5%99%A8-%E7%94%9F%E6%88%90%E8%AF%AD%E6%B3%95%E6%8A%BD%E8%B1%A1%E6%A0%91%EF%BC%88AST%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 Parser 解析器 生成语法抽象树（AST）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-Ignition-%E8%A7%A3%E9%87%8A%E5%99%A8-%E7%94%9F%E6%88%90%E5%AD%97%E8%8A%82%E7%A0%81%E5%8F%8A%E8%A7%A3%E9%87%8A%E6%89%A7%E8%A1%8C"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 Ignition 解释器 生成字节码及解释执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-Turbofan-%E4%BC%98%E5%8C%96%E7%BC%96%E8%AF%91%E5%99%A8-%E5%AF%B9%E9%83%A8%E5%88%86%E4%BB%A3%E7%A0%81%E7%9B%B4%E6%8E%A5%E7%BC%96%E8%AF%91%E6%89%A7%E8%A1%8C"><span class="nav-number">2.3.</span> <span class="nav-text">1.3 Turbofan 优化编译器 对部分代码直接编译执行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-V8%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E4%B8%AD%E4%B8%80%E4%BA%9B%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">2.  V8工作流程中一些具体实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E9%9A%90%E8%97%8F%E7%B1%BB-JavaScript-%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 隐藏类  JavaScript 动态类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Inline-Cache-%E5%86%85%E8%81%94%E7%BC%93%E5%AD%98"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 Inline Cache 内联缓存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BC%98%E5%8C%96%E7%9A%84-JavaScript"><span class="nav-number">4.</span> <span class="nav-text">3. 如何编写优化的 JavaScript</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E9%9A%90%E8%97%8F%E7%B1%BB"><span class="nav-number">4.1.</span> <span class="nav-text">3.1 隐藏类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Inline-Cache"><span class="nav-number">4.2.</span> <span class="nav-text">3.2 Inline Cache</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-TurboFan"><span class="nav-number">4.3.</span> <span class="nav-text">3.3 TurboFan</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE"><span class="nav-number">5.</span> <span class="nav-text">优化建议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E5%86%85%E5%AE%B9%EF%BC%9A"><span class="nav-number">6.</span> <span class="nav-text">参考内容：</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="白茶SyraTi"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">白茶SyraTi</p>
+  <div class="site-description" itemprop="description">一生懸命マリフラ</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/SyraTi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;SyraTi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/GenyaShiroko" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;GenyaShiroko" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:marisa@koumakan.vip" title="E-Mail → mailto:marisa@koumakan.vip" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-star fa-fw"></i>
+      魔法店の常連客
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://alicem.top/" title="https:&#x2F;&#x2F;alicem.top" rel="noopener" target="_blank">爱丽丝的人偶屋@沢城アリス</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stlab.ar.gp/" title="https:&#x2F;&#x2F;stlab.ar.gp" rel="noopener" target="_blank">王乌龟的跳板机吧@乌龟吃鳖3rd</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.minamion.com/" title="https:&#x2F;&#x2F;www.minamion.com" rel="noopener" target="_blank">/dev/null@神楽坂南音</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/1e0c091d29a1.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="白茶SyraTi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SyraTi.ICU">
+      <meta itemprop="description" content="一生懸命マリフラ">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="从V8引擎的工作流程看Javascript代码优化 | SyraTi.ICU">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从V8引擎的工作流程看Javascript代码优化
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-14 14:30:06" itemprop="dateCreated datePublished" datetime="2022-06-14T14:30:06+08:00">2022-06-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-06-16 10:38:51" itemprop="dateModified" datetime="2022-06-16T10:38:51+08:00">2022-06-16</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="0-V8介绍"><a href="#0-V8介绍" class="headerlink" title="0. V8介绍"></a>0. V8介绍</h2><p>官方文档这么介绍：V8是谷歌开源高性能JavaScript和WebAssembly引擎，用C++编写。它主要用在Chrome和Node.js中，等等。</p>
+<p>简单的来说，我们知道，JavaScript是解释型的语言，需要逐行解释执行</p>
+<p>V8则是一种C++开发的JavaScript解释器，它将JavaScript编译成可执行代码，即机器码。</p>
+<h2 id="1-V8工作流程概述"><a href="#1-V8工作流程概述" class="headerlink" title="1. V8工作流程概述"></a>1. V8工作流程概述</h2><p>JavaScript是解释型的语言，解释型的语言先天就有执行效率上的不足。为此，V8引擎同时采用了解释执行和编译执行这两种方式，也就是在解释执行的同时进行编译，这种方式称为<strong>JIT (Just in Time) 即时编译</strong>。</p>
+<p><strong>解释执行</strong>：V8在执行JavaScript源码时，会先通过解析器Parser将源码解析成AST，解释器Ignition会将AST转化为字节码，一边解释一遍执行。</p>
+<p><strong>即时编译</strong>：Ignition同时会记录某一代码片段的执行次数，如果执行次数超过了某个阈值，这段代码便会被标记为热点代码(HotSpot)，同时将运行信息反馈给<strong>优化编译器TurboFan</strong>，会将这部分热点代码的字节码优化并编译，生成机器码更高效地运行。</p>
+<pre class="mermaid">graph LR
+  源代码 --Parser--> AST
+  AST --Ignition--> 字节码
+  字节码 --Ignition--> 逐行解释为机器码执行
+  字节码 -.Ignition高频执行.-> HotSpot
+  HotSpot --TurboFan--> 编译为机器码执行</pre>
+
+<h3 id="1-1-Parser-解析器-生成语法抽象树（AST）"><a href="#1-1-Parser-解析器-生成语法抽象树（AST）" class="headerlink" title="1.1 Parser 解析器 生成语法抽象树（AST）"></a>1.1 Parser 解析器 生成语法抽象树（AST）</h3><p>生成AST中的一个优化是惰性解析(Lazy Parsing)，因为源码在执行前如果全部完全解析的话，不仅执行时间过长，而且会消耗更多的内存。<br>惰性解析就是指如果遇到并不是立即执行的函数，只会对其进行预解析(Pre-Parser)，当函数被调用时，才会对其完全解析。<br>预解析时，只会验证函数的语法是否有效、解析函数声明以及确定函数作用域，并不会生成AST，这项工作由Pre-Parser预解析器完成。</p>
+<h3 id="1-2-Ignition-解释器-生成字节码及解释执行"><a href="#1-2-Ignition-解释器-生成字节码及解释执行" class="headerlink" title="1.2 Ignition 解释器 生成字节码及解释执行"></a>1.2 Ignition 解释器 生成字节码及解释执行</h3><p>Ignition 是 V8 的解释器，负责生成和执行字节码。字节码与平台无关，也就是说无论 X86 架构或 ARM 架构，同一份 JavaScript 源码生成的字节码序列是相同的，解释器逐条读取字节码并执行。</p>
+<p>字节码是机器码的抽象，可以看作是小型的构建块。相比机器码，字节码不仅占用内存少，而且生成字节码的时间很快，提升了启动速度。</p>
+<h3 id="1-3-Turbofan-优化编译器-对部分代码直接编译执行"><a href="#1-3-Turbofan-优化编译器-对部分代码直接编译执行" class="headerlink" title="1.3 Turbofan 优化编译器 对部分代码直接编译执行"></a>1.3 Turbofan 优化编译器 对部分代码直接编译执行</h3><p>Turbofan 是 V8 的优化编译器，它使 JavaScript 执行的更快，但比Ignition需要更多的编译时间，所以 V8 只对热点代码（HotCode）使用 Turbofan。</p>
+<p>JavaScript 代码先由 Ignition 执行，并判断当该代码片段执行次数达到设定值时变为热点代码，由TurboFan把它编译为更高效的机器码储存起来，等到下次再执行到这段代码时，就会用现在的机器码替换原来的字节码进行执行，这样大大提升了代码的执行效率。</p>
+<h2 id="2-V8工作流程中一些具体实现"><a href="#2-V8工作流程中一些具体实现" class="headerlink" title="2.  V8工作流程中一些具体实现"></a>2.  V8工作流程中一些具体实现</h2><h3 id="2-1-隐藏类-JavaScript-动态类型"><a href="#2-1-隐藏类-JavaScript-动态类型" class="headerlink" title="2.1 隐藏类  JavaScript 动态类型"></a>2.1 隐藏类  JavaScript 动态类型</h3><p>我们知道，JavaScript是动态类型语言，运行时数据类型会发生变化。V8 采用 C++ 编写，C++ 是强类型语言，要求类型确定。类型确定的 C++ 是如何表达类型不确定的 JavaScript 呢？</p>
+<p>答案是：C++ 申请一块内存，这块是 JavaScript 的一个对象，并约定这块内存的开始位置保存内存的解读方式，操作这块内存之前先查解读方法，通过改变解读方式来模拟 JavaScript 对象的动态变化。</p>
+<p>具体来说：操作 JS 数据前先查询类型，再操作。为此，V8采用了隐藏类（Hidden Class），因为 JavaScript 程序员看不到这个 class，所以称为隐藏类。注意： 隐藏类的术语是 Map，它的含义是地图，说明如何解读内存，不是 JavaScript Map 机制。</p>
+<p>V8通过查询存储空间的第一个位置，就可以找到Map。这个Map大小是80byte，存储信息的格式与位置也是固定的，存储信息包括：JavaScript 对象的存储空间有哪些成员，成员类型，成员偏移地址等。所以说，Map 就是地图。</p>
+<h3 id="2-2-Inline-Cache-内联缓存"><a href="#2-2-Inline-Cache-内联缓存" class="headerlink" title="2.2 Inline Cache 内联缓存"></a>2.2 Inline Cache 内联缓存</h3><p>我们已经知道，V8在查找对象的属性（例如obj.x）时流程是这样的：查找对象 obj 的隐藏类，再通过隐藏类查找 x 属性偏移量，然后根据偏移量获取属性值。</p>
+<p>我们把上面这个获取 x 属性偏移量的过程称为寻址方法。</p>
+<p>简单的来说：IC负责缓存对象的寻址方法，下次执行该函数时，直接使用寻址方法（V8 中的术语是 Handler），节省了计算寻址方法的时间。</p>
+<h2 id="3-如何编写优化的-JavaScript"><a href="#3-如何编写优化的-JavaScript" class="headerlink" title="3. 如何编写优化的 JavaScript"></a>3. 如何编写优化的 JavaScript</h2><h3 id="3-1-隐藏类"><a href="#3-1-隐藏类" class="headerlink" title="3.1 隐藏类"></a>3.1 隐藏类</h3><p>我们已经知道，V8 通过查询 Map，可以知道存储空间内存放了什么，怎么存放的，进而正确操作该对象。</p>
+<p>例如有以下代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Point</span>(<span class="params">x,y</span>) &#123; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">x</span> = x; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">y</span> = y; </span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">const</span> obj = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<p>一旦声明了一个新的方法实例，Javascript就会创建一个隐藏类C0。</p>
+<p><img data-src="/images/posts/de92f2f8.png"></p>
+<p>在此时还没有声明任何的属性，所以C0现在为空。<br>一旦第一个语句“this.x&#x3D;x”被执行，V8将会基于C0创建第二个隐藏类C1。C1记录了可以找到属性x在内存中的位置。</p>
+<p>在这个例子中，x保存在偏移量为0的位置，这表示可以将一个内存中的对象目标看作是一段连续的空间。而这段空间中的第一段偏移代表着属性x。与此同时，V8将会用“类偏移”操作更新C0，这代表着属性x已经添加到了目标对象。之后，目标对象所对应的隐藏类指针将指向C1。</p>
+<p><img data-src="/images/posts/1b25a842.png"></p>
+<p>每当目标对象添加一个新的属性，对象的旧的隐藏类就会变换路径到一个新的隐藏类。隐藏类的重要之处在于可以使经过相同创建过程创建的对象共享隐藏类。假如两个对象共享一个隐藏类，并向两个对象中同时添加相同的属性，那么这种变换将会保证变换后得到相同的隐藏类，这样代码就得到了优化。<br>当“this.y&#x3D;y”执行时将重复上面的操作。一个新的叫C2的隐藏类将被创建，然后对C1进行类变换表明属性y已经添加到了目标对象，最后将隐藏类指向C2。这样目标对象的隐藏类就更新到了C2。</p>
+<p><img data-src="/images/posts/4943fa23.png"></p>
+<p>注意：隐藏类的变换取决于对目标对象的属性添加顺序。请注意下面的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Point</span>(<span class="params">x,y</span>) &#123; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">x</span> = x; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">y</span> = y;</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">var</span> obj1 = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">var</span> obj2 = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line"><span class="comment">// 至此为止 obj1和obj2都共享同一个隐藏类</span></span><br><span class="line">obj1.<span class="property">a</span> = <span class="number">5</span>; </span><br><span class="line">obj1.<span class="property">b</span> = <span class="number">10</span>; </span><br><span class="line">obj2.<span class="property">b</span> = <span class="number">10</span>; </span><br><span class="line">obj2.<span class="property">a</span> = <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
+
+
+<p>直到第6行为止，obj1和obj2都共享同一个隐藏类。但是，当属性a和b以相反的顺序添加到了两个对象中，这导致最后两个对象以不同的变换路径产生了两个不同的的隐藏类。</p>
+<p><img data-src="/images/posts/0c995993.png"></p>
+<p><strong>因此，隐藏类更希望开发者不要频繁添加对象的属性，更希望对象的属性实例化顺序是固定的。像上述的例子，希望你只按照相同的顺序添加属性，先添加a，后添加b，这样obj1与obj2就可以共享同一个隐藏类。如果经常毫无规律的变动对象的内部成员，就会保存越来越多的隐藏类，带来不必要的性能开销。</strong></p>
+<h3 id="3-2-Inline-Cache"><a href="#3-2-Inline-Cache" class="headerlink" title="3.2 Inline Cache"></a>3.2 Inline Cache</h3><p>inline cache 提升了 JavaScript 的运行性能，但对于使用次数较少的 JavaScript 函数使用 inline cache 不会带来太多的性能，反而影响 V8 的性能。因此 V8 规定，函数调用次数超过 8 次时才开启 inline cache。<br>例如有以下函数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getfoo</span>(<span class="params">obj</span>)&#123;</span><br><span class="line"> <span class="keyword">return</span> obj.<span class="property">foo</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> o1 = &#123;<span class="string">&quot;x&quot;</span>:<span class="number">42</span>,<span class="string">&quot;y&quot;</span>:<span class="number">43</span>,<span class="string">&quot;foo&quot;</span>,<span class="string">&quot;41&quot;</span>&#125;;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++)&#123;</span><br><span class="line"> <span class="title function_">getfoo</span>(o1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行getfoo时，V8会先读取obj的Map，找到foo的偏移量，然后才能获取foo。 当运行超过8次时，obj.foo的寻址方法会被缓存。</p>
+<p><strong>所以inline cache更希望开发者不要变动o1的结构，更希望开发者对 o1 的读写操作是固定的。具体在本例中，希望你只对 foo 操作，inline cache 只需保存属性 foo 的寻址方式即可，如果经常变动o1的内部成员，inline cache就会保存越来越多的寻址方法，并且增加很多不必要的判断过程。影响性能。</strong></p>
+<h3 id="3-3-TurboFan"><a href="#3-3-TurboFan" class="headerlink" title="3.3 TurboFan"></a>3.3 TurboFan</h3><p>TurboFan将字节码编译为机器码并存储起来执行，来使得JavaScript运行的更快，但相比解释执行也需要更多的首次编译时间，这也是为什么V8只针对热点代码使用TurboFan。</p>
+<p>TurboFan不希望程序的行为发生变化，例如我们有以下代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">add</span>(<span class="params">x,y</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> x+y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add</span>(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add</span>(<span class="string">&quot;hello &quot;</span>, <span class="string">&quot;world&quot;</span>));</span><br></pre></td></tr></table></figure>
+<p>我们知道 add() 是多态的，可以传入多种类型的参数。但是灵活也就意味着效率不高，需要判断类型，越界检测等等…</p>
+<p>Turbofan 针对 add(1,2) 优化时，它笃定你的 add() 只用于整数加法运行，把其编译为本地机器码的加法运算，去掉了各种不必要的判断。针对 add(“hello “,”world”) 优化时，TurboFan会把其编译为字符串的拼接操作。add() 的多态方便了开发者，减少了代码量，<strong>但如果 add() 毫无规律地在不同操作数之间使用，会导致TurboFan编译更多的时间，存储更多的机器码，优化效果很差，所以 Turbofan 不希望程序行为变化。</strong></p>
+<h2 id="优化建议"><a href="#优化建议" class="headerlink" title="优化建议"></a>优化建议</h2><ol>
+<li>对象属性： 以相同顺序实例化对象的成员，以便于共享隐藏类。</li>
+<li>对象结构： 不要变动对象的结构，减少寻址方法内联缓存造成的额外开销。</li>
+<li>无规律的程序行为：减少无规律的程序行为，例如随意的多态调用，减少turbofan编译和存储机器码的额外开销。</li>
+<li>可复用的方法：方法尽量复用，提高使用频次，增加热点代码，使turbofan能够介入进行编译运行，提高程序运行效率</li>
+</ol>
+<hr>
+<h2 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/514716577">《Chrome V8 源码》55. 优化技术综述，如何提升 JS 运行速度</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.sessionstack.com/how-javascript-works-inside-the-v8-engine-5-tips-on-how-to-write-optimized-code-ac089e62b12e">How JavaScript works: inside the V8 engine + 5 tips on how to write optimized code</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/469962133">V8中的隐藏类（Hidden Classes）和内联缓存（Inline Caching）</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/491369553">浅析V8引擎，让你更懂JavaScript！</a></li>
+</ol>
+<p>以上！まいど～</p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>你的东西都会还给你的ZE☆~</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/afdian.jpg" alt="白茶SyraTi 爱发电">
+        <span>爱发电</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/v8/" rel="tag"># v8</a>
+              <a href="/tags/javascript/" rel="tag"># javascript</a>
+              <a href="/tags/node-js/" rel="tag"># node.js</a>
+              <a href="/tags/chrome/" rel="tag"># chrome</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/befecf49889e.html" rel="prev" title="修复gitCI中文件的创建时间与修改时间">
+                  <i class="fa fa-chevron-left"></i> 修复gitCI中文件的创建时间与修改时间
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">白茶SyraTi</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">49k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">44 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.5.0/pjax.min.js" integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.1/mermaid.min.js","integrity":"sha256-8L3O8tirFUa8Va4NSTAyIbHJeLd6OnlcxgupV9F77e0="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"SyraTi","repo":"syra-ti.icu","client_id":"9b208922e8ef1e613ff5","client_secret":"bfcedd4fc22b80cfca1fdc953e503395b2de774a","admin_user":"SyraTi","distraction_free_mode":false,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"c8e9ef2f2111c3126116eee3f5264487"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<canvas id="live2dCanvas"></canvas>
+<script src="/scripts/live2d/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
+<script src="/scripts/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
+<script src="/scripts/npm/pixi.js@5.3.6/dist/pixi.min.js"></script>
+<script src="/scripts/npm/pixi-live2d-display/dist/index.min.js"></script>
+<!-- 如果只需要 Cubism 4 -->
+<script src="/scripts/npm/pixi-live2d-display/dist/cubism4.min.js"></script>
+
+<script>
+  async function main() {
+
+    const app = new PIXI.Application({
+      view: document.getElementById("live2dCanvas"),
+      autoStart: true,
+      width: 1600,
+      height: 2600,
+      transparent: true,
+    });
+
+    const model = await PIXI.live2d.Live2DModel.from('/assets/live2d/models/object_live2d_002_101.asset/object_live2d_002_101.asset.model3.json');
+    app.stage.addChild(model);
+    model.motion('Entry');
+    let idleCounter
+    let motionState = 1
+    const changeMotion = () => {
+      let target = 1 + Math.floor(Math.random() * 4)
+      if(target === motionState){
+        // 防止重复动作
+        target++
+      }
+      model.motion(`${motionState}`,target);
+      motionState = target
+      clearTimeout(idleCounter)
+      idleCounter = setTimeout(() => {
+        if(motionState !== 1){
+          model.motion(`${motionState}`,1);
+          motionState = 1
+        }
+      }, 5000)
+    }
+    document.getElementById('live2dCanvas').addEventListener('click', changeMotion)
+    document.getElementById('live2dCanvas').addEventListener('touchstart', changeMotion)
+
+    // 变换
+    // model.x = 100;
+    // model.y = 100;
+    // model.rotation = Math.PI;
+    // model.skew.x = Math.PI;
+    // model.scale.set(2, 2);
+    // model.anchor.set(0.5, 0.5);
+
+    //
+    // 交互
+    // model.on('hit', hitAreas => {
+    //   console.log(hitAreas);
+    //   if (hitAreas.includes('body')) {
+    //     model.motion('motion');
+    //   }
+    // });
+  }
+  main()
+</script>
+
+</body>
+</html>

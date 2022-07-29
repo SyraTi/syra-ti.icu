@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"syra-ti.icu","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="需求想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv 原拓扑图如下 解决方案材料：1、水星Mercury SG105Pro 五口千兆网管交换机 价格 98 元 放置在客厅（下称SW5）2、水星Mercury SG108Pro 八口千兆网管交换机 价格 169 元 放置在弱电箱（下称SW8） 整体解决思路：在弱电箱端，使用一台交">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一根网线同时搭载电信itv及网络 解决方案">
+<meta property="og:url" content="https://syra-ti.icu/c27c61f84cfd.html">
+<meta property="og:site_name" content="SyraTi.ICU">
+<meta property="og:description" content="需求想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv 原拓扑图如下 解决方案材料：1、水星Mercury SG105Pro 五口千兆网管交换机 价格 98 元 放置在客厅（下称SW5）2、水星Mercury SG108Pro 八口千兆网管交换机 价格 169 元 放置在弱电箱（下称SW8） 整体解决思路：在弱电箱端，使用一台交">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190210155452299.png#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190210233114958.png#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190210161628593.png#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190210223800782.png#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190210224225870.png#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190210230243826.png#pic_center">
+<meta property="article:published_time" content="2019-02-10T15:43:58.000Z">
+<meta property="article:modified_time" content="2022-01-27T13:20:40.000Z">
+<meta property="article:author" content="白茶SyraTi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190210155452299.png#pic_center">
+
+
+<link rel="canonical" href="https://syra-ti.icu/c27c61f84cfd.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://syra-ti.icu/c27c61f84cfd.html","path":"c27c61f84cfd.html","title":"一根网线同时搭载电信itv及网络 解决方案"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>一根网线同时搭载电信itv及网络 解决方案 | SyraTi.ICU</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SyraTi.ICU</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">霧雨魔法店 下属</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE%E6%9C%89%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F%EF%BC%9ATagged-x2F-Untagged"><span class="nav-number">2.0.0.0.1.</span> <span class="nav-text">端口处理数据有两种方式：Tagged&#x2F;Untagged</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E7%AB%99%E6%9C%89%E4%B8%A4%E7%A7%8D%E6%A8%A1%E5%BC%8F%EF%BC%9ATagged%E5%92%8CUntagged"><span class="nav-number">2.0.0.0.2.</span> <span class="nav-text">检查站有两种模式：Tagged和Untagged</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%B3%E6%AD%A4%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%EF%BC%81-%E4%B9%9F%E6%98%AF%E9%92%BB%E7%A0%94%E4%BA%86%E4%B8%89%E5%9B%9B%E5%A4%A9-%E4%B8%B4%E6%97%B6%E8%B5%B7%E6%84%8F%E8%82%AF%E5%AE%9A%E6%9C%89%E5%86%99%E7%9A%84%E4%B8%8D%E5%AF%B9%E7%9A%84%E5%9C%B0%E6%96%B9-%E6%AC%A2%E8%BF%8E%E5%90%84%E4%BD%8D%E5%9C%A8%E8%AF%84%E8%AE%BA%E6%8C%87%E5%87%BA%EF%BC%81"><span class="nav-number">2.0.1.</span> <span class="nav-text">至此问题解决！ 也是钻研了三四天 临时起意肯定有写的不对的地方 欢迎各位在评论指出！</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="白茶SyraTi"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">白茶SyraTi</p>
+  <div class="site-description" itemprop="description">一生懸命マリフラ</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/SyraTi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;SyraTi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/GenyaShiroko" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;GenyaShiroko" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:marisa@koumakan.vip" title="E-Mail → mailto:marisa@koumakan.vip" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-star fa-fw"></i>
+      魔法店の常連客
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://alicem.top/" title="https:&#x2F;&#x2F;alicem.top" rel="noopener" target="_blank">爱丽丝的人偶屋@沢城アリス</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stlab.ar.gp/" title="https:&#x2F;&#x2F;stlab.ar.gp" rel="noopener" target="_blank">王乌龟的跳板机吧@乌龟吃鳖3rd</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.minamion.com/" title="https:&#x2F;&#x2F;www.minamion.com" rel="noopener" target="_blank">/dev/null@神楽坂南音</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/c27c61f84cfd.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="白茶SyraTi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SyraTi.ICU">
+      <meta itemprop="description" content="一生懸命マリフラ">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="一根网线同时搭载电信itv及网络 解决方案 | SyraTi.ICU">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一根网线同时搭载电信itv及网络 解决方案
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-02-10 23:43:58" itemprop="dateCreated datePublished" datetime="2019-02-10T23:43:58+08:00">2019-02-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv</p>
+<p><strong>原拓扑图如下</strong><br><img data-src="https://img-blog.csdnimg.cn/20190210155452299.png#pic_center" alt="原拓扑图"></p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>材料：</strong><br>1、水星Mercury SG105Pro 五口千兆网管交换机 价格 98 元 放置在客厅（下称SW5）<br>2、水星Mercury SG108Pro 八口千兆网管交换机 价格 169 元 放置在弱电箱（下称SW8）</p>
+<p><strong>整体解决思路：</strong><br>在弱电箱端，使用一台交换机，将itv和网络的数据包合并至一条主干道网线上，到使用端（客厅）使用另一台交换机进行识别后拆分为两条线使用——达到墙内一条线，实际承载两条线路的目的。</p>
+<p><strong>实际解决方案（看不明白可以先往下看）：</strong><br>利用802.1Q VLAN的Tag机制划分两路VLAN：一路走itv（下称VLAN2）一路走网络（下称VLAN3），由交换机为收到的包打Tag后送入网线，进入Tag所示VLAN传输，由另一台交换机判断Tag，送入指定设备——达到目的。</p>
+<p><strong>先行说明：</strong><br>在说明解决步骤之前先说明几个概念，po也是用了不少时间加实践去理解了VLAN、802.1Q标准中的Tag、Untagged、VLAN ID、PVID等概念，在这里做简单的讲述</p>
+<p>*<strong>这里我们先打个比方，方便讲概念：</strong></p>
+<blockquote>
+<p>我们把数据包在交换机中的传输比作一场从出发地到目的地传送小球的游戏</p>
+<ul>
+<li>数据包比作小球；</li>
+<li>交换机是一个小球的中转站，决定来到这里的小球应该去到哪里；</li>
+<li>交换机的端口是小球的出入口，我们将它比作检查站，每个检查站都有一把刷子和一把水枪（至于为什么是刷子和水枪？后面会说到），可以对小球进行上色和洗色；</li>
+</ul>
+</blockquote>
+<p>*<strong>下面开始讲概念：</strong><br><em>VLAN——是一条传送小球的管道：</em></p>
+<blockquote>
+<p>VLAN（Virtual Local Area Network）的中文名为”虚拟局域网”。划分到同一VLAN下的端口可以互相通信，不同VLAN不能互相通信。</p>
+<p>——如果我们把数据传输比作小球过管道，数据包是小球，那么VLAN就好比是管道，进入A管道的球是不能去到B管道的。</p>
+</blockquote>
+<p><em>802.1Q——是制作管道的标准:</em></p>
+<blockquote>
+<p>802.1Q是VLAN标准的一种。<br>——你可以理解为制作管道的标准。</p>
+</blockquote>
+<p><em>VLAN ID——是颜色：</em></p>
+<blockquote>
+<p>802.1Q标准中为数据包附加的一个值 标识该包在VLAN ID所示的VLAN中传输<br>——标准规定管道必须涂上颜色（VLAN ID），里面只能通过管道对应颜色（VLAN ID）的球。</p>
+</blockquote>
+<p><em>TAG帧——带颜色的小球：</em></p>
+<blockquote>
+<p>带有VLAN ID的数据包<br>——带颜色（VLAN ID）的小球</p>
+</blockquote>
+<p><em>UNTAG帧——白色的小球：</em></p>
+<blockquote>
+<p>不带有VLAN ID的数据包<br>——不带颜色（VLAN ID）的小球</p>
+</blockquote>
+<p><em>PVID——是检查站刷子上的油漆：</em></p>
+<blockquote>
+<p>Port VLAN ID，即端口缺省VLAN ID  ，在交换机中提前配置<br>当端口接收到数据包时，可以为该包打上等于该端口PVID值的VLAN ID，此后该包成为TAG帧，在该VLAN ID所表示的VLAN中传输，是否打上tag由端口模式决定（Tagged&#x2F;Untagged）。<br>——每个检查站都有一把刷子，刷子上都沾了我们指定颜色的油漆（PVID），当遇到小球的时候，可以把它刷成油漆的颜色(VLAN ID)，接下来小球就只能进到对应颜色的管道里了，是不是要涂色，根据检查站的模式来决定。</p>
+</blockquote>
+<p><em>Tagged与Untagged及端口收发包逻辑——检查站的两种模式</em></p>
+<blockquote>
+<h6 id="端口处理数据有两种方式：Tagged-x2F-Untagged"><a href="#端口处理数据有两种方式：Tagged-x2F-Untagged" class="headerlink" title="端口处理数据有两种方式：Tagged&#x2F;Untagged"></a><em>端口处理数据有两种方式：Tagged&#x2F;Untagged</em></h6><p><strong>端口接收数据时：</strong></p>
+<ul>
+<li>如果端口是tagged方式<br>- 当数据包为UNTAG帧的话，就加上该端口的PVID，送入PVID所示的VLAN中传输；<br>- 如果数据包为TAG帧，那么就不再添加，直接送入TAG所示的VLAN中传输；</li>
+<li>如果是untagged方式，<ul>
+<li>输入的数据包全部都要加上该端口的PVID。不管输入的数据包是TAG帧还是UNTAG帧。</li>
+</ul>
+</li>
+</ul>
+<p><strong>端口发送数据时：</strong></p>
+<ul>
+<li>如果端口是tagged方式<ul>
+<li>如果端口PVID等于发送的数据包所含的VLAN ID，那么就会将VLAN ID从发送的数据包中去掉；</li>
+<li>如果不相等，则数据包将保持原样发送出去。</li>
+</ul>
+</li>
+<li>如果端口是untagged方式<ul>
+<li>则不管端口PVID为多少，是否等于要输出的数据包的VLAN，都会将VLAN ID从数据包中去掉。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h6 id="检查站有两种模式：Tagged和Untagged"><a href="#检查站有两种模式：Tagged和Untagged" class="headerlink" title="检查站有两种模式：Tagged和Untagged"></a><em>检查站有两种模式：Tagged和Untagged</em></h6><p><strong>检查站遇到外面来的小球：</strong></p>
+<ul>
+<li>如果检查站是tagged模式<ul>
+<li>如果小球是白色的，就用刷子为小球涂上油漆的颜色，送进对应颜色的管道里传输；</li>
+<li>如果小球有颜色，那就不再处理小球，直接送到小球对应颜色的管道里传输；</li>
+</ul>
+</li>
+<li>如果检查站在untagged模式<ul>
+<li>碰到的小球全部用刷子刷上油漆，强行送进对应的管道传输；</li>
+</ul>
+</li>
+</ul>
+<p><strong>检查站准备送走从管子里出来的小球时</strong></p>
+<ul>
+<li>如果检查站是tagged模式<ul>
+<li>如果油漆的颜色和小球的颜色一致，就把小球的油漆用水枪洗掉再送走。</li>
+<li>如果油漆的颜色和小球的颜色不一致，就把小球原样送走。</li>
+</ul>
+</li>
+<li>如果检查站是untagged方式<ul>
+<li>不管油漆颜色还是小球颜色，都将小球的油漆用水枪洗掉再送走。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>讲解完概念后，我们再回来看解决方案</p>
+<blockquote>
+<p><strong>实际解决方案（看不明白可以先往下看）：</strong><br>利用802.1Q VLAN的Tag机制划分两路VLAN：一路走itv（下称VLAN2）一路走网络（下称VLAN3），由交换机为收到的包打Tag后送入网线，进入Tag所示VLAN传输，由另一台交换机判断Tag，送入指定设备——达到目的。</p>
+</blockquote>
+<p><strong>如果你还是看不懂，我们再换成传送小球：</strong></p>
+<blockquote>
+<p>我们按照标准制造了两根管道，一根涂成红色（itv），一根涂成蓝色（网络），将这两条管道埋设到一条网线中，由一头的中转站为光猫送来的白色小球上色，分别送入两条管道，经过同一条网线，另一头的中转站判断颜色，送到指定的目的地——达到目的。</p>
+</blockquote>
+<p><strong>具体解决步骤：</strong></p>
+<ul>
+<li><p>1、配置SW8的VLAN</p>
+<ul>
+<li><p>VLAN划分如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210233114958.png#pic_center" alt="SW8 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,7端口配置为itv交换<br>VLAN3 将1-6 以及8 端口配置为网络交换</p>
+<p><strong>将端口1作为主干道端口<br>*此端口连接SW5<br>**接收：由SW5发送过来的TAG帧 并根据TAG帧中的VLAN ID 决定送入VLAN2还是VLAN3（即广播至VLAN2的7端口或VLAN3的2-6、8端口）<br>**发送：由SW8其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW5</strong></p>
+</li>
+<li><p>PVID配置如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210161628593.png#pic_center" alt="VLAN PVID配置"><br>端口1：接SW5 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口7：接光猫ITV口 PVID设置为2 接收光猫ITV口发送来的UNTAG帧 送入VLAN2<br>端口8：接光猫千兆口 PVID设置为3 接收光猫千兆网络口发送来的UNTAG帧 送入VLAN3<br>端口2-6：接其他房间电脑 PVID设置为3 接收其他房间电脑发送来的UNTAG帧 送入VLAN3 与端口8光猫千兆口相互通信</p>
+</li>
+</ul>
+</li>
+<li><p>2、配置SW5的VLAN</p>
+<ul>
+<li><p>VLAN划分如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210223800782.png#pic_center" alt="SW5 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,4 端口配置为itv交换 令4端口可以与主干道端口进行通信<br>VLAN3 将1,5 端口配置为网络交换 令5端口可以与主干道端口进行通信</p>
+<p><strong>将端口1作为主干道端口<br>**接收：由SW8发送过来的TAG帧 并根据TAG帧中的VLAN ID 决定送入VLAN2还是VLAN3（即 广播至VLAN2的4端口或VLAN3的5端口）<br>**发送：由SW5其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW8</strong></p>
+</li>
+<li><p>PVID配置如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210224225870.png#pic_center" alt="SW5 PVID配置"><br>端口1：接SW8 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口4：接机顶盒 PVID设置为2 接收机顶盒发来的UNTAG帧 打上VLAN ID值为2后将该TAG帧交由端口1<br>端口5：接路由器 PVID设置为3 接收路由器发送来的UNTAG帧 打上VLAN ID值为3后将该TAG帧交由端口1<br>端口2-3：闲置 可无视</p>
+</li>
+<li><p>最终VLAN端口一览<br>VLAN2（ITV）：SW8P1、SW8P7、SW5P1、SW5P4<br>VLAN3（网络）：SW8P1、SW8P2-6、SW8P8、SW5P1、SW5P5</p>
+</li>
+</ul>
+<blockquote>
+<p>至此ITV通过SW5P4与SW8P7可互相通信 网络通过SW5P5与SW8P8可互相通信<br>ITV与网络互不干扰 但通过SW8P1与SW5P1之间只连接了一根网线 目的达成</p>
+</blockquote>
+</li>
+<li><p>3、连接拓扑图<br><img data-src="https://img-blog.csdnimg.cn/20190210230243826.png#pic_center" alt="连接拓扑图"></p>
+</li>
+<li><p>4、问题解决</p>
+</li>
+</ul>
+<p><strong>交换逻辑：</strong></p>
+<p><em>网络数据帧传输：</em></p>
+<p>1.去程 光猫千兆口-&gt;客厅路由器</p>
+<blockquote>
+<p>1.光猫千兆口发送UNTAG帧 到达SW8 8端口<br>2.判断8端口PVID为3 为数据帧打上VLAN ID标记值为3 转为TAG帧 传入VLAN3 交换至1-6端口<br>3.TAG帧到达2-6端口 与其他房间各电脑通信直接拨号上网；同时，TAG帧到达1端口 送至SW5<br>5.TAG帧到达SW5的1端口 判断TAG帧中VLAN ID为3 送入VLAN3 交换至5端口<br>6.TAG帧到达5端口 送至客厅路由器<br>7.完成光猫千兆口-&gt;客厅路由器的传输 全程数据帧在VLAN3中传输 与SW8 7端口ITV无关</p>
+</blockquote>
+<p>2.回程 客厅路由器-&gt;光猫千兆口</p>
+<blockquote>
+<p>1.客厅路由器发送UNTAG帧 到达SW5 5端口<br>2.判断5端口PVID为3 为数据帧打上VLAN ID标记值为3 转为TAG帧 传入VLAN3 交换至1端口 送至SW8<br>3.TAG帧到达SW8的1端口 判断TAG帧中VLAN ID为3 送入VLAN3 交换至1-6端口<br>4.TAG帧到达2-6端口 实现客厅路由器与其他各房间的局域网通信；同时TAG帧到达8端口 送至光猫千兆口<br>5.完成客厅路由器-&gt;光猫千兆口的传输 全程数据帧在VLAN3中传输 与SW8 7端口ITV无关</p>
+</blockquote>
+<p><em>ITV数据帧传输：</em></p>
+<p>1.去程 光猫ITV口-&gt;客厅机顶盒</p>
+<blockquote>
+<p>1.光猫ITV口发送UNTAG帧 到达SW8 7端口<br>2.判断7端口PVID为2 为数据帧打上VLAN ID标记值为2 转为TAG帧 传入VLAN2 交换至1-6端口<br>3.TAG帧到达1端口 送至SW5<br>5.TAG帧到达SW5的1端口 判断TAG帧中VLAN ID为2 送入VLAN2 交换至4端口<br>6.TAG帧到达4端口 送至机顶盒<br>7.完成光猫ITV口-&gt;客厅机顶盒的传输 全程数据帧在VLAN2中传输 与SW8 8端口网络无关</p>
+</blockquote>
+<p>2.回程 客厅机顶盒-&gt;光猫ITV口</p>
+<blockquote>
+<p>1.客厅机顶盒发送UNTAG帧 到达SW5 4端口<br>2.判断4端口PVID为2 为数据帧打上VLAN ID标记值为2 转为TAG帧 传入VLAN2 交换至1端口 送至SW8<br>3.TAG帧到达SW8的1端口 判断TAG帧中VLAN ID为2 送入VLAN2 交换至7端口<br>4.TAG帧到达7端口 送至光猫ITV口<br>5.完成客厅路由器-&gt;光猫ITV口的传输 全程数据帧在VLAN2中传输  与SW8 8端口网络无关</p>
+</blockquote>
+<h4 id="至此问题解决！-也是钻研了三四天-临时起意肯定有写的不对的地方-欢迎各位在评论指出！"><a href="#至此问题解决！-也是钻研了三四天-临时起意肯定有写的不对的地方-欢迎各位在评论指出！" class="headerlink" title="至此问题解决！ 也是钻研了三四天 临时起意肯定有写的不对的地方 欢迎各位在评论指出！"></a>至此问题解决！ 也是钻研了三四天 临时起意肯定有写的不对的地方 欢迎各位在评论指出！</h4><hr>
+<p>参考资料</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="http://blog.chinaunix.net/uid-24020646-id-3065954.html">交换机Vlan中 tagged和untagged的区别-platinaluo-ChinaUnix博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/xiaohaijiejie/article/details/70208549">802.1Q VLAN 技术原理—理解PVID和VID - 小海的专栏 - CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.chiphell.com/thread-1670251-1-1.html">一根网线走iptv及网络的实践经验 - 电脑讨论 -  Chiphell - 分享与交流用户体验</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.chiphell.com/thread-1524134-1-1.html">一根网线怎么走局域网和iptv - 电脑讨论 -  Chiphell - 分享与交流用户体验</a></li>
+</ol>
+<hr>
+<p>2019年10月13日：有读者来问问题，似乎还是看的不太明白，加了小球的比方，希望能有助于理解吧！各位看官如果有啥不明白的，评论私信都可以哈！多多的来！</p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>你的东西都会还给你的ZE☆~</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/afdian.jpg" alt="白茶SyraTi 爱发电">
+        <span>爱发电</span>
+      </div>
+
+  </div>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/d143dccef52e.html" rel="prev" title="Chrome DevTool 行号错位问题">
+                  <i class="fa fa-chevron-left"></i> Chrome DevTool 行号错位问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/5b2ee5980b75.html" rel="next" title="前端代码规范">
+                  前端代码规范 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">白茶SyraTi</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">49k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">44 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.5.0/pjax.min.js" integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.1/mermaid.min.js","integrity":"sha256-8L3O8tirFUa8Va4NSTAyIbHJeLd6OnlcxgupV9F77e0="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"SyraTi","repo":"syra-ti.icu","client_id":"9b208922e8ef1e613ff5","client_secret":"bfcedd4fc22b80cfca1fdc953e503395b2de774a","admin_user":"SyraTi","distraction_free_mode":false,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"80b2c61707197a9b84f82cac7d480315"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<canvas id="live2dCanvas"></canvas>
+<script src="/scripts/live2d/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
+<script src="/scripts/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
+<script src="/scripts/npm/pixi.js@5.3.6/dist/pixi.min.js"></script>
+<script src="/scripts/npm/pixi-live2d-display/dist/index.min.js"></script>
+<!-- 如果只需要 Cubism 4 -->
+<script src="/scripts/npm/pixi-live2d-display/dist/cubism4.min.js"></script>
+
+<script>
+  async function main() {
+
+    const app = new PIXI.Application({
+      view: document.getElementById("live2dCanvas"),
+      autoStart: true,
+      width: 1600,
+      height: 2600,
+      transparent: true,
+    });
+
+    const model = await PIXI.live2d.Live2DModel.from('/assets/live2d/models/object_live2d_002_101.asset/object_live2d_002_101.asset.model3.json');
+    app.stage.addChild(model);
+    model.motion('Entry');
+    let idleCounter
+    let motionState = 1
+    const changeMotion = () => {
+      let target = 1 + Math.floor(Math.random() * 4)
+      if(target === motionState){
+        // 防止重复动作
+        target++
+      }
+      model.motion(`${motionState}`,target);
+      motionState = target
+      clearTimeout(idleCounter)
+      idleCounter = setTimeout(() => {
+        if(motionState !== 1){
+          model.motion(`${motionState}`,1);
+          motionState = 1
+        }
+      }, 5000)
+    }
+    document.getElementById('live2dCanvas').addEventListener('click', changeMotion)
+    document.getElementById('live2dCanvas').addEventListener('touchstart', changeMotion)
+
+    // 变换
+    // model.x = 100;
+    // model.y = 100;
+    // model.rotation = Math.PI;
+    // model.skew.x = Math.PI;
+    // model.scale.set(2, 2);
+    // model.anchor.set(0.5, 0.5);
+
+    //
+    // 交互
+    // model.on('hit', hitAreas => {
+    //   console.log(hitAreas);
+    //   if (hitAreas.includes('body')) {
+    //     model.motion('motion');
+    //   }
+    // });
+  }
+  main()
+</script>
+
+</body>
+</html>

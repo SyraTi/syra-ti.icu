@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>Chrome DevTool 行号错位问题</title>
-    <url>/2018/12/20/Chrome-DevTool-%E8%A1%8C%E5%8F%B7%E9%94%99%E4%BD%8D%E9%97%AE%E9%A2%98.html</url>
+    <url>/d143dccef52e.html</url>
     <content><![CDATA[<p>随手记录</p>
 <p>原因：<br>当你在一个js里面写document.write(‘&lt;script&gt;多行内容xxxx&lt;&#x2F;script&gt;’)后<br>页面上的script断点调试会错位</p>
 <p>表现就是断点打在某一行 实际停在上面几行<br>相差的行数取决于你写进文档的多行内容的行数</p>
@@ -11,7 +11,7 @@
   </entry>
   <entry>
     <title>IOS/Mac/Safari无法播放MP4文件流及Http1.1 Range分段请求相关</title>
-    <url>/2019/12/25/IOS-Mac-Safari%E6%97%A0%E6%B3%95%E6%92%AD%E6%94%BEMP4%E6%96%87%E4%BB%B6%E6%B5%81%E5%8F%8AHttp1-1-Range%E5%88%86%E6%AE%B5%E8%AF%B7%E6%B1%82%E7%9B%B8%E5%85%B3.html</url>
+    <url>/fb773dec930b.html</url>
     <content><![CDATA[<h2 id="故事背景"><a href="#故事背景" class="headerlink" title="故事背景"></a>故事背景</h2><p>公司项目需要将多媒体文件迁移至阿里OSS，原本直接从后端静态文件的<code>&lt;img&gt;</code> <code>&lt;video&gt;</code> 等标签都要改成从OSS获取展示。</p>
 <p>于是乎拦截了所有静态链接，调用了OSS接口获取了文件流返回到前台进行展示，简单粗暴，但是也遇到了问题 —— ios的 <code>&lt;video&gt;</code> 标签全军覆没。</p>
 <p>由于项目里视频比较少，这问题还是在上线前三天发现的，那个急的，一开始还找不到是什么问题，找到老版本的代码后发现前端代码毫无区别（亏得还在前端调试了半天），最后发现使用静态文件就没什么问题。</p>
@@ -61,7 +61,7 @@
   </entry>
   <entry>
     <title>JS实现点击按钮，复制文本框中的的内容</title>
-    <url>/2017/07/28/JS%E5%AE%9E%E7%8E%B0%E7%82%B9%E5%87%BB%E6%8C%89%E9%92%AE%EF%BC%8C%E5%A4%8D%E5%88%B6%E6%96%87%E6%9C%AC%E6%A1%86%E4%B8%AD%E7%9A%84%E7%9A%84%E5%86%85%E5%AE%B9.html</url>
+    <url>/f71004f0347f.html</url>
     <content><![CDATA[<h3 id="Html"><a href="#Html" class="headerlink" title="Html"></a>Html</h3><hr>
 <pre><code>&lt;textarea cols=&quot;20&quot; rows=&quot;10&quot; id=&quot;anyInput&quot;&gt;用户定义的代码区域&lt;/textarea&gt;
 &lt;button type=&quot;button&quot; onClick=&quot;copy()&quot; value=&quot;点击复制代码&quot; /&gt;
@@ -80,7 +80,7 @@
   </entry>
   <entry>
     <title>Jquery的each里用return true或false代替break或continue</title>
-    <url>/2017/11/30/Jquery%E7%9A%84each%E9%87%8C%E7%94%A8return-true%E6%88%96false%E4%BB%A3%E6%9B%BFbreak%E6%88%96continue.html</url>
+    <url>/c3db294497b4.html</url>
     <content><![CDATA[<h2 id="在each代码块内不能使用break和continue-要实现break和continue的功能的话，要使用return-true-x2F-false"><a href="#在each代码块内不能使用break和continue-要实现break和continue的功能的话，要使用return-true-x2F-false" class="headerlink" title="在each代码块内不能使用break和continue,要实现break和continue的功能的话，要使用return true&#x2F;false"></a>在each代码块内不能使用break和continue,要实现break和continue的功能的话，要使用return true&#x2F;false</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$(<span class="variable constant_">DOM</span>).<span class="title function_">each</span>(<span class="keyword">function</span>(<span class="params">index,el</span>)&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>; <span class="comment">//break </span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>; <span class="comment">//continue </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <hr>
@@ -88,7 +88,7 @@
   </entry>
   <entry>
     <title>Property(prop)和Attribute(attr)的区别</title>
-    <url>/2017/07/29/Property-prop-%E5%92%8CAttribute-attr-%E7%9A%84%E5%8C%BA%E5%88%AB.html</url>
+    <url>/3c38a9065a9e.html</url>
     <content><![CDATA[<h1 id="举例来讲"><a href="#举例来讲" class="headerlink" title="举例来讲"></a>举例来讲</h1><h3 id="我们现在有一个input-demo"><a href="#我们现在有一个input-demo" class="headerlink" title="我们现在有一个input#demo"></a>我们现在有一个input#demo</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;demo&quot;</span> <span class="attr">value</span>=<span class="string">&quot;attr&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <hr>
 <h4 id="Attribute和Property都被翻译成“属性”"><a href="#Attribute和Property都被翻译成“属性”" class="headerlink" title="- Attribute和Property都被翻译成“属性”"></a>- Attribute和Property都被翻译成“属性”</h4><h4 id="“value”就是input-demo的属性之一"><a href="#“value”就是input-demo的属性之一" class="headerlink" title="- “value”就是input#demo的属性之一"></a>- “value”就是input#demo的属性之一</h4><h4 id="也就是说，没错，就像你想的一样"><a href="#也就是说，没错，就像你想的一样" class="headerlink" title="- 也就是说，没错，就像你想的一样"></a>- 也就是说，没错，就像你想的一样</h4><h4 id="input-demo的-Attribute-“value”值为”attr”"><a href="#input-demo的-Attribute-“value”值为”attr”" class="headerlink" title="- input#demo的 Attribute “value”值为”attr”"></a>- input#demo的 Attribute “value”值为”attr”</h4><h4 id="input-demo的-Property-“value”值同为”attr”"><a href="#input-demo的-Property-“value”值同为”attr”" class="headerlink" title="- input#demo的 Property “value”值同为”attr”"></a>- input#demo的 Property “value”值同为”attr”</h4><hr>
@@ -129,7 +129,7 @@
   </entry>
   <entry>
     <title>Ubuntu扩展根目录空间（扩展原有分区）</title>
-    <url>/2021/12/01/Ubuntu%E6%89%A9%E5%B1%95%E6%A0%B9%E7%9B%AE%E5%BD%95%E7%A9%BA%E9%97%B4%EF%BC%88%E6%89%A9%E5%B1%95%E5%8E%9F%E6%9C%89%E5%88%86%E5%8C%BA%EF%BC%89.html</url>
+    <url>/ddf76f824c86.html</url>
     <content><![CDATA[<h1 id="0-概念说明"><a href="#0-概念说明" class="headerlink" title="0.概念说明"></a>0.概念说明</h1><p>一切开始的开始 先说明一些概念</p>
 <blockquote>
 <p><strong>物理卷（Physical Volume）即PV：</strong>  物理卷就是指硬盘分区或从逻辑上与磁盘分区具有同样功能的设备(如RAID)，是LVM的基本存储逻辑块，但和基本的物理存储介质（如分区、磁盘等）比较，却包含有与LVM相关的管理参数。<br><strong>卷组（Volume Group）即VG：</strong> LVM卷组类似于非LVM系统中的物理硬盘，其由物理卷组成。可以在卷组上创建一个或多个“LVM分区”（逻辑卷），LVM卷组由一个或多个物理卷组成。<br><strong>逻辑卷（Logical Volume）即LV：</strong> LVM的逻辑卷类似于非LVM系统中的硬盘分区，在逻辑卷之上可以建立文件系统(比如&#x2F;home或者&#x2F;usr等)。</p>
@@ -155,7 +155,7 @@
   </entry>
   <entry>
     <title>Vue绑定&amp;lt;audio&amp;gt;/&amp;lt;video&amp;gt;标记的muted属性无效问题随记</title>
-    <url>/2021/01/28/Vue%E7%BB%91%E5%AE%9A-audio-video-%E6%A0%87%E8%AE%B0%E7%9A%84muted%E5%B1%9E%E6%80%A7%E6%97%A0%E6%95%88%E9%97%AE%E9%A2%98%E9%9A%8F%E8%AE%B0.html</url>
+    <url>/dd17a46f0b1d.html</url>
     <content><![CDATA[<h2 id="问题代码"><a href="#问题代码" class="headerlink" title="问题代码"></a>问题代码</h2><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--这里的muted绑定不起作用--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">:muted</span>=<span class="string">&quot;isMuted&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;audioPlayer&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="援引Github上的issue回复"><a href="#援引Github上的issue回复" class="headerlink" title="援引Github上的issue回复"></a>援引Github上的issue回复</h2><p><img data-src="https://img-blog.csdnimg.cn/20210127220113689.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
@@ -168,7 +168,7 @@
   </entry>
   <entry>
     <title>Windows 使用 ssh-agent 添加多个ssh key后，git依旧无权限的解决方法</title>
-    <url>/2021/10/25/Windows-%E4%BD%BF%E7%94%A8-ssh-agent-%E6%B7%BB%E5%8A%A0%E5%A4%9A%E4%B8%AAssh-key%E5%90%8E%EF%BC%8Cgit%E4%BE%9D%E6%97%A7%E6%97%A0%E6%9D%83%E9%99%90%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95.html</url>
+    <url>/162b476ff9bf.html</url>
     <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在windows安装完ssh-agent，添加多个ssh key之后,git clone依旧提示Permission Denied。<br>（安装参见：<a href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement">https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement</a>）</p>
 <h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>Git需要知道Windows ssh-agent服务的位置， 可以通过添加<code>GIT_SSH</code>环境变量来解决该问题。</p>
 <p>以下文字来源：<a href="https://snowdrift.tech/cli/ssh/git/tutorials/2019/01/31/using-ssh-agent-git-windows.html">https://snowdrift.tech/cli/ssh/git/tutorials/2019/01/31/using-ssh-agent-git-windows.html</a></p>
@@ -182,18 +182,18 @@
   </entry>
   <entry>
     <title>apt-get临时设置代理方式</title>
-    <url>/2021/08/11/apt-get%E4%B8%B4%E6%97%B6%E8%AE%BE%E7%BD%AE%E4%BB%A3%E7%90%86%E6%96%B9%E5%BC%8F.html</url>
+    <url>/655c27e0e4e4.html</url>
     <content><![CDATA[<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt-get -o Acquire::http::proxy=&quot;http://host:port/&quot; install xxx</span><br></pre></td></tr></table></figure>]]></content>
   </entry>
   <entry>
     <title>css椭圆轨迹运动动画</title>
-    <url>/2019/07/02/css%E6%A4%AD%E5%9C%86%E8%BD%A8%E8%BF%B9%E8%BF%90%E5%8A%A8%E5%8A%A8%E7%94%BB.html</url>
+    <url>/d6a52fea9420.html</url>
     <content><![CDATA[<p>朋友问我一个球沿着斜的椭圆轨迹运动怎么实现 实现之后随手记录<br><a href="https://codepen.io/KissekiAkaru/pen/GbxXzz">demo地址</a></p>
 ]]></content>
   </entry>
   <entry>
     <title>html垂直自适应布局</title>
-    <url>/2017/12/02/html%E5%9E%82%E7%9B%B4%E8%87%AA%E9%80%82%E5%BA%94%E5%B8%83%E5%B1%80.html</url>
+    <url>/93212fe8c649.html</url>
     <content><![CDATA[<h3 id="项目中遇到如下需求"><a href="#项目中遇到如下需求" class="headerlink" title="项目中遇到如下需求"></a>项目中遇到如下需求</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- top 盒子内容为内部撑开 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;top&quot;</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!-- 未知高度的一些元素 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- 目标盒子 需要自动填满屏幕剩余高度--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;target&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">body</span>,<span class="selector-tag">html</span>&#123;</span><br><span class="line">	<span class="attribute">height</span>:<span class="number">100%</span>;</span><br><span class="line">	<span class="attribute">width</span>:<span class="number">100%</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">body</span>&#123;</span><br><span class="line">	<span class="attribute">display</span>:flex;</span><br><span class="line">	<span class="attribute">flex-direction</span>: column</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.target</span>&#123;</span><br><span class="line">	<span class="attribute">flex</span>:<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -203,7 +203,7 @@
   </entry>
   <entry>
     <title>iframe在ios中高度自扩展问题 解决方案</title>
-    <url>/2018/10/11/iframe%E5%9C%A8ios%E4%B8%AD%E9%AB%98%E5%BA%A6%E8%87%AA%E6%89%A9%E5%B1%95%E9%97%AE%E9%A2%98-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
+    <url>/3ed582fbe64f.html</url>
     <content><![CDATA[<h5 id="开发需求"><a href="#开发需求" class="headerlink" title="开发需求"></a>开发需求</h5><p>在页面中加入一个定高的iframe</p>
 <h5 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h5><p>IOS safari中iframe会根据内容高度进行iframe的内容自扩展以适应内容高度 设置height无效</p>
 <h6 id="百谷之后"><a href="#百谷之后" class="headerlink" title="百谷之后"></a>百谷之后</h6><blockquote>
@@ -219,7 +219,7 @@
   </entry>
   <entry>
     <title>input的disabled属性会导致无法上传</title>
-    <url>/2017/07/29/input%E7%9A%84disabled%E5%B1%9E%E6%80%A7%E4%BC%9A%E5%AF%BC%E8%87%B4%E6%97%A0%E6%B3%95%E4%B8%8A%E4%BC%A0.html</url>
+    <url>/220783a26dd7.html</url>
     <content><![CDATA[<p>如题 很多人会用<code>disable</code>禁止用户修改<code>input</code>的值<br>但是同时会导致<code>form</code>提交时不包含这个文本框的值<br>（<code>disabled</code>本意即为禁用 所以自然不会上传）</p>
 <p><strong>需要实现禁止修改可以使用<code>readonly</code>属性</strong></p>
 <hr>
@@ -227,7 +227,7 @@
   </entry>
   <entry>
     <title>ios中 input[readonly] 仍然可聚焦出现光标并弹出“完成”面板问题</title>
-    <url>/2018/02/05/ios%E4%B8%AD-input-readonly-%E4%BB%8D%E7%84%B6%E5%8F%AF%E8%81%9A%E7%84%A6%E5%87%BA%E7%8E%B0%E5%85%89%E6%A0%87%E5%B9%B6%E5%BC%B9%E5%87%BA%E2%80%9C%E5%AE%8C%E6%88%90%E2%80%9D%E9%9D%A2%E6%9D%BF%E9%97%AE%E9%A2%98.html</url>
+    <url>/a5dc920f2637.html</url>
     <content><![CDATA[<p>除readonly外 还需要添加</p>
 <pre><code>unselectable=&quot;on&quot; onfocus=&quot;this.blur()&quot; 
 </code></pre>
@@ -236,7 +236,7 @@
   </entry>
   <entry>
     <title>mui slider轮播组件常用API</title>
-    <url>/2017/08/09/mui-slider%E8%BD%AE%E6%92%AD%E7%BB%84%E4%BB%B6%E5%B8%B8%E7%94%A8API.html</url>
+    <url>/ab374a9a7cf3.html</url>
     <content><![CDATA[<p>原文:<a href="http://www.bcty365.com/content-146-5588-1.html">http://www.bcty365.com/content-146-5588-1.html</a></p>
 <h2 id="组件介绍"><a href="#组件介绍" class="headerlink" title="组件介绍"></a>组件介绍</h2><p>轮播组件是mui提供的一个核心组件，在该核心组件基础上，衍生出了图片轮播、可拖动式图文表格、可拖动式选项卡、左右滑动9宫格等组件。</p>
 <h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>获取slide组件对象</p>
@@ -263,7 +263,7 @@ slider.stopped = true; //关闭滑动切换
   </entry>
   <entry>
     <title>new Obj() 与 Object.create(Obj.prototype)的区别</title>
-    <url>/2018/06/07/new-Obj-%E4%B8%8E-Object-create-Obj-prototype-%E7%9A%84%E5%8C%BA%E5%88%AB.html</url>
+    <url>/dd7ca3310acb.html</url>
     <content><![CDATA[<h2 id="先看-Object-create-和new-的区别"><a href="#先看-Object-create-和new-的区别" class="headerlink" title="先看 Object.create 和new 的区别"></a>先看 Object.create 和new 的区别</h2><h6 id="以下引用自blueblueskyhua的博客"><a href="#以下引用自blueblueskyhua的博客" class="headerlink" title="以下引用自blueblueskyhua的博客"></a>以下引用自<a href="https://blog.csdn.net/blueblueskyhua/article/details/73135938">blueblueskyhua的博客</a></h6><blockquote>
 <p>创建对象的方式，我以我碰到的两种创建方式，Object.create 和new来说明</p>
 </blockquote>
@@ -311,7 +311,7 @@ Base.call(o1)
   </entry>
   <entry>
     <title>openwrt部署openvpn server以及群晖连接（DSM7）完成内网穿透</title>
-    <url>/2022/01/20/openwrt%E9%83%A8%E7%BD%B2openvpn-server%E4%BB%A5%E5%8F%8A%E7%BE%A4%E6%99%96%E8%BF%9E%E6%8E%A5%EF%BC%88DSM7%EF%BC%89%E5%AE%8C%E6%88%90%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F.html</url>
+    <url>/5239703c80b8.html</url>
     <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>公司里放了一台黑裙，但是没有公网IP，想到用openvpn拨到家里的路由器，再进行端口转发达到内网穿透，公网访问的目的。</p>
 <p><strong>总之的总之三步走，需要openwrt上有server，以及群晖能够有client进行拨入，最后配置端口转发</strong></p>
 <hr>
@@ -368,7 +368,7 @@ Base.call(o1)
   </entry>
   <entry>
     <title>修复gitCI中文件的创建时间与修改时间</title>
-    <url>/2022/04/10/restore-atime-mtime-in-git-CI.html</url>
+    <url>/befecf49889e.html</url>
     <content><![CDATA[<h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>hexo发现经过CI之后，所有文章的 <strong>更新时间(mtime)</strong> 变成了CI运行的时间。</p>
 <h1 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h1><p>在CI checkout代码时，使用文件最后一次涉及的commit时间作为文件的修改时间，进行mtime的恢复。</p>
 <h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># .github/workflows/action.yml</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v3</span></span><br><span class="line">  <span class="comment"># 如果使用的是GithubAction的actions/checkout，记得加上下面的内容，对仓库历史进行完整的签出</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">fetch-depth:</span> <span class="number">0</span></span><br><span class="line"><span class="comment"># 恢复文件修改时间</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Restore</span> <span class="string">file</span> <span class="string">modification</span> <span class="string">time</span></span><br><span class="line">  <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">    find source/_posts -name &#x27;*.md&#x27; | while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span></span><br><span class="line"><span class="string"></span><span class="string">...</span></span><br></pre></td></tr></table></figure>
@@ -385,7 +385,7 @@ Base.call(o1)
   </entry>
   <entry>
     <title>webstorm中 emmet 模板的修改步骤</title>
-    <url>/2018/03/27/webstorm%E4%B8%AD-emmet-%E6%A8%A1%E6%9D%BF%E7%9A%84%E4%BF%AE%E6%94%B9%E6%AD%A5%E9%AA%A4.html</url>
+    <url>/180cb4d78d79.html</url>
     <content><![CDATA[<p>之前用atom、sublime的时候 Emmet 的模板是可配置的 但是在webstorm配置中的Editor &gt; Emmet选项下没有发现任何有关模板的配置 只有一些选项的配置</p>
 <hr>
 <p><img data-src="https://img-blog.csdn.net/20180327135651291?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="webstorm Emmet相关配置"></p>
@@ -397,7 +397,7 @@ Base.call(o1)
   </entry>
   <entry>
     <title>window.location.replace和window.location.href区别</title>
-    <url>/2017/12/07/window-location-replace%E5%92%8Cwindow-location-href%E5%8C%BA%E5%88%AB.html</url>
+    <url>/5850aa2f8c65.html</url>
     <content><![CDATA[<p>###有3个页面 a,b,c<br>如果当前页面是c页面，并且c页面是这样跳转过来的：a-&gt;b-&gt;c</p>
 <p>1: b-&gt;c 是通过window.location.replace(“..xx&#x2F;c”)   此时b页面的url会被c页面代替，并且点击后退按钮时会回退到a页面（最开始的页面）</p>
 <p>2: b-&gt;c是通过window.location.href(“..xx&#x2F;c”)    此时b页面的路径会被c页面代替，但是点击回按钮后页面回退的是b页面</p>
@@ -406,7 +406,7 @@ Base.call(o1)
   </entry>
   <entry>
     <title>window.requestAnimFrame 以及Polyfill</title>
-    <url>/2017/10/08/window-requestAnimFrame-%E4%BB%A5%E5%8F%8APolyfill.html</url>
+    <url>/fa022dde0797.html</url>
     <content><![CDATA[<h2 id="requestAnimationFrame"><a href="#requestAnimationFrame" class="headerlink" title="requestAnimationFrame"></a>requestAnimationFrame</h2><blockquote>
 <p>requestAnimationFrame是浏览器用于定时循环操作的一个接口，类似于setTimeout，主要用途是按帧对网页进行重绘。</p>
 </blockquote>
@@ -461,13 +461,13 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>一个Mui Demo仓库</title>
-    <url>/2017/08/10/%E4%B8%80%E4%B8%AAMui-Demo%E4%BB%93%E5%BA%93.html</url>
+    <url>/9c287968e88d.html</url>
     <content><![CDATA[<p>链接 <a href="https://github.com/zhaomenghuan/mui-demo">https://github.com/zhaomenghuan/mui-demo</a></p>
 ]]></content>
   </entry>
   <entry>
     <title>一根网线同时搭载电信itv及网络 解决方案</title>
-    <url>/2019/02/10/%E4%B8%80%E6%A0%B9%E7%BD%91%E7%BA%BF%E5%90%8C%E6%97%B6%E6%90%AD%E8%BD%BD%E7%94%B5%E4%BF%A1itv%E5%8F%8A%E7%BD%91%E7%BB%9C-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
+    <url>/c27c61f84cfd.html</url>
     <content><![CDATA[<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv</p>
 <p><strong>原拓扑图如下</strong><br><img data-src="https://img-blog.csdnimg.cn/20190210155452299.png#pic_center" alt="原拓扑图"></p>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>材料：</strong><br>1、水星Mercury SG105Pro 五口千兆网管交换机 价格 98 元 放置在客厅（下称SW5）<br>2、水星Mercury SG108Pro 八口千兆网管交换机 价格 169 元 放置在弱电箱（下称SW8）</p>
@@ -628,14 +628,14 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>为什么不要使用 ::before{content:url(&#39;xxx&#39;)} 设置图标</title>
-    <url>/2020/09/07/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8-before-content-url--xxx--%E8%AE%BE%E7%BD%AE%E5%9B%BE%E6%A0%87.html</url>
+    <url>/5593fd82f23d.html</url>
     <content><![CDATA[<p>项目中遇到 随手记录<br>::before ::after等伪类中使用content:url()中的图片无法设置宽高</p>
 <hr>
 ]]></content>
   </entry>
   <entry>
     <title>从V8引擎的工作流程看Javascript代码优化</title>
-    <url>/2022/06/14/%E4%BB%8EV8%E5%BC%95%E6%93%8E%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E7%9C%8BJavascript%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96.html</url>
+    <url>/1e0c091d29a1.html</url>
     <content><![CDATA[<h2 id="0-V8介绍"><a href="#0-V8介绍" class="headerlink" title="0. V8介绍"></a>0. V8介绍</h2><p>官方文档这么介绍：V8是谷歌开源高性能JavaScript和WebAssembly引擎，用C++编写。它主要用在Chrome和Node.js中，等等。</p>
 <p>简单的来说，我们知道，JavaScript是解释型的语言，需要逐行解释执行</p>
 <p>V8则是一种C++开发的JavaScript解释器，它将JavaScript编译成可执行代码，即机器码。</p>
@@ -714,7 +714,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>使用canvas实现图片压缩</title>
-    <url>/2017/11/09/%E4%BD%BF%E7%94%A8canvas%E5%AE%9E%E7%8E%B0%E5%9B%BE%E7%89%87%E5%8E%8B%E7%BC%A9.html</url>
+    <url>/e15015f00ecd.html</url>
     <content><![CDATA[<h2 id="原文链接-https-segmentfault-com-a-1190000009308553"><a href="#原文链接-https-segmentfault-com-a-1190000009308553" class="headerlink" title="原文链接 https://segmentfault.com/a/1190000009308553"></a>原文链接 <a href="https://segmentfault.com/a/1190000009308553">https://segmentfault.com/a/1190000009308553</a></h2><p>那，首先通过<code>URL.createObjectURL(file)</code>从file对象直接取得了图片的地址</p>
 <p>前面就不详细说了，开始压缩咯 ( ´ ▽ &#96; )ﾉ</p>
 <p>噢，有个注意点:</p>
@@ -735,7 +735,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>关于Ajax跨域访问 session不能保存或之后无法访问session取值为空等问题</title>
-    <url>/2017/09/26/%E5%85%B3%E4%BA%8EAjax%E8%B7%A8%E5%9F%9F%E8%AE%BF%E9%97%AE-session%E4%B8%8D%E8%83%BD%E4%BF%9D%E5%AD%98%E6%88%96%E4%B9%8B%E5%90%8E%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AEsession%E5%8F%96%E5%80%BC%E4%B8%BA%E7%A9%BA%E7%AD%89%E9%97%AE%E9%A2%98.html</url>
+    <url>/d6ed39098ad1.html</url>
     <content><![CDATA[<h4 id="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"><a href="#根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。" class="headerlink" title="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"></a>根据浏览器的保护规则，<strong>跨域的时候我们创建的sessionId是不会被浏览器保存下来的</strong>，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。</h4><p>在ajax 请求要加配置</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$.<span class="title function_">ajax</span>(&#123;</span><br><span class="line">	<span class="attr">url</span>:url,</span><br><span class="line">	<span class="comment">//加上 xhrFields及crossDomain</span></span><br><span class="line">	<span class="attr">xhrFields</span>: &#123;</span><br><span class="line">		<span class="comment">//允许带上凭据</span></span><br><span class="line">        <span class="attr">withCredentials</span>: <span class="literal">true</span></span><br><span class="line">	&#125;,</span><br><span class="line">       <span class="attr">crossDomain</span>: <span class="literal">true</span>,</span><br><span class="line">       <span class="comment">//以上</span></span><br><span class="line">	<span class="attr">success</span>:<span class="keyword">function</span>(<span class="params">result</span>)&#123;</span><br><span class="line">		<span class="title function_">alert</span>(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">error</span>:<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <h3 id="关于-withCredentials"><a href="#关于-withCredentials" class="headerlink" title="关于 withCredentials"></a>关于 withCredentials</h3><blockquote>
@@ -760,7 +760,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>关于CSS选择器书写正确浏览器却不认的一个原因</title>
-    <url>/2020/03/26/%E5%85%B3%E4%BA%8ECSS%E9%80%89%E6%8B%A9%E5%99%A8%E4%B9%A6%E5%86%99%E6%AD%A3%E7%A1%AE%E6%B5%8F%E8%A7%88%E5%99%A8%E5%8D%B4%E4%B8%8D%E8%AE%A4%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8E%9F%E5%9B%A0.html</url>
+    <url>/8b7049303f42.html</url>
     <content><![CDATA[<blockquote>
 <p>不想看原因的，可以直接跳到页尾看解决方案</p>
 </blockquote>
@@ -791,7 +791,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>关于For循环中进行异步操作索引不正确的处理方式</title>
-    <url>/2017/11/28/%E5%85%B3%E4%BA%8EFor%E5%BE%AA%E7%8E%AF%E4%B8%AD%E8%BF%9B%E8%A1%8C%E5%BC%82%E6%AD%A5%E6%93%8D%E4%BD%9C%E7%B4%A2%E5%BC%95%E4%B8%8D%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F.html</url>
+    <url>/665cae66e591.html</url>
     <content><![CDATA[<h3 id="code-问题代码"><a href="#code-问题代码" class="headerlink" title="code 问题代码"></a>code 问题代码</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) &#123;</span><br><span class="line">        <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;index is :&quot;</span>, i);</span><br><span class="line">        &#125;, <span class="number">1000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">test</span>();</span><br></pre></td></tr></table></figure>
 <h3 id="output-问题输出"><a href="#output-问题输出" class="headerlink" title="output 问题输出"></a>output 问题输出</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br></pre></td></tr></table></figure>
 
@@ -805,7 +805,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>关于Group By 单个和多个字段</title>
-    <url>/2019/10/31/%E5%85%B3%E4%BA%8EGroup-By-%E5%8D%95%E4%B8%AA%E5%92%8C%E5%A4%9A%E4%B8%AA%E5%AD%97%E6%AE%B5.html</url>
+    <url>/008ac5b22651.html</url>
     <content><![CDATA[<p><strong>在MYSQL中使用GROUP BY对表中的数据进行分组时：</strong><br><strong>单个字段：</strong> GROUP BY X意思是将所有具有相同X字段值的记录放到一个分组里，<br><strong>多个字段：</strong> GROUP BY X, Y意思是将所有具有相同X字段值和Y字段值的记录放到一个分组里。</p>
 <p>参考文章：</p>
 <blockquote>
@@ -817,7 +817,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>关于ajaxFileUpload造成 input[type=file] change事件只能触发一次的问题</title>
-    <url>/2017/08/18/%E5%85%B3%E4%BA%8EajaxFileUpload%E9%80%A0%E6%88%90-input-type-file-change%E4%BA%8B%E4%BB%B6%E5%8F%AA%E8%83%BD%E8%A7%A6%E5%8F%91%E4%B8%80%E6%AC%A1%E7%9A%84%E9%97%AE%E9%A2%98.html</url>
+    <url>/c50248a257e4.html</url>
     <content><![CDATA[<h4 id="现在发现的问题"><a href="#现在发现的问题" class="headerlink" title="现在发现的问题"></a>现在发现的问题</h4><p>通过js绑定的<code>input[type=file]</code> <code>change</code>事件只能触发一次</p>
 <h4 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h4><p>该问题并不是由change事件失效造成的，而是ajaxFileUpload插件造成的，它会把原来的file元素替换成新的file元素，所以之前绑定的change事件就失效了，需要重新绑定一下</p>
 <p>除了重新绑定以外，如果是使用<code>$fileInput.trigger(&#39;click&#39;)</code> 方式，失效原因是<code>$fileInput</code>仍指向旧元素，替代方案分为以下两步</p>
@@ -834,14 +834,14 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>关于mui Div模式选项卡 JS主动触发切换指定选项卡</title>
-    <url>/2017/11/07/%E5%85%B3%E4%BA%8Emui-Div%E6%A8%A1%E5%BC%8F%E9%80%89%E9%A1%B9%E5%8D%A1-JS%E4%B8%BB%E5%8A%A8%E8%A7%A6%E5%8F%91%E5%88%87%E6%8D%A2%E6%8C%87%E5%AE%9A%E9%80%89%E9%A1%B9%E5%8D%A1.html</url>
+    <url>/1ed7d53e8a73.html</url>
     <content><![CDATA[<h3 id="需要先触发touchstart事件（旧版本需要先触发mousedown事件）"><a href="#需要先触发touchstart事件（旧版本需要先触发mousedown事件）" class="headerlink" title="需要先触发touchstart事件（旧版本需要先触发mousedown事件）"></a>需要先触发touchstart事件（旧版本需要先触发mousedown事件）</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">mui.<span class="title function_">trigger</span>($(<span class="string">&#x27;.mui-tab-item&#x27;</span>).<span class="title function_">eq</span>(<span class="number">1</span>)[<span class="number">0</span>],<span class="string">&#x27;touchstart&#x27;</span>);</span><br><span class="line">mui.<span class="title function_">trigger</span>($(<span class="string">&#x27;.mui-tab-item&#x27;</span>).<span class="title function_">eq</span>(<span class="number">1</span>)[<span class="number">0</span>],<span class="string">&#x27;tap&#x27;</span>)</span><br></pre></td></tr></table></figure>
 <h3 id="源代码尚未研究-以上为解决方案"><a href="#源代码尚未研究-以上为解决方案" class="headerlink" title="源代码尚未研究 以上为解决方案"></a>源代码尚未研究 以上为解决方案</h3><h4 id="2018-3-30-PS-发现好像只要改一下mui-active就行了？（扶额）"><a href="#2018-3-30-PS-发现好像只要改一下mui-active就行了？（扶额）" class="headerlink" title="2018-3-30 PS: 发现好像只要改一下mui-active就行了？（扶额）"></a>2018-3-30 PS: 发现好像只要改一下mui-active就行了？（扶额）</h4><h4 id="2018-4-25-PS-最简单的方式是改变item和切换目标的mui-active"><a href="#2018-4-25-PS-最简单的方式是改变item和切换目标的mui-active" class="headerlink" title="2018-4-25 PS: 最简单的方式是改变item和切换目标的mui-active"></a>2018-4-25 PS: 最简单的方式是改变item和切换目标的mui-active</h4><hr>
 ]]></content>
   </entry>
   <entry>
     <title>关于vue-cli4无法配置自定义devtool选项的问题</title>
-    <url>/2021/10/26/%E5%85%B3%E4%BA%8Evue-cli4%E6%97%A0%E6%B3%95%E9%85%8D%E7%BD%AE%E8%87%AA%E5%AE%9A%E4%B9%89devtool%E9%80%89%E9%A1%B9%E7%9A%84%E9%97%AE%E9%A2%98.html</url>
+    <url>/32502d134cc1.html</url>
     <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在<code>vue.config.js</code>中无法配置自定义<code>devtool</code>选项，无论是使用<code>configureWebpack</code>还是<code>chainWebpack</code>都无法改变<code>source-map</code>的类型。官方文档也没有提供相关的说明。</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// vue.config.js</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Components</span> = <span class="built_in">require</span>(<span class="string">&#x27;unplugin-vue-components/webpack&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">ElementPlusResolver</span> &#125; = <span class="built_in">require</span>(<span class="string">&#x27;unplugin-vue-components/resolvers&#x27;</span>)</span><br><span class="line"><span class="comment">// 两种方式均无法更改devtool</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">configureWebpack</span>: &#123;</span><br><span class="line">    <span class="attr">devtool</span>: <span class="string">&quot;source-map&quot;</span>,</span><br><span class="line">    <span class="comment">// 2021.10.26更新 ↓罪魁祸首</span></span><br><span class="line">    <span class="attr">plugins</span>: [</span><br><span class="line">      <span class="title class_">Components</span>(&#123;</span><br><span class="line">        <span class="attr">resolvers</span>: [<span class="title class_">ElementPlusResolver</span>()]</span><br><span class="line">      &#125;)</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">chainWebpack</span>: <span class="function"><span class="params">config</span> =&gt;</span> &#123;</span><br><span class="line">    config</span><br><span class="line">      .<span class="title function_">devtool</span>(<span class="string">&#x27;source-map&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -861,7 +861,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>关于百度地图 DrivingRoute moreResultsUrl为“未能找到相应结果，请您:返回上一步操作..” 以及 WalkingRoute moreResultsUrl为空 的解决方案</title>
-    <url>/2017/12/07/%E5%85%B3%E4%BA%8E%E7%99%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE-DrivingRoute-moreResultsUrl%E4%B8%BA%E2%80%9C%E6%9C%AA%E8%83%BD%E6%89%BE%E5%88%B0%E7%9B%B8%E5%BA%94%E7%BB%93%E6%9E%9C%EF%BC%8C%E8%AF%B7%E6%82%A8-%E8%BF%94%E5%9B%9E%E4%B8%8A%E4%B8%80%E6%AD%A5%E6%93%8D%E4%BD%9C-%E2%80%9D-%E4%BB%A5%E5%8F%8A-WalkingRoute-moreResultsUrl%E4%B8%BA%E7%A9%BA-%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
+    <url>/b8e315d25c83.html</url>
     <content><![CDATA[<h4 id="——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案"><a href="#——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案" class="headerlink" title="—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案"></a>—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案</h4><h3 id="A-Few-Minutes-Later…"><a href="#A-Few-Minutes-Later…" class="headerlink" title="A Few Minutes Later….."></a><strong>A Few Minutes Later…..</strong></h3><p>经过一番Demo和文档的查找，惊喜的发现正式版中TransitRoute，WalkingRoute，以及DrivingRoute 的searchComplete回调中有个“moreResultsUrl” 打开正是百度地图的导航结果页！<br>&amp;nbsp;</p>
 <h3 id="事情并没有那么简单-——-使用DrivingRoute"><a href="#事情并没有那么简单-——-使用DrivingRoute" class="headerlink" title="事情并没有那么简单  —— 使用DrivingRoute"></a><strong>事情并没有那么简单  —— 使用DrivingRoute</strong></h3><p>当我打开DrivingRoute的moreResultsUrl 度娘很友好的向我展示了下面的界面 并且不管我如何调整参数 emmmmm 毫无变化！</p>
 <p><img data-src="https://img-blog.csdnimg.cn/img_convert/d953d2f1c93ba21043d2bb65adfcd32b.png" alt="DrivingRoute未能找到相应结果"></p>
@@ -900,7 +900,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>利用Overflow:Hidden实现自适应左右两列布局/填充父级元素剩余宽度</title>
-    <url>/2017/07/27/%E5%88%A9%E7%94%A8Overflow-Hidden%E5%AE%9E%E7%8E%B0%E8%87%AA%E9%80%82%E5%BA%94%E5%B7%A6%E5%8F%B3%E4%B8%A4%E5%88%97%E5%B8%83%E5%B1%80-%E5%A1%AB%E5%85%85%E7%88%B6%E7%BA%A7%E5%85%83%E7%B4%A0%E5%89%A9%E4%BD%99%E5%AE%BD%E5%BA%A6.html</url>
+    <url>/18bd6f90cc3e.html</url>
     <content><![CDATA[<h3 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h3><hr>
 <pre><code>&lt;div class=&quot;parent&quot;&gt;
     &lt;div class=&quot;Left&quot;&gt;&lt;/div&gt;
@@ -925,7 +925,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>前端代码规范</title>
-    <url>/2019/03/25/%E5%89%8D%E7%AB%AF%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83.html</url>
+    <url>/5b2ee5980b75.html</url>
     <content><![CDATA[<h1 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h1><h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><ul>
 <li>用四个空格来代替制表符（tab） – IDE可设置一个Tab四个空格</li>
 <li>嵌套元素应当缩进一次（即四个空格）。</li>
@@ -1099,7 +1099,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>微信浏览器中iframe srcdoc、src=data:text/html,xxxx 等无法使用情况下防止样式污染的解决方案</title>
-    <url>/2018/11/07/%E5%BE%AE%E4%BF%A1%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%ADiframe-srcdoc%E3%80%81src-data-text-html-xxxx-%E7%AD%89%E6%97%A0%E6%B3%95%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5%E4%B8%8B%E9%98%B2%E6%AD%A2%E6%A0%B7%E5%BC%8F%E6%B1%A1%E6%9F%93%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
+    <url>/b0ba270a0600.html</url>
     <content><![CDATA[<h4 id="业务需求"><a href="#业务需求" class="headerlink" title="业务需求"></a>业务需求</h4><blockquote>
 <p>从后端取HTML 前端展示</p>
 </blockquote>
@@ -1121,7 +1121,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>拒绝假空心！纯css实现 真·空心带边框直角三角形和空心带边框直角梯形！</title>
-    <url>/2019/06/07/%E6%8B%92%E7%BB%9D%E5%81%87%E7%A9%BA%E5%BF%83%EF%BC%81%E7%BA%AFcss%E5%AE%9E%E7%8E%B0-%E7%9C%9F%C2%B7%E7%A9%BA%E5%BF%83%E5%B8%A6%E8%BE%B9%E6%A1%86%E7%9B%B4%E8%A7%92%E4%B8%89%E8%A7%92%E5%BD%A2%E5%92%8C%E7%A9%BA%E5%BF%83%E5%B8%A6%E8%BE%B9%E6%A1%86%E7%9B%B4%E8%A7%92%E6%A2%AF%E5%BD%A2%EF%BC%81.html</url>
+    <url>/8346145d85f0.html</url>
     <content><![CDATA[<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p><img data-src="https://img-blog.csdnimg.cn/20190607225358253.png" alt="要实现的直角梯形"><br><strong>↑需要实现一个背景为半透明且带边框的直角梯形</strong><br><br></p>
 <h2 id="百谷解决方案"><a href="#百谷解决方案" class="headerlink" title="百谷解决方案"></a>百谷解决方案</h2><p>碰到问题，程序猿的优良传统，先百谷一下（？） 得到的解决方案总结一下有这些：<br>1.利用border交界处为斜边来制作，即border-top:none;border-right:transparent<br><strong>→问题：使用border来做背景，没法在border上再做边框，只能得到一个半透明的直角梯形</strong><br>2.在用border制作的梯形外侧套上一个上下左右大出1像素，以边框色为背景的梯形，作为边框<br><strong>→问题：中间小梯形无法做成半透明，会叠加上大梯形的背景色</strong><br>3.利用矩形和三角形拼接<br><strong>→问题：右边直角三角形的边框依旧无法解决</strong><br>4.边框使用矩形旋转来做<br><strong>→问题：至少要用到4个div，过于复杂</strong><br><br></p>
 <h2 id="没有条件就自己上！"><a href="#没有条件就自己上！" class="headerlink" title="没有条件就自己上！"></a>没有条件就自己上！</h2><p>就在要放弃打算导出png来做的时候，导出界面给了我灵感！<br><img data-src="https://img-blog.csdnimg.cn/20190607230522372.png" alt="导出图片界面"><br><strong>↑这不就是一个矩形overflow:hidden套上一个平行四边形吗！给力！</strong></p>
@@ -1139,7 +1139,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>浮点数计算精度误差原理随记</title>
-    <url>/2020/06/03/%E6%B5%AE%E7%82%B9%E6%95%B0%E8%AE%A1%E7%AE%97%E7%B2%BE%E5%BA%A6%E8%AF%AF%E5%B7%AE%E5%8E%9F%E7%90%86%E9%9A%8F%E8%AE%B0.html</url>
+    <url>/80ea430d417b.html</url>
     <content><![CDATA[<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>0.1 + 0.2 &#x3D; 0.30000000000000004</p>
 <h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>以下摘自 <a href="https://www.cnblogs.com/wymbk/p/6031442.html">https://www.cnblogs.com/wymbk/p/6031442.html</a></p>
 <p>首先，我们要站在计算机的角度思考 0.1 + 0.2 这个看似小儿科的问题。我们知道，能被计算机读懂的是二进制，而不是十进制，所以我们先把 0.1 和 0.2 转换成二进制看看：</p>
@@ -1151,7 +1151,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>添加了~/.bash_profile之后，~/.bashrc失效以及bash失去高亮的原因及解决方案</title>
-    <url>/2021/09/29/%E6%B7%BB%E5%8A%A0%E4%BA%86-bash-profile%E4%B9%8B%E5%90%8E%EF%BC%8C-bashrc%E5%A4%B1%E6%95%88%E4%BB%A5%E5%8F%8Abash%E5%A4%B1%E5%8E%BB%E9%AB%98%E4%BA%AE%E7%9A%84%E5%8E%9F%E5%9B%A0%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
+    <url>/463d951c5853.html</url>
     <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>添加<code>~/.bash_profile</code>之后，bash失去高亮，<code>~/.bashrc</code>中的逻辑不运行。<br><img data-src="https://img-blog.csdnimg.cn/b49d241eeab14f43b53edb783eb9d8f1.png" alt="添加前"><br>添加前↑<br><img data-src="https://img-blog.csdnimg.cn/fd0ce34e0824462fb70387c80a53c57f.png" alt="添加后"><br>添加后↑</p>
 <h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>在添加<code>~/.bash_profile</code>之后，<code>~/.profile</code>会被覆盖不再运行，而load bashrc的逻辑在<code>~/.profile</code>中，导致<code>~/.bashrc</code>也一并失效。<br><img data-src="https://img-blog.csdnimg.cn/50f8cda872f34b57a3f9f7e7b3d1f48c.png" alt="~/.profile中加载bashrc的逻辑"></p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">## 解决方案</span><br><span class="line">- 方案一：将```~/.bash_profile```中的逻辑移至```~/.profile```，并删除```~/.bash_profile```。</span><br><span class="line">- 方案二：在```~/.bash_profile```中添加以下代码保证```~/.profile```中的代码运行。</span><br><span class="line"> ```bash</span><br><span class="line"> source ~/.profile</span><br></pre></td></tr></table></figure>
@@ -1165,7 +1165,7 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>获取元素到页面顶部的距离</title>
-    <url>/2020/03/12/%E8%8E%B7%E5%8F%96%E5%85%83%E7%B4%A0%E5%88%B0%E9%A1%B5%E9%9D%A2%E9%A1%B6%E9%83%A8%E7%9A%84%E8%B7%9D%E7%A6%BB.html</url>
+    <url>/13c3ceb89ee0.html</url>
     <content><![CDATA[<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> offsetTop = targetElement.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span> + <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span></span><br></pre></td></tr></table></figure>]]></content>
   </entry>
 </search>

@@ -1164,11 +1164,6 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
-    <title>获取元素到页面顶部的距离</title>
-    <url>/13c3ceb89ee0.html</url>
-    <content><![CDATA[<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> offsetTop = targetElement.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span> + <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span></span><br></pre></td></tr></table></figure>]]></content>
-  </entry>
-  <entry>
     <title>群晖使用BGmi+Aria2+Emby完成蜜柑的番剧订阅与自动下载</title>
     <url>/fe08bf43fac1.html</url>
     <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>已经在群晖部署了Emby+Aria2，但是番剧一直是手动下载，比较麻烦。想着能不能订阅自动下载之类的，翻了一遍Github看到了<a href="https://github.com/BGmi/BGmi">BGmi</a>这个仓库，尝试下来体验还算不错。</p>
@@ -1194,13 +1189,15 @@ requestAnimationFrame(repeatOften);
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bgmi config <span class="comment"># 查看当前各项设置的默认值.</span></span><br><span class="line">bgmi config KEY <span class="comment"># 查看某项设置的默认值</span></span><br><span class="line">bgmi config KEY value <span class="comment"># 修改某项设置</span></span><br><span class="line"><span class="comment"># example:</span></span><br><span class="line">bgmi config ARIA2_RPC_TOKEN <span class="string">&#x27;token:xxxxx&#x27;</span></span><br></pre></td></tr></table></figure>
 <p>我们需要修改的配置项如下：</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bgmi config SAVE_PATH <span class="string">&quot;/bangumi&quot;</span> <span class="comment">#下载路径，这个路径要确保Aria2能够访问到</span></span><br><span class="line">bgmi config DOWNLOAD_DELEGATE <span class="string">&quot;aria2-rpc&quot;</span> <span class="comment">#设置下载工具</span></span><br><span class="line">bgmi config ARIA2_RPC_URL <span class="string">&quot;http://172.17.0.1:6800/rpc&quot;</span> <span class="comment">#ARIA2 RPC URL，这里由于我们使用的是docker，所以填写宿主机ip 172.17.0.1，具体可以根据情况更改</span></span><br><span class="line">bgmi config ARIA2_RPC_TOKEN <span class="string">&quot;token:xxx&quot;</span> <span class="comment">#这里填写Aria2的token，如果没有则留空，或者不做修改 </span></span><br></pre></td></tr></table></figure>
+
 <h2 id="订阅"><a href="#订阅" class="headerlink" title="订阅"></a>订阅</h2><p>配置完成后，则可以开始进行番剧的订阅。 下面，我们以最近大火的《石蒜反冲》为例（乐</p>
 <ol>
 <li>先前往<a href="https://mikanani.me/">蜜柑</a>，得到番剧名称“莉可丽丝”<br><img data-src="/../images/posts/20220729173029.jpg" alt="莉可丽丝"></li>
-<li>订阅番剧，使用BGmi的命令行进行订阅：<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bgmi add <span class="string">&quot;莉可丽丝&quot;</span> </span><br><span class="line"><span class="comment"># 这里可以跟多个参数同时订阅多部番剧，如：</span></span><br><span class="line">bgmi add <span class="string">&quot;莉可丽丝&quot;</span> <span class="string">&quot;鬼灭之刃&quot;</span> <span class="string">&quot;Love Live! Superstar!!&quot;</span></span><br><span class="line"><span class="comment"># 要注意的是，此处订阅默认是从最新一集开始的，如果想要从头开始下载，需要加上 --episode 0</span></span><br><span class="line">bgmi add <span class="string">&quot;莉可丽丝&quot;</span> --episode</span><br></pre></td></tr></table></figure>
-<h2 id="筛选"><a href="#筛选" class="headerlink" title="筛选"></a>筛选</h2>由于一部番剧下有不同的字幕组&#x2F;清晰度&#x2F;语言，所以在下载前需要设置番剧的筛选规则。<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bgmi list <span class="comment"># 列出目前订阅的番剧</span></span><br><span class="line">bgmi fetch <span class="string">&quot;莉可丽丝&quot;</span></span><br><span class="line"><span class="comment"># include和exclude会忽略大小写。`720p`和`720P`的效果是相同的</span></span><br><span class="line">bgmi filter <span class="string">&quot;莉可丽丝&quot;</span> --subtitle <span class="string">&quot;喵萌奶茶屋&quot;</span> --include 1080P --exclude <span class="string">&quot;繁体&quot;</span></span><br><span class="line">bgmi fetch <span class="string">&quot;莉可丽丝&quot;</span></span><br></pre></td></tr></table></figure>
-你可以按照自己的喜好，直到<code>fetch</code>到的列表是你所想要的内容。</li>
+<li>订阅番剧，使用BGmi的命令行进行订阅：<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bgmi add <span class="string">&quot;莉可丽丝&quot;</span> </span><br><span class="line"><span class="comment"># 这里可以跟多个参数同时订阅多部番剧，如：</span></span><br><span class="line">bgmi add <span class="string">&quot;莉可丽丝&quot;</span> <span class="string">&quot;鬼灭之刃&quot;</span> <span class="string">&quot;Love Live! Superstar!!&quot;</span></span><br><span class="line"><span class="comment"># 要注意的是，此处订阅默认是从最新一集开始的，如果想要从头开始下载，需要加上 --episode 0</span></span><br><span class="line">bgmi add <span class="string">&quot;莉可丽丝&quot;</span> --episode</span><br></pre></td></tr></table></figure></li>
 </ol>
+<h2 id="筛选"><a href="#筛选" class="headerlink" title="筛选"></a>筛选</h2><p>由于一部番剧下有不同的字幕组&#x2F;清晰度&#x2F;语言，所以在下载前需要设置番剧的筛选规则。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bgmi list <span class="comment"># 列出目前订阅的番剧</span></span><br><span class="line">bgmi fetch <span class="string">&quot;莉可丽丝&quot;</span></span><br><span class="line"><span class="comment"># include和exclude会忽略大小写。`720p`和`720P`的效果是相同的</span></span><br><span class="line">bgmi filter <span class="string">&quot;莉可丽丝&quot;</span> --subtitle <span class="string">&quot;喵萌奶茶屋&quot;</span> --include 1080P --exclude <span class="string">&quot;繁体&quot;</span></span><br><span class="line">bgmi fetch <span class="string">&quot;莉可丽丝&quot;</span></span><br></pre></td></tr></table></figure>
+<p>你可以按照自己的喜好，直到<code>fetch</code>到的列表是你所想要的内容。</p>
 <h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>运行下面的命令更新番剧列表并且下载番剧，如果一切顺利的话，下载任务就会发送到Aria2啦！ 前往<code>SAVE_PATH</code>查看吧！</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bgmi update --download</span><br></pre></td></tr></table></figure>
 
@@ -1217,5 +1214,10 @@ requestAnimationFrame(repeatOften);
       <tags>
         <tag>群晖 BGmi Aria2 Emby</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>获取元素到页面顶部的距离</title>
+    <url>/13c3ceb89ee0.html</url>
+    <content><![CDATA[<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> offsetTop = targetElement.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span> + <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span></span><br></pre></td></tr></table></figure>]]></content>
   </entry>
 </search>

@@ -46,6 +46,7 @@ bgmi config DOWNLOAD_DELEGATE "aria2-rpc" #设置下载工具
 bgmi config ARIA2_RPC_URL "http://172.17.0.1:6800/rpc" #ARIA2 RPC URL，这里由于我们使用的是docker，所以填写宿主机ip 172.17.0.1，具体可以根据情况更改
 bgmi config ARIA2_RPC_TOKEN "token:xxx" #这里填写Aria2的token，如果没有则留空，或者不做修改 
 ```
+
 ## 订阅
 配置完成后，则可以开始进行番剧的订阅。 下面，我们以最近大火的《石蒜反冲》为例（乐
 1. 先前往[蜜柑](https://mikanani.me)，得到番剧名称“莉可丽丝”
@@ -58,6 +59,7 @@ bgmi config ARIA2_RPC_TOKEN "token:xxx" #这里填写Aria2的token，如果没�
    # 要注意的是，此处订阅默认是从最新一集开始的，如果想要从头开始下载，需要加上 --episode 0
    bgmi add "莉可丽丝" --episode
    ```
+
 ## 筛选
 由于一部番剧下有不同的字幕组/清晰度/语言，所以在下载前需要设置番剧的筛选规则。
 ```bash

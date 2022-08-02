@@ -78,8 +78,40 @@ bgmi update --download
 ```
 
 ## 定时任务
-> 这里还在探索，下次再来访问吧！ // 空气墙
+既然已经完全了解如何下载番剧，那我们自然可以用任务来让BGmi定时运行来自动下载订阅的番剧啦！
+1. 进入docker创建更新脚本
+```bash
+# 进入docker容器
+> docker exec -it codysk-bgmi-all-in-one1 /bin/bash
+# 创建更新脚本
+docker@codysk-bgmi-all-in-one1 < cd /bgmi/conf && touch cron-update.sh
+docker@codysk-bgmi-all-in-one1 < vi cron-update.sh
+# 脚本内容
+---- cron-update.sh -----
+#!/bin/sh
+echo "subscribe list:"
+bgmi list
+bgmi update --download
+---- cron-update.sh -----
+# 更改文件权限
+docker@b2a8cf4027e8 < chmod a+rwx ./cron-update.sh
+# 退出docker容器
+docker@b2a8cf4027e8 < exit
+> exit
+```
+2. 建立定时任务 
+   - 打开群辉 **控制面板->任务计划**，选择 **新增->计划的任务->用户定义的脚本**
+   ![新增->计划的任务->用户定义的脚本](../images/posts/20220802111235.jpg)
+   - 配置任务
+   ![账号选择root](../images/posts/20220802111350.jpg)
+   ![调度时间](../images/posts/20220802111411.jpg)
+   - 填写执行脚本
+    ```bash
+      docker exec codysk-bgmi-all-in-one1 /bin/bash -c "/bgmi/conf/cron-update.sh"
+    ```
+    ![执行脚本](../images/posts/20220802111506.jpg)
 
+ok！这样就可以每天自动下载番剧，而不用去关心字幕组什么时候更新啦！
 
 ## 参考链接
 1. [BGmi](https://github.com/BGmi/BGmi)

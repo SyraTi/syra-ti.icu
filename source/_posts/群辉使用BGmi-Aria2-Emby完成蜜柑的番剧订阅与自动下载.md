@@ -11,12 +11,12 @@ tags: 群晖 BGmi Aria2 Emby
 
 ok，那么下面开始正式部署：
 1. 打开群晖的```docker-注册表```，搜索```codysk/bgmi-all-in-one```，下载并启动。
-  ![下载](/images/posts/20220729162316.jpg)
-  ![启动](/images/posts/20220729162521.jpg)
+   ![下载](/images/posts/20220729162316.jpg)
+   ![启动](/images/posts/20220729162521.jpg)
 2. 选择高级设置，进行相关配置
    ![高级设置](../images/posts/20220729162719.jpg)
 3. 配置应用开机自启
-     ![开机自启](../images/posts/20220729162810.jpg)
+   ![开机自启](../images/posts/20220729162810.jpg)
 4. 配置文件映射，这里有两个文件夹需要映射，
    - 首先是```/bgmi```这是所有数据文件以及配置文件所在的地方，映射到群晖方便管理。
    - 其次是将Emby的资源文件夹映射到docker内，**需要注意的是，由于BGmi的配置项中下载路径只有一个，所以这里的路径要与Aria访问的路径保持一致。**
@@ -57,7 +57,7 @@ bgmi config ARIA2_RPC_TOKEN "token:xxx" #这里填写Aria2的token，如果没�
    # 这里可以跟多个参数同时订阅多部番剧，如：
    bgmi add "莉可丽丝" "鬼灭之刃" "Love Live! Superstar!!"
    # 要注意的是，此处订阅默认是从最新一集开始的，如果想要从头开始下载，需要加上 --episode 0
-   bgmi add "莉可丽丝" --episode
+   bgmi add "莉可丽丝" --episode 0
    ```
 
 ## 筛选
@@ -78,8 +78,15 @@ bgmi update --download
 ```
 
 ## 定时任务
-既然已经完全了解如何下载番剧，那我们自然可以用任务来让BGmi定时运行来自动下载订阅的番剧啦！
-1. 进入docker创建更新脚本
+#### 2022.8.2：发现docker里自带了10分钟一次的crontab，群辉的定时任务似乎没有什么必要了（点点点
+
+![《笨蛋白茶》](../images/posts/20220802161904.jpg)
+
+<details>
+<summary>先前的内容，可以不用看</summary>
+
+~~既然已经完全了解如何下载番剧，那我们自然可以用任务来让BGmi定时运行来自动下载订阅的番剧啦！~~
+1. ~~进入docker创建更新脚本~~
 ```bash
 # 进入docker容器
 > docker exec -it codysk-bgmi-all-in-one1 /bin/bash
@@ -99,19 +106,21 @@ docker@b2a8cf4027e8 < chmod a+rwx ./cron-update.sh
 docker@b2a8cf4027e8 < exit
 > exit
 ```
-2. 建立定时任务 
-   - 打开群辉 **控制面板->任务计划**，选择 **新增->计划的任务->用户定义的脚本**
+2. ~~建立定时任务~~ 
+   - ~~打开群辉 **控制面板->任务计划**，选择 **新增->计划的任务->用户定义的脚本**~~
    ![新增->计划的任务->用户定义的脚本](../images/posts/20220802111235.jpg)
-   - 配置任务
+   - ~~配置任务~~
    ![账号选择root](../images/posts/20220802111350.jpg)
    ![调度时间](../images/posts/20220802111411.jpg)
-   - 填写执行脚本
+   - ~~填写执行脚本~~
     ```bash
       docker exec codysk-bgmi-all-in-one1 /bin/bash -c "/bgmi/conf/cron-update.sh"
     ```
     ![执行脚本](../images/posts/20220802111506.jpg)
 
-ok！这样就可以每天自动下载番剧，而不用去关心字幕组什么时候更新啦！
+~~ok！这样就可以每天自动下载番剧，而不用去关心字幕组什么时候更新啦！~~
+
+</details>
 
 ## 参考链接
 1. [BGmi](https://github.com/BGmi/BGmi)

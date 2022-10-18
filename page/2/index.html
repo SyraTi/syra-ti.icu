@@ -1240,9 +1240,9 @@
 <li>循环变量最好在循环中定义。例如for(var i&#x3D;0,m&#x3D;10;i</li>
 <li>尽量避免复杂的条件语句，可以使用临时的boolean变量代替。</li>
 <li>一定要避免在条件中执行语句，例如：if((i&#x3D;3)&gt;2){}，不可取。</li>
-<li>不要在代码中重复使用相同意义的数字，用一个变量代替，比如 nTotal&#x3D;100; num&#x3D; total<h2 id="变量命名规范"><a href="#变量命名规范" class="headerlink" title="变量命名规范"></a>变量命名规范</h2></li>
+<li>不要在代码中重复使用相同意义的数字，用一个变量代替，比如 nTotal&#x3D;100; num&#x3D; total</li>
 </ul>
-<p>变量名包括全局变量，局部变量，类变量，函数参数等等，他们都属于这一类。</p>
+<h2 id="变量命名规范"><a href="#变量命名规范" class="headerlink" title="变量命名规范"></a>变量命名规范</h2><p>变量名包括全局变量，局部变量，类变量，函数参数等等，他们都属于这一类。</p>
 <p><strong>基本规范</strong></p>
 <ul>
 <li>变量命名都以类型前缀+有意义的单词组成，单词首字母都需要大写。例如：sUserName，nCount。</li>
@@ -1422,7 +1422,11 @@
 <blockquote>
 <h6 id="端口处理数据有两种方式：Tagged-x2F-Untagged"><a href="#端口处理数据有两种方式：Tagged-x2F-Untagged" class="headerlink" title="端口处理数据有两种方式：Tagged&#x2F;Untagged"></a><em>端口处理数据有两种方式：Tagged&#x2F;Untagged</em></h6><p><strong>端口接收数据时：</strong></p>
 <ul>
-<li>如果端口是tagged方式<br>- 当数据包为UNTAG帧的话，就加上该端口的PVID，送入PVID所示的VLAN中传输；<br>- 如果数据包为TAG帧，那么就不再添加，直接送入TAG所示的VLAN中传输；</li>
+<li>如果端口是tagged方式<ul>
+<li>当数据包为UNTAG帧的话，就加上该端口的PVID，送入PVID所示的VLAN中传输；</li>
+<li>如果数据包为TAG帧，那么就不再添加，直接送入TAG所示的VLAN中传输；</li>
+</ul>
+</li>
 <li>如果是untagged方式，<ul>
 <li>输入的数据包全部都要加上该端口的PVID。不管输入的数据包是TAG帧还是UNTAG帧。</li>
 </ul>
@@ -1435,10 +1439,8 @@
 <li>如果不相等，则数据包将保持原样发送出去。</li>
 </ul>
 </li>
-<li>如果端口是untagged方式<ul>
+<li>如果端口是untagged方式</li>
 <li>则不管端口PVID为多少，是否等于要输出的数据包的VLAN，都会将VLAN ID从数据包中去掉。</li>
-</ul>
-</li>
 </ul>
 <hr>
 <h6 id="检查站有两种模式：Tagged和Untagged"><a href="#检查站有两种模式：Tagged和Untagged" class="headerlink" title="检查站有两种模式：Tagged和Untagged"></a><em>检查站有两种模式：Tagged和Untagged</em></h6><p><strong>检查站遇到外面来的小球：</strong></p>
@@ -1455,8 +1457,8 @@
 </ul>
 <p><strong>检查站准备送走从管子里出来的小球时</strong></p>
 <ul>
-<li>如果检查站是tagged模式<ul>
-<li>如果油漆的颜色和小球的颜色一致，就把小球的油漆用水枪洗掉再送走。</li>
+<li>如果检查站是tagged模式</li>
+<li>如果油漆的颜色和小球的颜色一致，就把小球的油漆用水枪洗掉再送走。<ul>
 <li>如果油漆的颜色和小球的颜色不一致，就把小球原样送走。</li>
 </ul>
 </li>

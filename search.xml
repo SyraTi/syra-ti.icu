@@ -10,25 +10,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>JS实现点击按钮，复制文本框中的的内容</title>
-    <url>/f71004f0347f.html</url>
-    <content><![CDATA[<h3 id="Html"><a href="#Html" class="headerlink" title="Html"></a>Html</h3><hr>
-<pre><code>&lt;textarea cols=&quot;20&quot; rows=&quot;10&quot; id=&quot;anyInput&quot;&gt;用户定义的代码区域&lt;/textarea&gt;
-&lt;button type=&quot;button&quot; onClick=&quot;copy()&quot; value=&quot;点击复制代码&quot; /&gt;
-</code></pre>
-<h3 id="JS"><a href="#JS" class="headerlink" title="JS"></a>JS</h3><hr>
-<pre><code>function copyUrl2()
-&#123;
-    var target=document.getElementById(&quot;anyInput&quot;);
-    target.select(); // 选择文本
-    document.execCommand(&quot;Copy&quot;); // 执行浏览器复制命令
-    alert(&quot;已复制好，可贴粘。&quot;);
-&#125;
-</code></pre>
-<hr>
-]]></content>
-  </entry>
-  <entry>
     <title>IOS/Mac/Safari无法播放MP4文件流及Http1.1 Range分段请求相关</title>
     <url>/fb773dec930b.html</url>
     <content><![CDATA[<h2 id="故事背景"><a href="#故事背景" class="headerlink" title="故事背景"></a>故事背景</h2><p>公司项目需要将多媒体文件迁移至阿里OSS，原本直接从后端静态文件的<code>&lt;img&gt;</code> <code>&lt;video&gt;</code> 等标签都要改成从OSS获取展示。</p>
@@ -75,6 +56,25 @@
 <li>结束该次请求</li>
 </ol>
 <p>有什么问题欢迎在下面评论，我会及时回复www</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>JS实现点击按钮，复制文本框中的的内容</title>
+    <url>/f71004f0347f.html</url>
+    <content><![CDATA[<h3 id="Html"><a href="#Html" class="headerlink" title="Html"></a>Html</h3><hr>
+<pre><code>&lt;textarea cols=&quot;20&quot; rows=&quot;10&quot; id=&quot;anyInput&quot;&gt;用户定义的代码区域&lt;/textarea&gt;
+&lt;button type=&quot;button&quot; onClick=&quot;copy()&quot; value=&quot;点击复制代码&quot; /&gt;
+</code></pre>
+<h3 id="JS"><a href="#JS" class="headerlink" title="JS"></a>JS</h3><hr>
+<pre><code>function copyUrl2()
+&#123;
+    var target=document.getElementById(&quot;anyInput&quot;);
+    target.select(); // 选择文本
+    document.execCommand(&quot;Copy&quot;); // 执行浏览器复制命令
+    alert(&quot;已复制好，可贴粘。&quot;);
+&#125;
+</code></pre>
 <hr>
 ]]></content>
   </entry>
@@ -128,6 +128,32 @@
 ]]></content>
   </entry>
   <entry>
+    <title>Ubuntu扩展根目录空间（扩展原有分区）</title>
+    <url>/ddf76f824c86.html</url>
+    <content><![CDATA[<h1 id="0-概念说明"><a href="#0-概念说明" class="headerlink" title="0.概念说明"></a>0.概念说明</h1><p>一切开始的开始 先说明一些概念</p>
+<blockquote>
+<p><strong>物理卷（Physical Volume）即PV：</strong>  物理卷就是指硬盘分区或从逻辑上与磁盘分区具有同样功能的设备(如RAID)，是LVM的基本存储逻辑块，但和基本的物理存储介质（如分区、磁盘等）比较，却包含有与LVM相关的管理参数。<br><strong>卷组（Volume Group）即VG：</strong> LVM卷组类似于非LVM系统中的物理硬盘，其由物理卷组成。可以在卷组上创建一个或多个“LVM分区”（逻辑卷），LVM卷组由一个或多个物理卷组成。<br><strong>逻辑卷（Logical Volume）即LV：</strong> LVM的逻辑卷类似于非LVM系统中的硬盘分区，在逻辑卷之上可以建立文件系统(比如&#x2F;home或者&#x2F;usr等)。</p>
+</blockquote>
+<p>总之 LV建立在VG之上，VG建立在PV之上，是PV的集合，PV即物理卷。</p>
+<p><strong>本文的总体思路为： 扩容PV-&gt; 扩容LV -&gt; 扩容根目录空间</strong></p>
+<h1 id="1-VM添加空间"><a href="#1-VM添加空间" class="headerlink" title="1.VM添加空间"></a>1.VM添加空间</h1><p>使用vmware增加空间 ↓<br><img data-src="https://img-blog.csdnimg.cn/6bcae82012ad45d6afcd2a9a55bda7a4.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
+<h1 id="2-使用fdisk扩展原有分区"><a href="#2-使用fdisk扩展原有分区" class="headerlink" title="2.使用fdisk扩展原有分区"></a>2.使用fdisk扩展原有分区</h1><p>此处参考了<a href="https://www.linuxprobe.com/linux-fdisk-size.html">Linux下使用fdisk扩展分区容量</a>，原文关键部分摘录如下</p>
+<blockquote>
+<p>对&#x2F;dev&#x2F;sda4进行扩容</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@linuxprobe ~]: fdisk /dev/sda #对/dev/sda进行操作</span><br><span class="line"></span><br><span class="line">WARNING: DOS-compatible mode is deprecated. It&#x27;s strongly recommended to</span><br><span class="line">         switch off the mode (command &#x27;c&#x27;) and change display units to</span><br><span class="line">         sectors (command &#x27;u&#x27;).</span><br><span class="line"></span><br><span class="line">Command (m for help): p        #查看分区表信息</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line">/dev/sda4            1497        2611     8952832   83  Linux</span><br><span class="line"></span><br><span class="line">Command (m for help): d           #删除分区</span><br><span class="line">Partition number (1-4): 4         #删除需要扩容的分区（这里为sda4）</span><br><span class="line"></span><br><span class="line">Command (m for help): p       #再次查看分区信息，/dev/sda4已被删除</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line"></span><br><span class="line">Command (m for help): n      #创建新的分区</span><br><span class="line">Command action</span><br><span class="line">   e   extended</span><br><span class="line">   p   primary partition (1-4)</span><br><span class="line">p             #创建为主分区</span><br><span class="line">Selected partition 4</span><br><span class="line">First cylinder (1497-3916, default 1497):          #经对比，正好和上一个磁盘柱一致，默认即可</span><br><span class="line">Using default value 1497</span><br><span class="line">Last cylinder, +cylinders or +size&#123;K,M,G&#125; (1497-3916, default 3916): </span><br><span class="line">Using default value 3916              #直接默认就可以</span><br><span class="line"></span><br><span class="line">Command (m for help): p               #查看分区表信息</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line">/dev/sda4            1497        3916    19436582   83  Linux</span><br><span class="line"></span><br><span class="line">Command (m for help): wp       #保存并退出，如果创建有误，直接退出不要保存即可</span><br><span class="line">The partition table has been altered!</span><br><span class="line"></span><br><span class="line">Calling ioctl() to re-read partition table.</span><br><span class="line"></span><br><span class="line">WARNING: Re-reading the partition table failed with error 16: Device or resource busy.</span><br><span class="line">The kernel still uses the old table. The new table will be used at</span><br><span class="line">the next reboot or after you run partprobe(8) or kpartx(8)</span><br><span class="line">Syncing disks.</span><br></pre></td></tr></table></figure>
+<h1 id="3-刷新PV空间"><a href="#3-刷新PV空间" class="headerlink" title="3.刷新PV空间"></a>3.刷新PV空间</h1><p>对分区扩容完成后，会发现空间依旧没有增加，此时需要先刷新pv大小，使用<code>pvresize</code>:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: pvdisplay #先列出pv</span><br><span class="line">  --- Physical volume ---</span><br><span class="line">  PV Name               /dev/sda4</span><br><span class="line">  VG Name               ubuntu-vg</span><br><span class="line">  PV Size               &lt;19.00 GiB / not usable 16.50 KiB</span><br><span class="line">  Allocatable           yes (but full)</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              9983</span><br><span class="line">  Free PE               0</span><br><span class="line">  Allocated PE          9983</span><br><span class="line">  PV UUID               2CF0fb-auL8-N1Xk-Lpo1-pdzo-MLN5-R0QAIX</span><br><span class="line">  </span><br><span class="line">[root@syra-ti_ubuntu~]: pvresize /dev/sda4 #调用pvresize进行刷新</span><br><span class="line">  Physical volume &quot;/dev/sda3&quot; changed</span><br><span class="line">  1 physical volume(s) resized / 0 physical volume(s) not resized</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: pvdisplay #再次查看pv大小 发现pv大小已经正常</span><br><span class="line">  --- Physical volume ---</span><br><span class="line">  PV Name               /dev/sda4</span><br><span class="line">  VG Name               ubuntu-vg</span><br><span class="line">  PV Size               &lt;39.00 GiB / not usable 16.50 KiB</span><br><span class="line">  Allocatable           yes (but full)</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              9983</span><br><span class="line">  Free PE               0</span><br><span class="line">  Allocated PE          9983</span><br><span class="line">  PV UUID               2CF0fb-auL8-N1Xk-Lpo1-pdzo-MLN5-R0QAIX</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+<h1 id="4-为LV增加空间"><a href="#4-为LV增加空间" class="headerlink" title="4.为LV增加空间"></a>4.为LV增加空间</h1><p>对pv扩容完成后，会发现lv的空间依旧没有增加，此时需要扩展lv大小，使用<code>lvextend</code>:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: lvdisplay #列出lv信息 发现lv空间没有增加</span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Path                /dev/ubuntu-vg/ubuntu-lv</span><br><span class="line">  LV Name                ubuntu-lv</span><br><span class="line">  VG Name                ubuntu-vg</span><br><span class="line">  LV UUID                3THGqb-Me9D-KFEK-QxT5-dP8Y-hUqa-knbAa3</span><br><span class="line">  LV Write Access        read/write</span><br><span class="line">  LV Creation host, time ubuntu-server, 2021-10-12 06:49:31 +0000</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta">  # </span><span class="language-bash">open                 1</span></span><br><span class="line">  LV Size                &lt;19.00 GiB</span><br><span class="line">  Current LE             9983</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:0</span><br><span class="line">[root@syra-ti_ubuntu~]: lvextend -L +20G /dev/ubuntu-vg/ubuntu-lv /dev/sda4 #调用lvextend进行扩容</span><br><span class="line">[root@syra-ti_ubuntu~]: lvdisplay #再次列出lv信息 发现lv空间已经增加</span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Path                /dev/ubuntu-vg/ubuntu-lv</span><br><span class="line">  LV Name                ubuntu-lv</span><br><span class="line">  VG Name                ubuntu-vg</span><br><span class="line">  LV UUID                3THGqb-Me9D-KFEK-QxT5-dP8Y-hUqa-knbAa3</span><br><span class="line">  LV Write Access        read/write</span><br><span class="line">  LV Creation host, time ubuntu-server, 2021-10-12 06:49:31 +0000</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta">  # </span><span class="language-bash">open                 1</span></span><br><span class="line">  LV Size                &lt;39.00 GiB</span><br><span class="line">  Current LE             9983</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="5-扩展根目录空间"><a href="#5-扩展根目录空间" class="headerlink" title="5.扩展根目录空间"></a>5.扩展根目录空间</h1><p>对lv扩容完成后，会发现根目录的空间依旧没有增加，此时需要刷新根目录大小，使用<code>resize2fs</code>:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: df -h #发现/根目录空间还是没有增加</span><br><span class="line">Filesystem                         Size  Used Avail Use% Mounted on</span><br><span class="line">udev                               1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs                              393M  1.8M  391M   1% /run</span><br><span class="line">/dev/mapper/ubuntu--vg-ubuntu--lv   19G   18G   19G  99% /</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs                              5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">/dev/loop0                          56M   56M     0 100% /snap/core18/2128</span><br><span class="line">/dev/loop1                          56M   56M     0 100% /snap/core18/2253</span><br><span class="line">/dev/loop3                          43M   43M     0 100% /snap/snapd/14066</span><br><span class="line">/dev/loop2                         117M  117M     0 100% /snap/docker/1125</span><br><span class="line">/dev/loop4                          33M   33M     0 100% /snap/snapd/13270</span><br><span class="line">/dev/sda2                          976M  150M  759M  17% /boot</span><br><span class="line">tmpfs                              393M     0  393M   0% /run/user/0</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv #使用resize2fs进行刷新</span><br><span class="line">resize2fs 1.44.1 (24-Mar-2018)</span><br><span class="line">Filesystem at /dev/mapper/ubuntu--vg-ubuntu--lv is mounted on /; on-line resizing required</span><br><span class="line">old_desc_blocks = 3, new_desc_blocks = 5</span><br><span class="line">The filesystem on /dev/mapper/ubuntu--vg-ubuntu--lv is now 10222592 (4k) blocks long.</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: df -h #再次查看，发现/根目录空间已经增加</span><br><span class="line">Filesystem                         Size  Used Avail Use% Mounted on</span><br><span class="line">udev                               1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs                              393M  1.8M  391M   1% /run</span><br><span class="line">/dev/mapper/ubuntu--vg-ubuntu--lv   39G   18G   19G  49% /</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs                              5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">/dev/loop0                          56M   56M     0 100% /snap/core18/2128</span><br><span class="line">/dev/loop1                          56M   56M     0 100% /snap/core18/2253</span><br><span class="line">/dev/loop3                          43M   43M     0 100% /snap/snapd/14066</span><br><span class="line">/dev/loop2                         117M  117M     0 100% /snap/docker/1125</span><br><span class="line">/dev/loop4                          33M   33M     0 100% /snap/snapd/13270</span><br><span class="line">/dev/sda2                          976M  150M  759M  17% /boot</span><br><span class="line">tmpfs                              393M     0  393M   0% /run/user/0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>以上！まいど～</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
     <title>Vue绑定&amp;lt;audio&amp;gt;/&amp;lt;video&amp;gt;标记的muted属性无效问题随记</title>
     <url>/dd17a46f0b1d.html</url>
     <content><![CDATA[<h2 id="问题代码"><a href="#问题代码" class="headerlink" title="问题代码"></a>问题代码</h2><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--这里的muted绑定不起作用--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">:muted</span>=<span class="string">&quot;isMuted&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;audioPlayer&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -155,30 +181,9 @@
 <figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> &gt;  [<span class="type">Environment</span>]::SetEnvironmentVariable(<span class="string">&quot;GIT_SSH&quot;</span>, <span class="string">&quot;<span class="variable">$</span>((Get-Command ssh).Source)&quot;</span>, [<span class="type">System.EnvironmentVariableTarget</span>]::User)</span><br></pre></td></tr></table></figure>]]></content>
   </entry>
   <entry>
-    <title>Ubuntu扩展根目录空间（扩展原有分区）</title>
-    <url>/ddf76f824c86.html</url>
-    <content><![CDATA[<h1 id="0-概念说明"><a href="#0-概念说明" class="headerlink" title="0.概念说明"></a>0.概念说明</h1><p>一切开始的开始 先说明一些概念</p>
-<blockquote>
-<p><strong>物理卷（Physical Volume）即PV：</strong>  物理卷就是指硬盘分区或从逻辑上与磁盘分区具有同样功能的设备(如RAID)，是LVM的基本存储逻辑块，但和基本的物理存储介质（如分区、磁盘等）比较，却包含有与LVM相关的管理参数。<br><strong>卷组（Volume Group）即VG：</strong> LVM卷组类似于非LVM系统中的物理硬盘，其由物理卷组成。可以在卷组上创建一个或多个“LVM分区”（逻辑卷），LVM卷组由一个或多个物理卷组成。<br><strong>逻辑卷（Logical Volume）即LV：</strong> LVM的逻辑卷类似于非LVM系统中的硬盘分区，在逻辑卷之上可以建立文件系统(比如&#x2F;home或者&#x2F;usr等)。</p>
-</blockquote>
-<p>总之 LV建立在VG之上，VG建立在PV之上，是PV的集合，PV即物理卷。</p>
-<p><strong>本文的总体思路为： 扩容PV-&gt; 扩容LV -&gt; 扩容根目录空间</strong></p>
-<h1 id="1-VM添加空间"><a href="#1-VM添加空间" class="headerlink" title="1.VM添加空间"></a>1.VM添加空间</h1><p>使用vmware增加空间 ↓<br><img data-src="https://img-blog.csdnimg.cn/6bcae82012ad45d6afcd2a9a55bda7a4.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
-<h1 id="2-使用fdisk扩展原有分区"><a href="#2-使用fdisk扩展原有分区" class="headerlink" title="2.使用fdisk扩展原有分区"></a>2.使用fdisk扩展原有分区</h1><p>此处参考了<a href="https://www.linuxprobe.com/linux-fdisk-size.html">Linux下使用fdisk扩展分区容量</a>，原文关键部分摘录如下</p>
-<blockquote>
-<p>对&#x2F;dev&#x2F;sda4进行扩容</p>
-</blockquote>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@linuxprobe ~]: fdisk /dev/sda #对/dev/sda进行操作</span><br><span class="line"></span><br><span class="line">WARNING: DOS-compatible mode is deprecated. It&#x27;s strongly recommended to</span><br><span class="line">         switch off the mode (command &#x27;c&#x27;) and change display units to</span><br><span class="line">         sectors (command &#x27;u&#x27;).</span><br><span class="line"></span><br><span class="line">Command (m for help): p        #查看分区表信息</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line">/dev/sda4            1497        2611     8952832   83  Linux</span><br><span class="line"></span><br><span class="line">Command (m for help): d           #删除分区</span><br><span class="line">Partition number (1-4): 4         #删除需要扩容的分区（这里为sda4）</span><br><span class="line"></span><br><span class="line">Command (m for help): p       #再次查看分区信息，/dev/sda4已被删除</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line"></span><br><span class="line">Command (m for help): n      #创建新的分区</span><br><span class="line">Command action</span><br><span class="line">   e   extended</span><br><span class="line">   p   primary partition (1-4)</span><br><span class="line">p             #创建为主分区</span><br><span class="line">Selected partition 4</span><br><span class="line">First cylinder (1497-3916, default 1497):          #经对比，正好和上一个磁盘柱一致，默认即可</span><br><span class="line">Using default value 1497</span><br><span class="line">Last cylinder, +cylinders or +size&#123;K,M,G&#125; (1497-3916, default 3916): </span><br><span class="line">Using default value 3916              #直接默认就可以</span><br><span class="line"></span><br><span class="line">Command (m for help): p               #查看分区表信息</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line">/dev/sda4            1497        3916    19436582   83  Linux</span><br><span class="line"></span><br><span class="line">Command (m for help): wp       #保存并退出，如果创建有误，直接退出不要保存即可</span><br><span class="line">The partition table has been altered!</span><br><span class="line"></span><br><span class="line">Calling ioctl() to re-read partition table.</span><br><span class="line"></span><br><span class="line">WARNING: Re-reading the partition table failed with error 16: Device or resource busy.</span><br><span class="line">The kernel still uses the old table. The new table will be used at</span><br><span class="line">the next reboot or after you run partprobe(8) or kpartx(8)</span><br><span class="line">Syncing disks.</span><br></pre></td></tr></table></figure>
-<h1 id="3-刷新PV空间"><a href="#3-刷新PV空间" class="headerlink" title="3.刷新PV空间"></a>3.刷新PV空间</h1><p>对分区扩容完成后，会发现空间依旧没有增加，此时需要先刷新pv大小，使用<code>pvresize</code>:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: pvdisplay #先列出pv</span><br><span class="line">  --- Physical volume ---</span><br><span class="line">  PV Name               /dev/sda4</span><br><span class="line">  VG Name               ubuntu-vg</span><br><span class="line">  PV Size               &lt;19.00 GiB / not usable 16.50 KiB</span><br><span class="line">  Allocatable           yes (but full)</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              9983</span><br><span class="line">  Free PE               0</span><br><span class="line">  Allocated PE          9983</span><br><span class="line">  PV UUID               2CF0fb-auL8-N1Xk-Lpo1-pdzo-MLN5-R0QAIX</span><br><span class="line">  </span><br><span class="line">[root@syra-ti_ubuntu~]: pvresize /dev/sda4 #调用pvresize进行刷新</span><br><span class="line">  Physical volume &quot;/dev/sda3&quot; changed</span><br><span class="line">  1 physical volume(s) resized / 0 physical volume(s) not resized</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: pvdisplay #再次查看pv大小 发现pv大小已经正常</span><br><span class="line">  --- Physical volume ---</span><br><span class="line">  PV Name               /dev/sda4</span><br><span class="line">  VG Name               ubuntu-vg</span><br><span class="line">  PV Size               &lt;39.00 GiB / not usable 16.50 KiB</span><br><span class="line">  Allocatable           yes (but full)</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              9983</span><br><span class="line">  Free PE               0</span><br><span class="line">  Allocated PE          9983</span><br><span class="line">  PV UUID               2CF0fb-auL8-N1Xk-Lpo1-pdzo-MLN5-R0QAIX</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
-<h1 id="4-为LV增加空间"><a href="#4-为LV增加空间" class="headerlink" title="4.为LV增加空间"></a>4.为LV增加空间</h1><p>对pv扩容完成后，会发现lv的空间依旧没有增加，此时需要扩展lv大小，使用<code>lvextend</code>:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: lvdisplay #列出lv信息 发现lv空间没有增加</span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Path                /dev/ubuntu-vg/ubuntu-lv</span><br><span class="line">  LV Name                ubuntu-lv</span><br><span class="line">  VG Name                ubuntu-vg</span><br><span class="line">  LV UUID                3THGqb-Me9D-KFEK-QxT5-dP8Y-hUqa-knbAa3</span><br><span class="line">  LV Write Access        read/write</span><br><span class="line">  LV Creation host, time ubuntu-server, 2021-10-12 06:49:31 +0000</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta">  # </span><span class="language-bash">open                 1</span></span><br><span class="line">  LV Size                &lt;19.00 GiB</span><br><span class="line">  Current LE             9983</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:0</span><br><span class="line">[root@syra-ti_ubuntu~]: lvextend -L +20G /dev/ubuntu-vg/ubuntu-lv /dev/sda4 #调用lvextend进行扩容</span><br><span class="line">[root@syra-ti_ubuntu~]: lvdisplay #再次列出lv信息 发现lv空间已经增加</span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Path                /dev/ubuntu-vg/ubuntu-lv</span><br><span class="line">  LV Name                ubuntu-lv</span><br><span class="line">  VG Name                ubuntu-vg</span><br><span class="line">  LV UUID                3THGqb-Me9D-KFEK-QxT5-dP8Y-hUqa-knbAa3</span><br><span class="line">  LV Write Access        read/write</span><br><span class="line">  LV Creation host, time ubuntu-server, 2021-10-12 06:49:31 +0000</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta">  # </span><span class="language-bash">open                 1</span></span><br><span class="line">  LV Size                &lt;39.00 GiB</span><br><span class="line">  Current LE             9983</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h1 id="5-扩展根目录空间"><a href="#5-扩展根目录空间" class="headerlink" title="5.扩展根目录空间"></a>5.扩展根目录空间</h1><p>对lv扩容完成后，会发现根目录的空间依旧没有增加，此时需要刷新根目录大小，使用<code>resize2fs</code>:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: df -h #发现/根目录空间还是没有增加</span><br><span class="line">Filesystem                         Size  Used Avail Use% Mounted on</span><br><span class="line">udev                               1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs                              393M  1.8M  391M   1% /run</span><br><span class="line">/dev/mapper/ubuntu--vg-ubuntu--lv   19G   18G   19G  99% /</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs                              5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">/dev/loop0                          56M   56M     0 100% /snap/core18/2128</span><br><span class="line">/dev/loop1                          56M   56M     0 100% /snap/core18/2253</span><br><span class="line">/dev/loop3                          43M   43M     0 100% /snap/snapd/14066</span><br><span class="line">/dev/loop2                         117M  117M     0 100% /snap/docker/1125</span><br><span class="line">/dev/loop4                          33M   33M     0 100% /snap/snapd/13270</span><br><span class="line">/dev/sda2                          976M  150M  759M  17% /boot</span><br><span class="line">tmpfs                              393M     0  393M   0% /run/user/0</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv #使用resize2fs进行刷新</span><br><span class="line">resize2fs 1.44.1 (24-Mar-2018)</span><br><span class="line">Filesystem at /dev/mapper/ubuntu--vg-ubuntu--lv is mounted on /; on-line resizing required</span><br><span class="line">old_desc_blocks = 3, new_desc_blocks = 5</span><br><span class="line">The filesystem on /dev/mapper/ubuntu--vg-ubuntu--lv is now 10222592 (4k) blocks long.</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: df -h #再次查看，发现/根目录空间已经增加</span><br><span class="line">Filesystem                         Size  Used Avail Use% Mounted on</span><br><span class="line">udev                               1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs                              393M  1.8M  391M   1% /run</span><br><span class="line">/dev/mapper/ubuntu--vg-ubuntu--lv   39G   18G   19G  49% /</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs                              5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">/dev/loop0                          56M   56M     0 100% /snap/core18/2128</span><br><span class="line">/dev/loop1                          56M   56M     0 100% /snap/core18/2253</span><br><span class="line">/dev/loop3                          43M   43M     0 100% /snap/snapd/14066</span><br><span class="line">/dev/loop2                         117M  117M     0 100% /snap/docker/1125</span><br><span class="line">/dev/loop4                          33M   33M     0 100% /snap/snapd/13270</span><br><span class="line">/dev/sda2                          976M  150M  759M  17% /boot</span><br><span class="line">tmpfs                              393M     0  393M   0% /run/user/0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>以上！まいど～</p>
-<hr>
-]]></content>
+    <title>apt-get临时设置代理方式</title>
+    <url>/655c27e0e4e4.html</url>
+    <content><![CDATA[<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt-get -o Acquire::http::proxy=&quot;http://host:port/&quot; install xxx</span><br></pre></td></tr></table></figure>]]></content>
   </entry>
   <entry>
     <title>css椭圆轨迹运动动画</title>
@@ -187,9 +192,14 @@
 ]]></content>
   </entry>
   <entry>
-    <title>apt-get临时设置代理方式</title>
-    <url>/655c27e0e4e4.html</url>
-    <content><![CDATA[<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt-get -o Acquire::http::proxy=&quot;http://host:port/&quot; install xxx</span><br></pre></td></tr></table></figure>]]></content>
+    <title>html垂直自适应布局</title>
+    <url>/93212fe8c649.html</url>
+    <content><![CDATA[<h3 id="项目中遇到如下需求"><a href="#项目中遇到如下需求" class="headerlink" title="项目中遇到如下需求"></a>项目中遇到如下需求</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- top 盒子内容为内部撑开 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;top&quot;</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!-- 未知高度的一些元素 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- 目标盒子 需要自动填满屏幕剩余高度--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;target&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">body</span>,<span class="selector-tag">html</span>&#123;</span><br><span class="line">	<span class="attribute">height</span>:<span class="number">100%</span>;</span><br><span class="line">	<span class="attribute">width</span>:<span class="number">100%</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">body</span>&#123;</span><br><span class="line">	<span class="attribute">display</span>:flex;</span><br><span class="line">	<span class="attribute">flex-direction</span>: column</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.target</span>&#123;</span><br><span class="line">	<span class="attribute">flex</span>:<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<hr>
+]]></content>
   </entry>
   <entry>
     <title>iframe在ios中高度自扩展问题 解决方案</title>
@@ -212,16 +222,6 @@
     <url>/220783a26dd7.html</url>
     <content><![CDATA[<p>如题 很多人会用<code>disable</code>禁止用户修改<code>input</code>的值<br>但是同时会导致<code>form</code>提交时不包含这个文本框的值<br>（<code>disabled</code>本意即为禁用 所以自然不会上传）</p>
 <p><strong>需要实现禁止修改可以使用<code>readonly</code>属性</strong></p>
-<hr>
-]]></content>
-  </entry>
-  <entry>
-    <title>html垂直自适应布局</title>
-    <url>/93212fe8c649.html</url>
-    <content><![CDATA[<h3 id="项目中遇到如下需求"><a href="#项目中遇到如下需求" class="headerlink" title="项目中遇到如下需求"></a>项目中遇到如下需求</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- top 盒子内容为内部撑开 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;top&quot;</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!-- 未知高度的一些元素 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- 目标盒子 需要自动填满屏幕剩余高度--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;target&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">body</span>,<span class="selector-tag">html</span>&#123;</span><br><span class="line">	<span class="attribute">height</span>:<span class="number">100%</span>;</span><br><span class="line">	<span class="attribute">width</span>:<span class="number">100%</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">body</span>&#123;</span><br><span class="line">	<span class="attribute">display</span>:flex;</span><br><span class="line">	<span class="attribute">flex-direction</span>: column</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.target</span>&#123;</span><br><span class="line">	<span class="attribute">flex</span>:<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
 <hr>
 ]]></content>
   </entry>
@@ -310,44 +310,6 @@ Base.call(o1)
 ]]></content>
   </entry>
   <entry>
-    <title>修复gitCI中文件的创建时间与修改时间</title>
-    <url>/befecf49889e.html</url>
-    <content><![CDATA[<h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>hexo发现经过CI之后，所有文章的 <strong>更新时间(mtime)</strong> 变成了CI运行的时间。</p>
-<h1 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h1><p>在CI checkout代码时，使用文件最后一次涉及的commit时间作为文件的修改时间，进行mtime的恢复。</p>
-<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># .github/workflows/action.yml</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v3</span></span><br><span class="line">  <span class="comment"># 如果使用的是GithubAction的actions/checkout，记得加上下面的内容，对仓库历史进行完整的签出</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">fetch-depth:</span> <span class="number">0</span></span><br><span class="line"><span class="comment"># 恢复文件修改时间</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Restore</span> <span class="string">file</span> <span class="string">modification</span> <span class="string">time</span></span><br><span class="line">  <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">    find source/_posts -name &#x27;*.md&#x27; | while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span></span><br><span class="line"><span class="string"></span><span class="string">...</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="代码解释"><a href="#代码解释" class="headerlink" title="代码解释"></a>代码解释</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">列出需要恢复修改时间的文件</span></span><br><span class="line">find source/_posts -name &#x27;*.md&#x27;</span><br><span class="line"><span class="meta"># </span><span class="language-bash">循环</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 git <span class="built_in">log</span> -- <span class="variable">$file</span> 得到该文件最后修改的commit 并且使用pretty选项获取时间戳</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 <span class="built_in">touch</span> -d 来将文件的atime以及mtime修改为commit的时间戳</span></span><br><span class="line">while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span><br></pre></td></tr></table></figure>
-
-
-<p>以上！まいど～</p>
-<hr>
-]]></content>
-      <tags>
-        <tag>CI/CD</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>webstorm中 emmet 模板的修改步骤</title>
-    <url>/180cb4d78d79.html</url>
-    <content><![CDATA[<p>之前用atom、sublime的时候 Emmet 的模板是可配置的 但是在webstorm配置中的Editor &gt; Emmet选项下没有发现任何有关模板的配置 只有一些选项的配置</p>
-<hr>
-<p><img data-src="https://img-blog.csdn.net/20180327135651291?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="webstorm Emmet相关配置"></p>
-<p>其实模板配置在Editor&gt;Live Templates 下 会找到有Zen字样开头的 Zen CSS、 Zen HTML、Zen XSL 分别是CSS、HTML、XSL的模板</p>
-<hr>
-<h2 id=""><a href="#" class="headerlink" title=""></a><img data-src="https://img-blog.csdn.net/20180327140915194?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="模板配置"></h2><p>*Emmet前身叫做ZenCoding 所以这里会用Zen开头 模板的配置方式与webstorm其他模板配置相同 这里不再赘述</p>
-<hr>
-]]></content>
-  </entry>
-  <entry>
-    <title>window.location.replace和window.location.href区别</title>
-    <url>/5850aa2f8c65.html</url>
-    <content><![CDATA[<p>###有3个页面 a,b,c<br>如果当前页面是c页面，并且c页面是这样跳转过来的：a-&gt;b-&gt;c</p>
-<p>1: b-&gt;c 是通过window.location.replace(“..xx&#x2F;c”)   此时b页面的url会被c页面代替，并且点击后退按钮时会回退到a页面（最开始的页面）</p>
-<p>2: b-&gt;c是通过window.location.href(“..xx&#x2F;c”)    此时b页面的路径会被c页面代替，但是点击回按钮后页面回退的是b页面</p>
-<p>两者的区别: 两者后退时所回退的页面不一样</p>
-]]></content>
-  </entry>
-  <entry>
     <title>openwrt部署openvpn server以及群晖连接（DSM7）完成内网穿透</title>
     <url>/5239703c80b8.html</url>
     <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>公司里放了一台黑裙，但是没有公网IP，想到用openvpn拨到家里的路由器，再进行端口转发达到内网穿透，公网访问的目的。</p>
@@ -405,9 +367,41 @@ Base.call(o1)
 ]]></content>
   </entry>
   <entry>
-    <title>一个Mui Demo仓库</title>
-    <url>/9c287968e88d.html</url>
-    <content><![CDATA[<p>链接 <a href="https://github.com/zhaomenghuan/mui-demo">https://github.com/zhaomenghuan/mui-demo</a></p>
+    <title>修复gitCI中文件的创建时间与修改时间</title>
+    <url>/befecf49889e.html</url>
+    <content><![CDATA[<h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>hexo发现经过CI之后，所有文章的 <strong>更新时间(mtime)</strong> 变成了CI运行的时间。</p>
+<h1 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h1><p>在CI checkout代码时，使用文件最后一次涉及的commit时间作为文件的修改时间，进行mtime的恢复。</p>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># .github/workflows/action.yml</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v3</span></span><br><span class="line">  <span class="comment"># 如果使用的是GithubAction的actions/checkout，记得加上下面的内容，对仓库历史进行完整的签出</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">fetch-depth:</span> <span class="number">0</span></span><br><span class="line"><span class="comment"># 恢复文件修改时间</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Restore</span> <span class="string">file</span> <span class="string">modification</span> <span class="string">time</span></span><br><span class="line">  <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">    find source/_posts -name &#x27;*.md&#x27; | while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span></span><br><span class="line"><span class="string"></span><span class="string">...</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="代码解释"><a href="#代码解释" class="headerlink" title="代码解释"></a>代码解释</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">列出需要恢复修改时间的文件</span></span><br><span class="line">find source/_posts -name &#x27;*.md&#x27;</span><br><span class="line"><span class="meta"># </span><span class="language-bash">循环</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 git <span class="built_in">log</span> -- <span class="variable">$file</span> 得到该文件最后修改的commit 并且使用pretty选项获取时间戳</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 <span class="built_in">touch</span> -d 来将文件的atime以及mtime修改为commit的时间戳</span></span><br><span class="line">while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span><br></pre></td></tr></table></figure>
+
+
+<p>以上！まいど～</p>
+<hr>
+]]></content>
+      <tags>
+        <tag>CI/CD</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>webstorm中 emmet 模板的修改步骤</title>
+    <url>/180cb4d78d79.html</url>
+    <content><![CDATA[<p>之前用atom、sublime的时候 Emmet 的模板是可配置的 但是在webstorm配置中的Editor &gt; Emmet选项下没有发现任何有关模板的配置 只有一些选项的配置</p>
+<hr>
+<p><img data-src="https://img-blog.csdn.net/20180327135651291?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="webstorm Emmet相关配置"></p>
+<p>其实模板配置在Editor&gt;Live Templates 下 会找到有Zen字样开头的 Zen CSS、 Zen HTML、Zen XSL 分别是CSS、HTML、XSL的模板</p>
+<hr>
+<h2 id=""><a href="#" class="headerlink" title=""></a><img data-src="https://img-blog.csdn.net/20180327140915194?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="模板配置"></h2><p>*Emmet前身叫做ZenCoding 所以这里会用Zen开头 模板的配置方式与webstorm其他模板配置相同 这里不再赘述</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>window.location.replace和window.location.href区别</title>
+    <url>/5850aa2f8c65.html</url>
+    <content><![CDATA[<p>###有3个页面 a,b,c<br>如果当前页面是c页面，并且c页面是这样跳转过来的：a-&gt;b-&gt;c</p>
+<p>1: b-&gt;c 是通过window.location.replace(“..xx&#x2F;c”)   此时b页面的url会被c页面代替，并且点击后退按钮时会回退到a页面（最开始的页面）</p>
+<p>2: b-&gt;c是通过window.location.href(“..xx&#x2F;c”)    此时b页面的路径会被c页面代替，但是点击回按钮后页面回退的是b页面</p>
+<p>两者的区别: 两者后退时所回退的页面不一样</p>
 ]]></content>
   </entry>
   <entry>
@@ -466,10 +460,9 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
-    <title>为什么不要使用 ::before{content:url(&#39;xxx&#39;)} 设置图标</title>
-    <url>/5593fd82f23d.html</url>
-    <content><![CDATA[<p>项目中遇到 随手记录<br>::before ::after等伪类中使用content:url()中的图片无法设置宽高</p>
-<hr>
+    <title>一个Mui Demo仓库</title>
+    <url>/9c287968e88d.html</url>
+    <content><![CDATA[<p>链接 <a href="https://github.com/zhaomenghuan/mui-demo">https://github.com/zhaomenghuan/mui-demo</a></p>
 ]]></content>
   </entry>
   <entry>
@@ -636,23 +629,9 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
-    <title>使用canvas实现图片压缩</title>
-    <url>/e15015f00ecd.html</url>
-    <content><![CDATA[<h2 id="原文链接-https-segmentfault-com-a-1190000009308553"><a href="#原文链接-https-segmentfault-com-a-1190000009308553" class="headerlink" title="原文链接 https://segmentfault.com/a/1190000009308553"></a>原文链接 <a href="https://segmentfault.com/a/1190000009308553">https://segmentfault.com/a/1190000009308553</a></h2><p>那，首先通过<code>URL.createObjectURL(file)</code>从file对象直接取得了图片的地址</p>
-<p>前面就不详细说了，开始压缩咯 ( ´ ▽ &#96; )ﾉ</p>
-<p>噢，有个注意点:</p>
-<p>每次调用<code>createObjectURL</code>的时候，一个新的URL对象就被创建了，即使是同一个file对象，也会创建一个新对URL对象，所以，为了最佳性能和内存使用，当不再需要这个对象的时候要<code>URL.revokeObjectURL()</code>释放它。</p>
-<p>开始压缩</p>
-<p>创建一个<code>compressImage</code>函数，将之图片的地址url作参数传入：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">compressImage (url) &#123;</span><br><span class="line">	<span class="keyword">let</span> cvs = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;canvas&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> ctx = cvs.<span class="title function_">getContext</span>(<span class="string">&#x27;2d&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> img = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Image</span>()</span><br><span class="line">	img.<span class="property">src</span> = url</span><br><span class="line">	img.<span class="property">onload</span> = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">		cvs.<span class="property">width</span> = img.<span class="property">width</span></span><br><span class="line">		cvs.<span class="property">height</span> = img.<span class="property">height</span></span><br><span class="line">		<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">			ctx.<span class="title function_">drawImage</span>(img, <span class="number">0</span>, <span class="number">0</span>, cvs.<span class="property">width</span>, cvs.<span class="property">height</span>)</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">newImageData</span> = cvs.<span class="title function_">toDataURL</span>(<span class="string">&#x27;image/jpeg&#x27;</span>, <span class="number">0.1</span>)</span><br><span class="line">	    &#125;, <span class="number">0</span>)</span><br><span class="line">	    <span class="variable language_">this</span>.<span class="property">showPreviewer</span> = <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里说说</p>
-<p><code>canvas.toDataURL(type, encoderOptions)</code><br><code>HTMLCanvasElement.toDataURL()</code>方法接受两个参数，<code>type</code>和<code>encoderOptions</code></p>
-<p><code>type</code>是可选的，图片格式，默认是 <code>image/png</code>，<code>encoderOptions</code>表示图片质量， 在<code>type</code>为<code>image/jpeg</code> 或 <code>image/webp</code>时可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 <code>0.92</code>。其他参数会被忽略。</p>
-<p><code>toDataURL()</code>返回的是<code>base64</code>字符串，如果要转成2进制</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">convertToBinary (dataURI) &#123;</span><br><span class="line">	<span class="keyword">let</span> byteString = <span class="variable language_">window</span>.<span class="title function_">atob</span>(dataURI.<span class="title function_">split</span>(<span class="string">&#x27;,&#x27;</span>)[<span class="number">1</span>])</span><br><span class="line">	<span class="keyword">let</span> ab = <span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>(byteString.<span class="property">length</span>)</span><br><span class="line">	<span class="keyword">let</span> ia = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(ab)</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; byteString.<span class="property">length</span>; i++) &#123;</span><br><span class="line">		ia[i] = byteString.<span class="title function_">charCodeAt</span>(i)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">let</span> bb = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Blob</span>([ ab ])</span><br><span class="line">	<span class="keyword">return</span> bb</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>测试结果：由iphone6所拍摄的图片上传，由平均1.9M左右压缩至170k</p>
-<p><em>･゜ﾟ･</em>:.｡..｡.:<em>･’(<em>ﾟ▽ﾟ</em>)’･</em>:.｡. .｡.:<em>･゜ﾟ･</em></p>
-<p>再见<br>5月5日发布</p>
+    <title>为什么不要使用 ::before{content:url(&#39;xxx&#39;)} 设置图标</title>
+    <url>/5593fd82f23d.html</url>
+    <content><![CDATA[<p>项目中遇到 随手记录<br>::before ::after等伪类中使用content:url()中的图片无法设置宽高</p>
 <hr>
 ]]></content>
   </entry>
@@ -734,6 +713,27 @@ requestAnimationFrame(repeatOften);
         <tag>node.js</tag>
         <tag>chrome</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>使用canvas实现图片压缩</title>
+    <url>/e15015f00ecd.html</url>
+    <content><![CDATA[<h2 id="原文链接-https-segmentfault-com-a-1190000009308553"><a href="#原文链接-https-segmentfault-com-a-1190000009308553" class="headerlink" title="原文链接 https://segmentfault.com/a/1190000009308553"></a>原文链接 <a href="https://segmentfault.com/a/1190000009308553">https://segmentfault.com/a/1190000009308553</a></h2><p>那，首先通过<code>URL.createObjectURL(file)</code>从file对象直接取得了图片的地址</p>
+<p>前面就不详细说了，开始压缩咯 ( ´ ▽ &#96; )ﾉ</p>
+<p>噢，有个注意点:</p>
+<p>每次调用<code>createObjectURL</code>的时候，一个新的URL对象就被创建了，即使是同一个file对象，也会创建一个新对URL对象，所以，为了最佳性能和内存使用，当不再需要这个对象的时候要<code>URL.revokeObjectURL()</code>释放它。</p>
+<p>开始压缩</p>
+<p>创建一个<code>compressImage</code>函数，将之图片的地址url作参数传入：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">compressImage (url) &#123;</span><br><span class="line">	<span class="keyword">let</span> cvs = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;canvas&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> ctx = cvs.<span class="title function_">getContext</span>(<span class="string">&#x27;2d&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> img = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Image</span>()</span><br><span class="line">	img.<span class="property">src</span> = url</span><br><span class="line">	img.<span class="property">onload</span> = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">		cvs.<span class="property">width</span> = img.<span class="property">width</span></span><br><span class="line">		cvs.<span class="property">height</span> = img.<span class="property">height</span></span><br><span class="line">		<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">			ctx.<span class="title function_">drawImage</span>(img, <span class="number">0</span>, <span class="number">0</span>, cvs.<span class="property">width</span>, cvs.<span class="property">height</span>)</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">newImageData</span> = cvs.<span class="title function_">toDataURL</span>(<span class="string">&#x27;image/jpeg&#x27;</span>, <span class="number">0.1</span>)</span><br><span class="line">	    &#125;, <span class="number">0</span>)</span><br><span class="line">	    <span class="variable language_">this</span>.<span class="property">showPreviewer</span> = <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里说说</p>
+<p><code>canvas.toDataURL(type, encoderOptions)</code><br><code>HTMLCanvasElement.toDataURL()</code>方法接受两个参数，<code>type</code>和<code>encoderOptions</code></p>
+<p><code>type</code>是可选的，图片格式，默认是 <code>image/png</code>，<code>encoderOptions</code>表示图片质量， 在<code>type</code>为<code>image/jpeg</code> 或 <code>image/webp</code>时可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 <code>0.92</code>。其他参数会被忽略。</p>
+<p><code>toDataURL()</code>返回的是<code>base64</code>字符串，如果要转成2进制</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">convertToBinary (dataURI) &#123;</span><br><span class="line">	<span class="keyword">let</span> byteString = <span class="variable language_">window</span>.<span class="title function_">atob</span>(dataURI.<span class="title function_">split</span>(<span class="string">&#x27;,&#x27;</span>)[<span class="number">1</span>])</span><br><span class="line">	<span class="keyword">let</span> ab = <span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>(byteString.<span class="property">length</span>)</span><br><span class="line">	<span class="keyword">let</span> ia = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(ab)</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; byteString.<span class="property">length</span>; i++) &#123;</span><br><span class="line">		ia[i] = byteString.<span class="title function_">charCodeAt</span>(i)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">let</span> bb = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Blob</span>([ ab ])</span><br><span class="line">	<span class="keyword">return</span> bb</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果：由iphone6所拍摄的图片上传，由平均1.9M左右压缩至170k</p>
+<p><em>･゜ﾟ･</em>:.｡..｡.:<em>･’(<em>ﾟ▽ﾟ</em>)’･</em>:.｡. .｡.:<em>･゜ﾟ･</em></p>
+<p>再见<br>5月5日发布</p>
+<hr>
+]]></content>
   </entry>
   <entry>
     <title>关于Ajax跨域访问 session不能保存或之后无法访问session取值为空等问题</title>
@@ -835,6 +835,13 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
+    <title>关于mui Div模式选项卡 JS主动触发切换指定选项卡</title>
+    <url>/1ed7d53e8a73.html</url>
+    <content><![CDATA[<h3 id="需要先触发touchstart事件（旧版本需要先触发mousedown事件）"><a href="#需要先触发touchstart事件（旧版本需要先触发mousedown事件）" class="headerlink" title="需要先触发touchstart事件（旧版本需要先触发mousedown事件）"></a>需要先触发touchstart事件（旧版本需要先触发mousedown事件）</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">mui.<span class="title function_">trigger</span>($(<span class="string">&#x27;.mui-tab-item&#x27;</span>).<span class="title function_">eq</span>(<span class="number">1</span>)[<span class="number">0</span>],<span class="string">&#x27;touchstart&#x27;</span>);</span><br><span class="line">mui.<span class="title function_">trigger</span>($(<span class="string">&#x27;.mui-tab-item&#x27;</span>).<span class="title function_">eq</span>(<span class="number">1</span>)[<span class="number">0</span>],<span class="string">&#x27;tap&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="源代码尚未研究-以上为解决方案"><a href="#源代码尚未研究-以上为解决方案" class="headerlink" title="源代码尚未研究 以上为解决方案"></a>源代码尚未研究 以上为解决方案</h3><h4 id="2018-3-30-PS-发现好像只要改一下mui-active就行了？（扶额）"><a href="#2018-3-30-PS-发现好像只要改一下mui-active就行了？（扶额）" class="headerlink" title="2018-3-30 PS: 发现好像只要改一下mui-active就行了？（扶额）"></a>2018-3-30 PS: 发现好像只要改一下mui-active就行了？（扶额）</h4><h4 id="2018-4-25-PS-最简单的方式是改变item和切换目标的mui-active"><a href="#2018-4-25-PS-最简单的方式是改变item和切换目标的mui-active" class="headerlink" title="2018-4-25 PS: 最简单的方式是改变item和切换目标的mui-active"></a>2018-4-25 PS: 最简单的方式是改变item和切换目标的mui-active</h4><hr>
+]]></content>
+  </entry>
+  <entry>
     <title>关于vue-cli4无法配置自定义devtool选项的问题</title>
     <url>/32502d134cc1.html</url>
     <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在<code>vue.config.js</code>中无法配置自定义<code>devtool</code>选项，无论是使用<code>configureWebpack</code>还是<code>chainWebpack</code>都无法改变<code>source-map</code>的类型。官方文档也没有提供相关的说明。</p>
@@ -852,13 +859,6 @@ requestAnimationFrame(repeatOften);
 
 <p>以上！まいど～</p>
 <hr>
-]]></content>
-  </entry>
-  <entry>
-    <title>关于mui Div模式选项卡 JS主动触发切换指定选项卡</title>
-    <url>/1ed7d53e8a73.html</url>
-    <content><![CDATA[<h3 id="需要先触发touchstart事件（旧版本需要先触发mousedown事件）"><a href="#需要先触发touchstart事件（旧版本需要先触发mousedown事件）" class="headerlink" title="需要先触发touchstart事件（旧版本需要先触发mousedown事件）"></a>需要先触发touchstart事件（旧版本需要先触发mousedown事件）</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">mui.<span class="title function_">trigger</span>($(<span class="string">&#x27;.mui-tab-item&#x27;</span>).<span class="title function_">eq</span>(<span class="number">1</span>)[<span class="number">0</span>],<span class="string">&#x27;touchstart&#x27;</span>);</span><br><span class="line">mui.<span class="title function_">trigger</span>($(<span class="string">&#x27;.mui-tab-item&#x27;</span>).<span class="title function_">eq</span>(<span class="number">1</span>)[<span class="number">0</span>],<span class="string">&#x27;tap&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<h3 id="源代码尚未研究-以上为解决方案"><a href="#源代码尚未研究-以上为解决方案" class="headerlink" title="源代码尚未研究 以上为解决方案"></a>源代码尚未研究 以上为解决方案</h3><h4 id="2018-3-30-PS-发现好像只要改一下mui-active就行了？（扶额）"><a href="#2018-3-30-PS-发现好像只要改一下mui-active就行了？（扶额）" class="headerlink" title="2018-3-30 PS: 发现好像只要改一下mui-active就行了？（扶额）"></a>2018-3-30 PS: 发现好像只要改一下mui-active就行了？（扶额）</h4><h4 id="2018-4-25-PS-最简单的方式是改变item和切换目标的mui-active"><a href="#2018-4-25-PS-最简单的方式是改变item和切换目标的mui-active" class="headerlink" title="2018-4-25 PS: 最简单的方式是改变item和切换目标的mui-active"></a>2018-4-25 PS: 最简单的方式是改变item和切换目标的mui-active</h4><hr>
 ]]></content>
   </entry>
   <entry>
@@ -922,72 +922,6 @@ requestAnimationFrame(repeatOften);
 </code></pre>
 <hr>
 <p>以上！まいど～</p>
-<hr>
-]]></content>
-  </entry>
-  <entry>
-    <title>微信浏览器中iframe srcdoc、src=data:text/html,xxxx 等无法使用情况下防止样式污染的解决方案</title>
-    <url>/b0ba270a0600.html</url>
-    <content><![CDATA[<h4 id="业务需求"><a href="#业务需求" class="headerlink" title="业务需求"></a>业务需求</h4><blockquote>
-<p>从后端取HTML 前端展示</p>
-</blockquote>
-<h4 id="要求"><a href="#要求" class="headerlink" title="要求"></a>要求</h4><blockquote>
-<p>HTML不得被前台全局样式污染</p>
-</blockquote>
-<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>1、使用iframe 的 srcdoc</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">srcdoc</span>=<span class="string">&quot;&lt;p&gt;这是HTML&lt;p&gt;&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>2、 src&#x3D;”text&#x2F;html,xxxx”</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;data:text/html,&lt;p&gt;这是HTML&lt;p&gt;&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>3、 在src中使用javascript （ueditor的方案）</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> </span></span><br><span class="line"><span class="tag">	<span class="attr">src</span>=<span class="string">&quot;javascript:void(function()&#123;</span></span></span><br><span class="line"><span class="string"><span class="tag">	document.open();document.write(&#x27;&lt;p&gt;这是HTML&lt;p&gt;&#x27;);</span></span></span><br><span class="line"><span class="string"><span class="tag">	document.close();&#125;())&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><blockquote>
-<p>微信浏览器中以上方案都无效 似乎对iframe的src都进行了特殊处理 （惨）</p>
-</blockquote>
-<h1 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h1><p>直接对iframe的contentWindow进行操作 使用document.write 最终解决问题 此方法应该兼容性最好<br> <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;about:blank;&quot;</span> <span class="attr">id</span>=<span class="string">&quot;target&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript">	</span></span><br><span class="line"><span class="language-javascript">	<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;target&#x27;</span>).<span class="property">contentWindow</span>.<span class="property">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;&lt;p&gt;这是HTML&lt;p&gt;&#x27;</span>) </span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure><br>*百谷一番都没有找到任何的解决方案 最终自己得出以下方案 记录一下 也为开发者们做一些微小的贡献（笑）</p>
-<hr>
-]]></content>
-  </entry>
-  <entry>
-    <title>拒绝假空心！纯css实现 真·空心带边框直角三角形和空心带边框直角梯形！</title>
-    <url>/8346145d85f0.html</url>
-    <content><![CDATA[<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p><img data-src="https://img-blog.csdnimg.cn/20190607225358253.png" alt="要实现的直角梯形"><br><strong>↑需要实现一个背景为半透明且带边框的直角梯形</strong><br><br></p>
-<h2 id="百谷解决方案"><a href="#百谷解决方案" class="headerlink" title="百谷解决方案"></a>百谷解决方案</h2><p>碰到问题，程序猿的优良传统，先百谷一下（？） 得到的解决方案总结一下有这些：<br>1.利用border交界处为斜边来制作，即border-top:none;border-right:transparent<br><strong>→问题：使用border来做背景，没法在border上再做边框，只能得到一个半透明的直角梯形</strong><br>2.在用border制作的梯形外侧套上一个上下左右大出1像素，以边框色为背景的梯形，作为边框<br><strong>→问题：中间小梯形无法做成半透明，会叠加上大梯形的背景色</strong><br>3.利用矩形和三角形拼接<br><strong>→问题：右边直角三角形的边框依旧无法解决</strong><br>4.边框使用矩形旋转来做<br><strong>→问题：至少要用到4个div，过于复杂</strong><br><br></p>
-<h2 id="没有条件就自己上！"><a href="#没有条件就自己上！" class="headerlink" title="没有条件就自己上！"></a>没有条件就自己上！</h2><p>就在要放弃打算导出png来做的时候，导出界面给了我灵感！<br><img data-src="https://img-blog.csdnimg.cn/20190607230522372.png" alt="导出图片界面"><br><strong>↑这不就是一个矩形overflow:hidden套上一个平行四边形吗！给力！</strong></p>
-<p>不废话立马做了出来</p>
-<h4 id="html"><a href="#html" class="headerlink" title="html"></a>html</h4><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 真·空心直角三角形 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;tri&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 真·空心直角梯形 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;trapezoid&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="css"><a href="#css" class="headerlink" title="css"></a>css</h4><figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 直角三角形 */</span></span><br><span class="line"><span class="selector-class">.tri</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>:relative;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">border-left</span>:<span class="number">5px</span> solid red;</span><br><span class="line">  <span class="attribute">overflow</span>:hidden;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.tri</span><span class="selector-pseudo">:before</span>&#123;</span><br><span class="line">  <span class="attribute">content</span>:<span class="string">&#x27;&#x27;</span>;</span><br><span class="line">  <span class="attribute">display</span>:block;</span><br><span class="line">  <span class="attribute">position</span>:absolute;</span><br><span class="line">  <span class="attribute">top</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">bottom</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">right</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">border</span>:<span class="number">5px</span> solid blue;</span><br><span class="line">  <span class="attribute">transform-origin</span>:<span class="number">0</span> <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">transform</span>:<span class="built_in">skewX</span>(<span class="number">45deg</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 直角梯形 */</span></span><br><span class="line"><span class="selector-class">.trapezoid</span>&#123;</span><br><span class="line">  <span class="attribute">margin-top</span>: <span class="number">10px</span>;</span><br><span class="line">  <span class="attribute">position</span>:relative;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">  <span class="attribute">border-left</span>:<span class="number">5px</span> solid red;</span><br><span class="line">  <span class="attribute">overflow</span>:hidden;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.trapezoid</span><span class="selector-pseudo">:before</span>&#123;</span><br><span class="line">  <span class="attribute">content</span>:<span class="string">&#x27;&#x27;</span>;</span><br><span class="line">  <span class="attribute">display</span>:block;</span><br><span class="line">  <span class="attribute">position</span>:absolute;</span><br><span class="line">  <span class="attribute">top</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">bottom</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">right</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">  <span class="attribute">border</span>:<span class="number">5px</span> solid blue;</span><br><span class="line">  <span class="attribute">transform-origin</span>:<span class="number">0</span> <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">transform</span>:<span class="built_in">skewX</span>(<span class="number">45deg</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<br>
-
-<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p><img data-src="https://img-blog.csdnimg.cn/20190607231305645.png" alt="在这里插入图片描述"><br>方便你们看，红色的是矩形的边框，蓝色的是平行四边形的边框！<br>是空心的哦！真是太满意了！</p>
-<p>不多说了，上DEMO！<br><a href="https://codepen.io/KissekiAkaru/pen/argrVe">Demo点这里</a></p>
-<p>有什么问题欢迎在下面评论，我会及时回复www</p>
-<hr>
-]]></content>
-  </entry>
-  <entry>
-    <title>浮点数计算精度误差原理随记</title>
-    <url>/80ea430d417b.html</url>
-    <content><![CDATA[<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>0.1 + 0.2 &#x3D; 0.30000000000000004</p>
-<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>以下摘自 <a href="https://www.cnblogs.com/wymbk/p/6031442.html">https://www.cnblogs.com/wymbk/p/6031442.html</a></p>
-<p>首先，我们要站在计算机的角度思考 0.1 + 0.2 这个看似小儿科的问题。我们知道，能被计算机读懂的是二进制，而不是十进制，所以我们先把 0.1 和 0.2 转换成二进制看看：</p>
-<p>0.1&#x3D;&#x3D;》0.1.toString(2)&#x3D;&#x3D;》0.0001100110011(无限循环..)</p>
-<p>0.2&#x3D;&#x3D;》0.2.toString(2)&#x3D;&#x3D;》0.001100110011(无限循环..)</p>
-<p>双精度浮点数的小数部分最多支持 52 位，所以两者相加之后得到这么一串 0.0100110011001100110011001100110011001100110011001100 因浮点数小数位的限制而截断的二进制数字，这时候，我们再把它转换为十进制，就成了 0.30000000000000004。<br>&#96;</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>十进制浮点数转二进制会无限循环，单双精度长度限制问题导致截断后出现误差</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>添加了~/.bash_profile之后，~/.bashrc失效以及bash失去高亮的原因及解决方案</title>
-    <url>/463d951c5853.html</url>
-    <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>添加<code>~/.bash_profile</code>之后，bash失去高亮，<code>~/.bashrc</code>中的逻辑不运行。<br><img data-src="https://img-blog.csdnimg.cn/b49d241eeab14f43b53edb783eb9d8f1.png" alt="添加前"><br>添加前↑<br><img data-src="https://img-blog.csdnimg.cn/fd0ce34e0824462fb70387c80a53c57f.png" alt="添加后"><br>添加后↑</p>
-<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>在添加<code>~/.bash_profile</code>之后，<code>~/.profile</code>会被覆盖不再运行，而load bashrc的逻辑在<code>~/.profile</code>中，导致<code>~/.bashrc</code>也一并失效。<br><img data-src="https://img-blog.csdnimg.cn/50f8cda872f34b57a3f9f7e7b3d1f48c.png" alt="~/.profile中加载bashrc的逻辑"></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">## 解决方案</span><br><span class="line">- 方案一：将```~/.bash_profile```中的逻辑移至```~/.profile```，并删除```~/.bash_profile```。</span><br><span class="line">- 方案二：在```~/.bash_profile```中添加以下代码保证```~/.profile```中的代码运行。</span><br><span class="line"> ```bash</span><br><span class="line"> source ~/.profile</span><br></pre></td></tr></table></figure>
-
-
-<br>
-以上！まいど～
-
 <hr>
 ]]></content>
   </entry>
@@ -1166,9 +1100,70 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
-    <title>获取元素到页面顶部的距离</title>
-    <url>/13c3ceb89ee0.html</url>
-    <content><![CDATA[<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> offsetTop = targetElement.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span> + <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span></span><br></pre></td></tr></table></figure>]]></content>
+    <title>微信浏览器中iframe srcdoc、src=data:text/html,xxxx 等无法使用情况下防止样式污染的解决方案</title>
+    <url>/b0ba270a0600.html</url>
+    <content><![CDATA[<h4 id="业务需求"><a href="#业务需求" class="headerlink" title="业务需求"></a>业务需求</h4><blockquote>
+<p>从后端取HTML 前端展示</p>
+</blockquote>
+<h4 id="要求"><a href="#要求" class="headerlink" title="要求"></a>要求</h4><blockquote>
+<p>HTML不得被前台全局样式污染</p>
+</blockquote>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>1、使用iframe 的 srcdoc</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">srcdoc</span>=<span class="string">&quot;&lt;p&gt;这是HTML&lt;p&gt;&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>2、 src&#x3D;”text&#x2F;html,xxxx”</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;data:text/html,&lt;p&gt;这是HTML&lt;p&gt;&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>3、 在src中使用javascript （ueditor的方案）</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> </span></span><br><span class="line"><span class="tag">	<span class="attr">src</span>=<span class="string">&quot;javascript:void(function()&#123;</span></span></span><br><span class="line"><span class="string"><span class="tag">	document.open();document.write(&#x27;&lt;p&gt;这是HTML&lt;p&gt;&#x27;);</span></span></span><br><span class="line"><span class="string"><span class="tag">	document.close();&#125;())&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><blockquote>
+<p>微信浏览器中以上方案都无效 似乎对iframe的src都进行了特殊处理 （惨）</p>
+</blockquote>
+<h1 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h1><p>直接对iframe的contentWindow进行操作 使用document.write 最终解决问题 此方法应该兼容性最好<br> <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;about:blank;&quot;</span> <span class="attr">id</span>=<span class="string">&quot;target&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript">	</span></span><br><span class="line"><span class="language-javascript">	<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;target&#x27;</span>).<span class="property">contentWindow</span>.<span class="property">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;&lt;p&gt;这是HTML&lt;p&gt;&#x27;</span>) </span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure><br>*百谷一番都没有找到任何的解决方案 最终自己得出以下方案 记录一下 也为开发者们做一些微小的贡献（笑）</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>拒绝假空心！纯css实现 真·空心带边框直角三角形和空心带边框直角梯形！</title>
+    <url>/8346145d85f0.html</url>
+    <content><![CDATA[<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p><img data-src="https://img-blog.csdnimg.cn/20190607225358253.png" alt="要实现的直角梯形"><br><strong>↑需要实现一个背景为半透明且带边框的直角梯形</strong><br><br></p>
+<h2 id="百谷解决方案"><a href="#百谷解决方案" class="headerlink" title="百谷解决方案"></a>百谷解决方案</h2><p>碰到问题，程序猿的优良传统，先百谷一下（？） 得到的解决方案总结一下有这些：<br>1.利用border交界处为斜边来制作，即border-top:none;border-right:transparent<br><strong>→问题：使用border来做背景，没法在border上再做边框，只能得到一个半透明的直角梯形</strong><br>2.在用border制作的梯形外侧套上一个上下左右大出1像素，以边框色为背景的梯形，作为边框<br><strong>→问题：中间小梯形无法做成半透明，会叠加上大梯形的背景色</strong><br>3.利用矩形和三角形拼接<br><strong>→问题：右边直角三角形的边框依旧无法解决</strong><br>4.边框使用矩形旋转来做<br><strong>→问题：至少要用到4个div，过于复杂</strong><br><br></p>
+<h2 id="没有条件就自己上！"><a href="#没有条件就自己上！" class="headerlink" title="没有条件就自己上！"></a>没有条件就自己上！</h2><p>就在要放弃打算导出png来做的时候，导出界面给了我灵感！<br><img data-src="https://img-blog.csdnimg.cn/20190607230522372.png" alt="导出图片界面"><br><strong>↑这不就是一个矩形overflow:hidden套上一个平行四边形吗！给力！</strong></p>
+<p>不废话立马做了出来</p>
+<h4 id="html"><a href="#html" class="headerlink" title="html"></a>html</h4><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 真·空心直角三角形 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;tri&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 真·空心直角梯形 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;trapezoid&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="css"><a href="#css" class="headerlink" title="css"></a>css</h4><figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 直角三角形 */</span></span><br><span class="line"><span class="selector-class">.tri</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>:relative;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">border-left</span>:<span class="number">5px</span> solid red;</span><br><span class="line">  <span class="attribute">overflow</span>:hidden;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.tri</span><span class="selector-pseudo">:before</span>&#123;</span><br><span class="line">  <span class="attribute">content</span>:<span class="string">&#x27;&#x27;</span>;</span><br><span class="line">  <span class="attribute">display</span>:block;</span><br><span class="line">  <span class="attribute">position</span>:absolute;</span><br><span class="line">  <span class="attribute">top</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">bottom</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">right</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">border</span>:<span class="number">5px</span> solid blue;</span><br><span class="line">  <span class="attribute">transform-origin</span>:<span class="number">0</span> <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">transform</span>:<span class="built_in">skewX</span>(<span class="number">45deg</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 直角梯形 */</span></span><br><span class="line"><span class="selector-class">.trapezoid</span>&#123;</span><br><span class="line">  <span class="attribute">margin-top</span>: <span class="number">10px</span>;</span><br><span class="line">  <span class="attribute">position</span>:relative;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">  <span class="attribute">border-left</span>:<span class="number">5px</span> solid red;</span><br><span class="line">  <span class="attribute">overflow</span>:hidden;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.trapezoid</span><span class="selector-pseudo">:before</span>&#123;</span><br><span class="line">  <span class="attribute">content</span>:<span class="string">&#x27;&#x27;</span>;</span><br><span class="line">  <span class="attribute">display</span>:block;</span><br><span class="line">  <span class="attribute">position</span>:absolute;</span><br><span class="line">  <span class="attribute">top</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">bottom</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">right</span>:<span class="number">0</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">  <span class="attribute">border</span>:<span class="number">5px</span> solid blue;</span><br><span class="line">  <span class="attribute">transform-origin</span>:<span class="number">0</span> <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">transform</span>:<span class="built_in">skewX</span>(<span class="number">45deg</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
+
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p><img data-src="https://img-blog.csdnimg.cn/20190607231305645.png" alt="在这里插入图片描述"><br>方便你们看，红色的是矩形的边框，蓝色的是平行四边形的边框！<br>是空心的哦！真是太满意了！</p>
+<p>不多说了，上DEMO！<br><a href="https://codepen.io/KissekiAkaru/pen/argrVe">Demo点这里</a></p>
+<p>有什么问题欢迎在下面评论，我会及时回复www</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>浮点数计算精度误差原理随记</title>
+    <url>/80ea430d417b.html</url>
+    <content><![CDATA[<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>0.1 + 0.2 &#x3D; 0.30000000000000004</p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>以下摘自 <a href="https://www.cnblogs.com/wymbk/p/6031442.html">https://www.cnblogs.com/wymbk/p/6031442.html</a></p>
+<p>首先，我们要站在计算机的角度思考 0.1 + 0.2 这个看似小儿科的问题。我们知道，能被计算机读懂的是二进制，而不是十进制，所以我们先把 0.1 和 0.2 转换成二进制看看：</p>
+<p>0.1&#x3D;&#x3D;》0.1.toString(2)&#x3D;&#x3D;》0.0001100110011(无限循环..)</p>
+<p>0.2&#x3D;&#x3D;》0.2.toString(2)&#x3D;&#x3D;》0.001100110011(无限循环..)</p>
+<p>双精度浮点数的小数部分最多支持 52 位，所以两者相加之后得到这么一串 0.0100110011001100110011001100110011001100110011001100 因浮点数小数位的限制而截断的二进制数字，这时候，我们再把它转换为十进制，就成了 0.30000000000000004。<br>&#96;</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>十进制浮点数转二进制会无限循环，单双精度长度限制问题导致截断后出现误差</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>添加了~/.bash_profile之后，~/.bashrc失效以及bash失去高亮的原因及解决方案</title>
+    <url>/463d951c5853.html</url>
+    <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>添加<code>~/.bash_profile</code>之后，bash失去高亮，<code>~/.bashrc</code>中的逻辑不运行。<br><img data-src="https://img-blog.csdnimg.cn/b49d241eeab14f43b53edb783eb9d8f1.png" alt="添加前"><br>添加前↑<br><img data-src="https://img-blog.csdnimg.cn/fd0ce34e0824462fb70387c80a53c57f.png" alt="添加后"><br>添加后↑</p>
+<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>在添加<code>~/.bash_profile</code>之后，<code>~/.profile</code>会被覆盖不再运行，而load bashrc的逻辑在<code>~/.profile</code>中，导致<code>~/.bashrc</code>也一并失效。<br><img data-src="https://img-blog.csdnimg.cn/50f8cda872f34b57a3f9f7e7b3d1f48c.png" alt="~/.profile中加载bashrc的逻辑"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">## 解决方案</span><br><span class="line">- 方案一：将```~/.bash_profile```中的逻辑移至```~/.profile```，并删除```~/.bash_profile```。</span><br><span class="line">- 方案二：在```~/.bash_profile```中添加以下代码保证```~/.profile```中的代码运行。</span><br><span class="line"> ```bash</span><br><span class="line"> source ~/.profile</span><br></pre></td></tr></table></figure>
+
+
+<br>
+以上！まいど～
+
+<hr>
+]]></content>
   </entry>
   <entry>
     <title>群晖使用BGmi+Aria2+Emby完成蜜柑的番剧订阅与自动下载</title>
@@ -1236,5 +1231,10 @@ requestAnimationFrame(repeatOften);
       <tags>
         <tag>群晖 BGmi Aria2 Emby</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>获取元素到页面顶部的距离</title>
+    <url>/13c3ceb89ee0.html</url>
+    <content><![CDATA[<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> offsetTop = targetElement.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span> + <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span></span><br></pre></td></tr></table></figure>]]></content>
   </entry>
 </search>

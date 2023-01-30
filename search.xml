@@ -840,7 +840,9 @@ requestAnimationFrame(repeatOften);
 <hr>
 ]]></content>
       <tags>
-        <tag>NodeJS NODE_ENV dependencies/devDependencies</tag>
+        <tag>NodeJS</tag>
+        <tag>NODE_ENV</tag>
+        <tag>dependencies/devDependencies</tag>
       </tags>
   </entry>
   <entry>
@@ -1255,7 +1257,10 @@ requestAnimationFrame(repeatOften);
 <hr>
 ]]></content>
       <tags>
-        <tag>群晖 BGmi Aria2 Emby</tag>
+        <tag>群晖</tag>
+        <tag>BGmi</tag>
+        <tag>Aria2</tag>
+        <tag>Emby</tag>
       </tags>
   </entry>
   <entry>

@@ -1,7 +1,10 @@
 ---
 title: 关于NODE_ENV=production && npm run build模式的思考
 date: 2023-01-30 16:37:49
-tags: NodeJS NODE_ENV dependencies/devDependencies
+tags: 
+- NodeJS
+- NODE_ENV
+- dependencies/devDependencies
 ---
 ## 前情提要
 今天闲来无事，突然想起来之前在业务中看到的一个**“能跑，但是不太合乎逻辑”**的流程。

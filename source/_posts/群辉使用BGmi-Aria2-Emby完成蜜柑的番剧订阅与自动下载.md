@@ -1,7 +1,11 @@
 ---
 title: 群晖使用BGmi+Aria2+Emby完成蜜柑的番剧订阅与自动下载
 date: 2022-07-29 15:58:59
-tags: 群晖 BGmi Aria2 Emby
+tags: 
+- 群晖 
+- BGmi 
+- Aria2 
+- Emby
 ---
 ## 前情提要
 已经在群晖部署了Emby+Aria2，但是番剧一直是手动下载，比较麻烦。想着能不能订阅自动下载之类的，翻了一遍Github看到了[BGmi](https://github.com/BGmi/BGmi)这个仓库，尝试下来体验还算不错。

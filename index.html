@@ -91,7 +91,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">42</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">43</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -156,13 +156,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -215,6 +215,108 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/396d21b69cae.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="白茶SyraTi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SyraTi.ICU">
+      <meta itemprop="description" content="一生懸命マリフラ">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | SyraTi.ICU">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/396d21b69cae.html" class="post-title-link" itemprop="url">关于NODE_ENV=production && npm run build模式的思考</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-01-30 16:37:49 / 修改时间：17:48:33" itemprop="dateCreated datePublished" datetime="2023-01-30T16:37:49+08:00">2023-01-30</time>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>538</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>今天闲来无事，突然想起来之前在业务中看到的一个<strong>“能跑，但是不太合乎逻辑”</strong>的流程。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">构建生产环境下的产物</span></span><br><span class="line">NODE_ENV=production &amp;&amp; npm install &amp;&amp; npm run build</span><br></pre></td></tr></table></figure>
+<p>看起来一段非常简单的构建命令，实际会出现一些问题：当<code>NODE_ENV=production</code>时，<code>npm install</code>不会下载<code>devDependencies</code>，例如<code>webpack</code>、Typescript项目中的<code>@types/xxx</code>等。从而导致<code>npm run build</code>失败。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>这时候可能有人会问了：我把<code>@types/xxx</code>丢到<code>dependencies</code>不就好了？</strong></p>
+<p>话虽如此，但是这样真的正确吗？</p>
+<p>在构建过程中<code>@types</code>会被用于编译js时的类型校验，<code>webpack</code>更不用说本身就用于构建，但是这些依赖在js产物中其实并不会用到。 所以它们理应存在于<code>devDependencies</code>而不是<code>dependencies</code>。</p>
+<p><strong>那么在不更改<code>devDependencies</code>的情况下，这里得出的“能跑”的方案应该是：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NODE_ENV=development &amp;&amp; npm install &amp;&amp; NODE_ENV=production &amp;&amp; npm run build</span><br></pre></td></tr></table></figure>
+<p>确实问题得到了解决，<code>devDependencies</code>也被下载，不必担心<code>npm run build</code>过程中因为缺少依赖导致失败。</p>
+<p><strong>至少，能跑了</strong></p>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>问题是解决了，但是本着尽可能优雅的精神，能跑是能跑了，看到两遍<code>NODE_ENV</code>赋值，总有一些舍本逐末的感觉。下面是我的思考：</p>
+<blockquote>
+<p>首先，理论上来讲，<code>build</code>确实是应该在dev环境下的行为，所以这时候下载<code>devDependencies</code>是合理的。<br>反倒是<code>build</code>时使用<code>NODE_ENV</code>去判断生成的target似乎有一些哲学上的错误。<br>但是各大开源库已经把<code>NODE_ENV=production &amp;&amp; npm run build</code>这样的模式带成了惯例，导致了先入为主。<br>所以可不可以推翻这样的模式，从这里下手：</p>
+</blockquote>
+<h2 id="个人认为最优雅的方式"><a href="#个人认为最优雅的方式" class="headerlink" title="个人认为最优雅的方式"></a>个人认为最优雅的方式</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NODE_ENV=development &amp;&amp; npm install &amp;&amp; npm run build --production</span><br></pre></td></tr></table></figure>
+<p>添加一个参数来决定构建目标，这样既明确了<code>install</code>和<code>build</code>都是dev环境下的行为，又确定了<code>build</code>的target是prod环境下的产物。<br>个人觉得是最优雅的方式，也欢迎大家指点和讨论。<br><br></p>
+<p>以上！まいど～</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1262,104 +1364,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/dd17a46f0b1d.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="白茶SyraTi">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="SyraTi.ICU">
-      <meta itemprop="description" content="一生懸命マリフラ">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | SyraTi.ICU">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/dd17a46f0b1d.html" class="post-title-link" itemprop="url">Vue绑定&lt;audio&gt;/&lt;video&gt;标记的muted属性无效问题随记</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-01-28 14:59:47" itemprop="dateCreated datePublished" datetime="2021-01-28T14:59:47+08:00">2021-01-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-06-16 11:30:55" itemprop="dateModified" datetime="2022-06-16T11:30:55+08:00">2022-06-16</time>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>175</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="问题代码"><a href="#问题代码" class="headerlink" title="问题代码"></a>问题代码</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--这里的muted绑定不起作用--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">:muted</span>=<span class="string">&quot;isMuted&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;audioPlayer&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="援引Github上的issue回复"><a href="#援引Github上的issue回复" class="headerlink" title="援引Github上的issue回复"></a>援引Github上的issue回复</h2><p><img data-src="https://img-blog.csdnimg.cn/20210127220113689.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>翻译：muted属性类似于<code>&lt;input&gt;</code>的<code>value</code>属性，如果他在元素初始化时是内联的，那么属性值将作为初始值；但是如果在一开始并没有内联，只是后续更改了attribute <a href="%E5%85%B3%E4%BA%8Eattribute%E5%92%8Cproperty%E5%80%BC%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E6%88%91%E5%BE%80%E6%9C%9F%E7%9A%84%5B%E6%96%87%E7%AB%A0%5D(https://blog.csdn.net/sinat_34930640/article/details/76310396)%E3%80%82">^1</a> 值，那么将不会起任何效果，正确的做法是设置相对应的property <a href="%E5%85%B3%E4%BA%8Eattribute%E5%92%8Cproperty%E5%80%BC%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E6%88%91%E5%BE%80%E6%9C%9F%E7%9A%84%5B%E6%96%87%E7%AB%A0%5D(https://blog.csdn.net/sinat_34930640/article/details/76310396)%E3%80%82">^1</a> 值。</p>
-<h3 id="解决方式：使用watch来手动设置muted"><a href="#解决方式：使用watch来手动设置muted" class="headerlink" title="解决方式：使用watch来手动设置muted"></a>解决方式：使用watch来手动设置muted</h3><p><em>html</em></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">ref</span>=<span class="string">&quot;audioPlayer&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><em>javascript</em></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">watch</span>:&#123;</span><br><span class="line">	<span class="title function_">isMuted</span>(<span class="params">val</span>)&#123;</span><br><span class="line">		<span class="keyword">if</span>(val)&#123;</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">$refs</span>.<span class="property">audioPlayer</span>.<span class="property">muted</span> = <span class="string">&#x27;muted&#x27;</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">$refs</span>.<span class="property">audioPlayer</span>.<span class="property">muted</span> = <span class="string">&#x27;&#x27;</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1384,13 +1388,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">22k</span>
+    <span title="站点总字数">23k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:21</span>
+    <span title="站点阅读时长">1:23</span>
   </span>
 </div>
 <div class="busuanzi-count">

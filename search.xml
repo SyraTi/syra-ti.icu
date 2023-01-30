@@ -818,6 +818,32 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
+    <title>关于NODE_ENV=production &amp;&amp; npm run build模式的思考</title>
+    <url>/396d21b69cae.html</url>
+    <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>今天闲来无事，突然想起来之前在业务中看到的一个<strong>“能跑，但是不太合乎逻辑”</strong>的流程。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">构建生产环境下的产物</span></span><br><span class="line">NODE_ENV=production &amp;&amp; npm install &amp;&amp; npm run build</span><br></pre></td></tr></table></figure>
+<p>看起来一段非常简单的构建命令，实际会出现一些问题：当<code>NODE_ENV=production</code>时，<code>npm install</code>不会下载<code>devDependencies</code>，例如<code>webpack</code>、Typescript项目中的<code>@types/xxx</code>等。从而导致<code>npm run build</code>失败。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>这时候可能有人会问了：我把<code>@types/xxx</code>丢到<code>dependencies</code>不就好了？</strong></p>
+<p>话虽如此，但是这样真的正确吗？</p>
+<p>在构建过程中<code>@types</code>会被用于编译js时的类型校验，<code>webpack</code>更不用说本身就用于构建，但是这些依赖在js产物中其实并不会用到。 所以它们理应存在于<code>devDependencies</code>而不是<code>dependencies</code>。</p>
+<p><strong>那么在不更改<code>devDependencies</code>的情况下，这里得出的“能跑”的方案应该是：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">NODE_ENV=development &amp;&amp; npm install &amp;&amp; NODE_ENV=production &amp;&amp; npm run build</span><br></pre></td></tr></table></figure>
+<p>确实问题得到了解决，<code>devDependencies</code>也被下载，不必担心<code>npm run build</code>过程中因为缺少依赖导致失败。</p>
+<p><strong>至少，能跑了</strong></p>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>问题是解决了，但是本着尽可能优雅的精神，能跑是能跑了，看到两遍<code>NODE_ENV</code>赋值，总有一些舍本逐末的感觉。下面是我的思考：</p>
+<blockquote>
+<p>首先，理论上来讲，<code>build</code>确实是应该在dev环境下的行为，所以这时候下载<code>devDependencies</code>是合理的。<br>反倒是<code>build</code>时使用<code>NODE_ENV</code>去判断生成的target似乎有一些哲学上的错误。<br>但是各大开源库已经把<code>NODE_ENV=production &amp;&amp; npm run build</code>这样的模式带成了惯例，导致了先入为主。<br>所以可不可以推翻这样的模式，从这里下手：</p>
+</blockquote>
+<h2 id="个人认为最优雅的方式"><a href="#个人认为最优雅的方式" class="headerlink" title="个人认为最优雅的方式"></a>个人认为最优雅的方式</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">NODE_ENV=development &amp;&amp; npm install &amp;&amp; npm run build --production</span><br></pre></td></tr></table></figure>
+<p>添加一个参数来决定构建目标，这样既明确了<code>install</code>和<code>build</code>都是dev环境下的行为，又确定了<code>build</code>的target是prod环境下的产物。<br>个人觉得是最优雅的方式，也欢迎大家指点和讨论。<br><br></p>
+<p>以上！まいど～</p>
+<hr>
+]]></content>
+      <tags>
+        <tag>NodeJS NODE_ENV dependencies/devDependencies</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>关于ajaxFileUpload造成 input[type=file] change事件只能触发一次的问题</title>
     <url>/c50248a257e4.html</url>
     <content><![CDATA[<h4 id="现在发现的问题"><a href="#现在发现的问题" class="headerlink" title="现在发现的问题"></a>现在发现的问题</h4><p>通过js绑定的<code>input[type=file]</code> <code>change</code>事件只能触发一次</p>

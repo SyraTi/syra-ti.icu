@@ -14,6 +14,7 @@ tags:
 
 **本文的总体思路为： 扩容PV-> 扩容LV -> 扩容根目录空间**
 
+<!-- more --> 
 # 1.VM添加空间
 使用vmware增加空间 ↓
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/6bcae82012ad45d6afcd2a9a55bda7a4.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16)

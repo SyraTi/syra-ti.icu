@@ -14,6 +14,7 @@ tags:
 
 开始压缩
 
+<!-- more -->
 创建一个`compressImage`函数，将之图片的地址url作参数传入：
 ```js
 	compressImage (url) {

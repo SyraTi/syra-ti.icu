@@ -19,6 +19,7 @@ NODE_ENV=production && npm install && npm run build
 
 话虽如此，但是这样真的正确吗？
 
+<!-- more -->
 在构建过程中```@types```会被用于编译js时的类型校验，```webpack```更不用说本身就用于构建，但是这些依赖在js产物中其实并不会用到。 所以它们理应存在于```devDependencies```而不是```dependencies```。
 
 **那么在不更改```devDependencies```的情况下，这里得出的“能跑”的方案应该是：**

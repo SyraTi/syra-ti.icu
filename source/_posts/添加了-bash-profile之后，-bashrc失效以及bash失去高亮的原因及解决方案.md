@@ -10,7 +10,7 @@ tags:
 添加前↑
 ![添加后](https://img-blog.csdnimg.cn/fd0ce34e0824462fb70387c80a53c57f.png)
 添加后↑
-
+<!-- more -->
 ## 问题原因
 在添加```~/.bash_profile```之后，```~/.profile```会被覆盖不再运行，而load bashrc的逻辑在```~/.profile```中，导致```~/.bashrc```也一并失效。
 ![~/.profile中加载bashrc的逻辑](https://img-blog.csdnimg.cn/50f8cda872f34b57a3f9f7e7b3d1f48c.png)

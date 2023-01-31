@@ -19,6 +19,7 @@ tags:
 ![Chrome不识别](https://img-blog.csdnimg.cn/20200326102544543.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw,size_16,color_FFFFFF,t_70)
 
 ------------------
+<!-- more -->
 **排查到最后尝试删除了选择器末尾的空格，发现居然神奇的被识别了。。。。**
 
 

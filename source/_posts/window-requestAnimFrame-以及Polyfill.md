@@ -15,6 +15,8 @@ tags:
 >requestAnimationFrame使用一个回调函数作为参数。这个回调函数会在浏览器重绘之前调用。
 
 	requestID = window.requestAnimationFrame(callback);
+
+<!-- more -->
 ## Polyfill
 >目前，高版本浏览器Firefox 23 / IE 10 / Chrome / Safari）都支持这个方法。可以用下面的方法，检查浏览器是否支持这个API。如果不支持，则自行模拟部署该方法。
 

@@ -13,7 +13,7 @@ tags:
 	var o2 = Object.create(Base)
 
 >那这样到底有什么不一样呢？
-这里写图片描述
+<!-- more -->
 
 >我先来一段Object.create的实现方式
 

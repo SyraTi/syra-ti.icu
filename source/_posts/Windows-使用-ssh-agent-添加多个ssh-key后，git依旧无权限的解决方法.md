@@ -5,8 +5,9 @@ tags:
 ---
 ## 问题表现
 在windows安装完ssh-agent，添加多个ssh key之后,git clone依旧提示Permission Denied。
-（安装参见：[https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement)）
-
+>安装参见：
+[https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement)
+<!-- more -->
 ## 问题原因
 Git需要知道Windows ssh-agent服务的位置， 可以通过添加```GIT_SSH```环境变量来解决该问题。
 

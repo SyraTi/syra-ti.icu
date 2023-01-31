@@ -14,6 +14,7 @@ tags:
 由于是在群晖部署，自然能用docker就用docker，BGmi也贴心提供了[docker镜像](https://github.com/BGmi/bgmi-docker-all-in-one)。镜像除了BGmi本体之外，还包含了一个Transmission，如果没有安装Aria2的姥爷们，也可以直接使用Transmission。 
 
 ok，那么下面开始正式部署：
+<!-- more -->
 1. 打开群晖的```docker-注册表```，搜索```codysk/bgmi-all-in-one```，下载并启动。
    ![下载](/images/posts/20220729162316.jpg)
    ![启动](/images/posts/20220729162521.jpg)

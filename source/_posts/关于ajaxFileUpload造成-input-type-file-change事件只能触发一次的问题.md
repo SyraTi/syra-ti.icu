@@ -14,6 +14,7 @@ tags:
 
 如果你想要知道具体原因，请往下看
 
+<!-- more -->
 ```javascript
 /**
  * ajaxFileUpload源码

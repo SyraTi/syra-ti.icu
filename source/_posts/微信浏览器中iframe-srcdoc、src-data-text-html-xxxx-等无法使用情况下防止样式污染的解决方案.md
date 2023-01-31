@@ -8,6 +8,7 @@ tags:
 #### 要求
 > HTML不得被前台全局样式污染
 
+<!-- more -->
 #### 解决方案
 1、使用iframe 的 srcdoc
 ```html

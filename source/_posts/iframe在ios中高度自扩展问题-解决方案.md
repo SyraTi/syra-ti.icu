@@ -10,8 +10,9 @@ tags:
 IOS safari中iframe会根据内容高度进行iframe的内容自扩展以适应内容高度 设置height无效
 
 ###### 百谷之后
->在 iOS Safari 上，对于一个 scrollable 的 iframe 元素，iOS Safari 会选择扩展 iframe 的高度来自适应其中 web 页面内容的高度。所以当页面内容超过 iframe 设置的高度时，iOS Safari 并不会像在 Android 浏览器中那样维持 iframe 的高度并在右侧显示一个拖动条，而是直接扩展 iframe 的高度
+>在 iOS Safari 上，对于一个 scrollable 的 iframe 元素，iOS Safari 会选择扩展 iframe 的高度来自适应其中 web 页面内容的高度。所以当页面内容超过 iframe 设置的高度时，iOS Safari 并不会像在 Android 浏览器中那样维持 iframe 的高度并在右侧显示一个拖动条，而是直接扩展 iframe 的高度。
 
+<!-- more -->
 ##### 解决方案
 ① 在iframe上添加 scrollable=no
 此方案会使safari中iframe的设置高度生效不再自扩展，但是页面会直接被裁剪 产生类似于overflow:hidden的效果 不是想要的效果

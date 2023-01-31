@@ -9,7 +9,8 @@ tags:
 
 ### **A Few Minutes Later.....**
 经过一番Demo和文档的查找，惊喜的发现正式版中TransitRoute，WalkingRoute，以及DrivingRoute 的searchComplete回调中有个“moreResultsUrl” 打开正是百度地图的导航结果页！
-&nbsp;
+
+<!-- more -->
 ### **事情并没有那么简单  —— 使用DrivingRoute**
 当我打开DrivingRoute的moreResultsUrl 度娘很友好的向我展示了下面的界面 并且不管我如何调整参数 emmmmm 毫无变化！
 

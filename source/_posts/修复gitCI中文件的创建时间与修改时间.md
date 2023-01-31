@@ -10,6 +10,7 @@ hexo发现经过CI之后，所有文章的 **更新时间(mtime)** 变成了CI�
 # 解决思路
 在CI checkout代码时，使用文件最后一次涉及的commit时间作为文件的修改时间，进行mtime的恢复。
 
+<!-- more -->
 # 解决方案
 ```yml
 # .github/workflows/action.yml

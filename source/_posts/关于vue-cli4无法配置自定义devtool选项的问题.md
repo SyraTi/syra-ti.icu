@@ -28,7 +28,7 @@ module.exports = {
   }
 }
 ```
-
+<!-- more -->
 ## 问题原因
 **2021.10.26更新**： 问题产生的原因不是```vue-cli```，而是```element-ui```提供的按需加载插件```unplugin-vue-components/resolvers```破坏了sourcemap，具体的原因不清楚，似乎插件作者也不是很有```sourcemap```方面的开发意愿。 总之遇到这个问题的话看一看有没有这个玩应吧。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/e7165c44fff043758752a54008586582.png)

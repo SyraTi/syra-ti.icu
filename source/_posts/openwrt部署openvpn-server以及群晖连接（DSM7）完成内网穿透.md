@@ -8,7 +8,7 @@ tags:
 
 **总之的总之三步走，需要openwrt上有server，以及群晖能够有client进行拨入，最后配置端口转发**
 ___
-
+<!-- more -->
 ## 1. openwrt部署openvpn server
 >openwrt官方提供了详实的文档，如下
 [[OpenWrt Wiki] OpenVPN server](https://openwrt.org/docs/guide-user/services/vpn/openvpn/server)

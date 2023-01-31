@@ -31,12 +31,14 @@ NODE_ENV=development && npm install && NODE_ENV=production && npm run build
 
 ## 思考
 问题是解决了，但是本着尽可能优雅的精神，能跑是能跑了，看到两遍```NODE_ENV```赋值，总有一些舍本逐末的感觉。下面是我的思考：
-> 首先，理论上来讲，```build```确实是应该在dev环境下的行为，所以这时候下载```devDependencies```是合理的。
-> 反倒是```build```时使用```NODE_ENV```去判断生成的target似乎有一些哲学上的错误。
-> 但是各大开源库已经把```NODE_ENV=production && npm run build```这样的模式带成了惯例，导致了先入为主。
-> 所以可不可以推翻这样的模式，从这里下手：
+> 首先，理论上来讲，```build```确实是应该在dev环境下的行为，所以这时候下载```devDependencies```是合理的，那么运行```build```时，```NODE_ENV```理应为```development```。
+> 但是，我们希望```build```命令所构建出的产物运行在生产环境下，那么，似乎```NODE_ENV```又应该是```production```。
+
+于是歧义就产生了： **```build```过程中所使用的```NODE_ENV```，代表的的含义究竟是```build```命令运行时的环境，还是构建产物的环境？**
 
 ## 个人认为最优雅的方式
+我的想法是：环境变量应当代表的是当前环境，而不是目标环境，所以```NODE_ENV```理应为```development```，但是各大开源库已经把```NODE_ENV=production && npm run build```这样的模式带成了惯例，导致了我们先入为主。
+所以推翻这样的模式，采用额外的参数来代表目标环境更为合理：
 ```shell
 NODE_ENV=development && npm install && npm run build --production
 ```

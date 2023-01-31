@@ -30,7 +30,7 @@
 <meta property="og:description" content="故事背景公司项目需要将多媒体文件迁移至阿里OSS，原本直接从后端静态文件的&lt;img&gt; &lt;video&gt; 等标签都要改成从OSS获取展示。 于是乎拦截了所有静态链接，调用了OSS接口获取了文件流返回到前台进行展示，简单粗暴，但是也遇到了问题 —— ios的 &lt;video&gt; 标签全军覆没。 由于项目里视频比较少，这问题还是在上线前三天发现的，那个急的，一开始还找不到是">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-12-25T17:31:53.000Z">
-<meta property="article:modified_time" content="2022-01-27T13:20:40.000Z">
+<meta property="article:modified_time" content="2023-01-31T02:58:21.000Z">
 <meta property="article:author" content="白茶SyraTi">
 <meta name="twitter:card" content="summary">
 
@@ -264,7 +264,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -304,6 +304,8 @@
 <p>由于项目里视频比较少，这问题还是在上线前三天发现的，那个急的，一开始还找不到是什么问题，找到老版本的代码后发现前端代码毫无区别（亏得还在前端调试了半天），最后发现使用静态文件就没什么问题。</p>
 <p>确定下来大致是文件流的缘故没跑了，百度+谷歌发现safari不支持整个文件流，服务器必须支持分段请求，也就是下面要说的Range分段请求了。</p>
 <hr>
+<span id="more"></span>
+
 <h2 id="请求头-Range-和-响应头-Content-Range"><a href="#请求头-Range-和-响应头-Content-Range" class="headerlink" title="请求头 Range 和 响应头 Content-Range"></a>请求头 <code>Range</code> 和 响应头 <code>Content-Range</code></h2><p>Http协议从1.1开始支持获取文件的部分内容，这为并行下载以及断点续传提供了技术支持。该标准分为两个Header，分别为一个请求头<code>Range</code>， 和一个响应头<code>Content-Range</code> 。</p>
 <hr>
 <h2 id="请求头-Range"><a href="#请求头-Range" class="headerlink" title="请求头 Range"></a>请求头 <code>Range</code></h2><p>先来看看请求头，safari对于文件流的请求会带上这个头，服务器需要正确的对其作出响应，浏览器才能正确的展示文件。之前没法播放文件流正是因为没有正确响应这个请求头。</p>

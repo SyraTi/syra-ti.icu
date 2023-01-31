@@ -452,7 +452,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -462,7 +462,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>359</span>
+      <span>360</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -485,18 +485,14 @@
 <p>噢，有个注意点:</p>
 <p>每次调用<code>createObjectURL</code>的时候，一个新的URL对象就被创建了，即使是同一个file对象，也会创建一个新对URL对象，所以，为了最佳性能和内存使用，当不再需要这个对象的时候要<code>URL.revokeObjectURL()</code>释放它。</p>
 <p>开始压缩</p>
-<p>创建一个<code>compressImage</code>函数，将之图片的地址url作参数传入：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">compressImage (url) &#123;</span><br><span class="line">	<span class="keyword">let</span> cvs = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;canvas&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> ctx = cvs.<span class="title function_">getContext</span>(<span class="string">&#x27;2d&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> img = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Image</span>()</span><br><span class="line">	img.<span class="property">src</span> = url</span><br><span class="line">	img.<span class="property">onload</span> = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">		cvs.<span class="property">width</span> = img.<span class="property">width</span></span><br><span class="line">		cvs.<span class="property">height</span> = img.<span class="property">height</span></span><br><span class="line">		<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">			ctx.<span class="title function_">drawImage</span>(img, <span class="number">0</span>, <span class="number">0</span>, cvs.<span class="property">width</span>, cvs.<span class="property">height</span>)</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">newImageData</span> = cvs.<span class="title function_">toDataURL</span>(<span class="string">&#x27;image/jpeg&#x27;</span>, <span class="number">0.1</span>)</span><br><span class="line">	    &#125;, <span class="number">0</span>)</span><br><span class="line">	    <span class="variable language_">this</span>.<span class="property">showPreviewer</span> = <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里说说</p>
-<p><code>canvas.toDataURL(type, encoderOptions)</code><br><code>HTMLCanvasElement.toDataURL()</code>方法接受两个参数，<code>type</code>和<code>encoderOptions</code></p>
-<p><code>type</code>是可选的，图片格式，默认是 <code>image/png</code>，<code>encoderOptions</code>表示图片质量， 在<code>type</code>为<code>image/jpeg</code> 或 <code>image/webp</code>时可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 <code>0.92</code>。其他参数会被忽略。</p>
-<p><code>toDataURL()</code>返回的是<code>base64</code>字符串，如果要转成2进制</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">convertToBinary (dataURI) &#123;</span><br><span class="line">	<span class="keyword">let</span> byteString = <span class="variable language_">window</span>.<span class="title function_">atob</span>(dataURI.<span class="title function_">split</span>(<span class="string">&#x27;,&#x27;</span>)[<span class="number">1</span>])</span><br><span class="line">	<span class="keyword">let</span> ab = <span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>(byteString.<span class="property">length</span>)</span><br><span class="line">	<span class="keyword">let</span> ia = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(ab)</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; byteString.<span class="property">length</span>; i++) &#123;</span><br><span class="line">		ia[i] = byteString.<span class="title function_">charCodeAt</span>(i)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">let</span> bb = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Blob</span>([ ab ])</span><br><span class="line">	<span class="keyword">return</span> bb</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>测试结果：由iphone6所拍摄的图片上传，由平均1.9M左右压缩至170k</p>
-<p><em>･゜ﾟ･</em>:.｡..｡.:<em>･’(<em>ﾟ▽ﾟ</em>)’･</em>:.｡. .｡.:<em>･゜ﾟ･</em></p>
-<p>再见<br>5月5日发布</p>
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/e15015f00ecd.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -650,7 +646,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -660,7 +656,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>476</span>
+      <span>477</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -695,40 +691,14 @@
 </blockquote>
 <pre><code>requestID = window.requestAnimationFrame(callback);
 </code></pre>
-<h2 id="Polyfill"><a href="#Polyfill" class="headerlink" title="Polyfill"></a>Polyfill</h2><blockquote>
-<p>目前，高版本浏览器Firefox 23 &#x2F; IE 10 &#x2F; Chrome &#x2F; Safari）都支持这个方法。可以用下面的方法，检查浏览器是否支持这个API。如果不支持，则自行模拟部署该方法。</p>
-</blockquote>
-<pre><code>window.requestAnimFrame = (function()&#123;
-  return  window.requestAnimationFrame       || 
-          window.webkitRequestAnimationFrame || 
-          window.mozRequestAnimationFrame    || 
-          window.oRequestAnimationFrame      || 
-          window.msRequestAnimationFrame     || 
-          function( callback )&#123;
-            window.setTimeout(callback, 1000 / 60);
-          &#125;;
-&#125;)();
-</code></pre>
-<blockquote>
-<p>上面的代码按照1秒钟60次（大约每16.7毫秒一次），来模拟requestAnimationFrame。</p>
-</blockquote>
-<blockquote>
-<p>使用requestAnimationFrame的时候，只需反复调用它即可。</p>
-</blockquote>
-<pre><code>function repeatOften() &#123;
-    // Do whatever
-    requestAnimationFrame(repeatOften);
-&#125;
-
-requestAnimationFrame(repeatOften);
-</code></pre>
-<blockquote>
-<p>取消重绘可以用 cancelAnimationFrame。</p>
-</blockquote>
-<pre><code>window.cancelAnimationFrame(requestID);
-</code></pre>
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/fa022dde0797.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -790,7 +760,7 @@ requestAnimationFrame(repeatOften);
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -800,7 +770,7 @@ requestAnimationFrame(repeatOften);
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>457</span>
+      <span>458</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -818,27 +788,15 @@ requestAnimationFrame(repeatOften);
     
     
     <div class="post-body" itemprop="articleBody">
-          <h4 id="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"><a href="#根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。" class="headerlink" title="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"></a>根据浏览器的保护规则，<strong>跨域的时候我们创建的sessionId是不会被浏览器保存下来的</strong>，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。</h4><p>在ajax 请求要加配置</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$.<span class="title function_">ajax</span>(&#123;</span><br><span class="line">	<span class="attr">url</span>:url,</span><br><span class="line">	<span class="comment">//加上 xhrFields及crossDomain</span></span><br><span class="line">	<span class="attr">xhrFields</span>: &#123;</span><br><span class="line">		<span class="comment">//允许带上凭据</span></span><br><span class="line">        <span class="attr">withCredentials</span>: <span class="literal">true</span></span><br><span class="line">	&#125;,</span><br><span class="line">       <span class="attr">crossDomain</span>: <span class="literal">true</span>,</span><br><span class="line">       <span class="comment">//以上</span></span><br><span class="line">	<span class="attr">success</span>:<span class="keyword">function</span>(<span class="params">result</span>)&#123;</span><br><span class="line">		<span class="title function_">alert</span>(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">error</span>:<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h3 id="关于-withCredentials"><a href="#关于-withCredentials" class="headerlink" title="关于 withCredentials"></a>关于 withCredentials</h3><blockquote>
-<p><strong>withCredentials：</strong><br>默认情况下，跨源请求不提供凭据(cookie、HTTP认证及客户端SSL证明等)。通过将withCredentials属性设置为true，可以指定某个请求应该发送凭据。如果服务器接收带凭据的请求，会用下面的HTTP头部来响应。</p>
-</blockquote>
-<blockquote>
-<p><em>“Access-Control-Allow-Credentials: true”</em></p>
-</blockquote>
-<blockquote>
-<p>如果发送的是带凭据的请求，但服务器的相应中没有包含上面这个头部，那么浏览器就不会把相应交给JavaScript(于是，responseText中将是空字符串，status的值为0，而且会调用onerror()事件处理程序)。另外，服务器还可以在Preflight响应中发送这个HTTP头部，表示允许源发送带凭据的请求。</p>
-</blockquote>
-<blockquote>
-<p>支持withCredentials属性的浏览器有Firefox 3.5+、Safari 4+和Chrome。IE10及更早版本都不支持。<br>同时</p>
-</blockquote>
-<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>在添加基本的允许跨域响应头之后<br>需要添加 Access-Allow-Credentials:true<br>另外由于谷歌的安全策略<br>当withCredentials 为 true 时<br>ResponseHeader中的 Access-Allow-Origin 不能使用通配符 ‘*’<br>否则会提示</p>
-<blockquote>
-<p>A wildcard ‘*’ cannot be used in the ‘Access-Control-Allow-Origin’ header when the credentials flag is true. Origin ‘<a target="_blank" rel="noopener" href="http://url&/#39;">http://url&#39;</a> is therefore not allowed access.</p>
-</blockquote>
-<p>其他浏览器待测试</p>
-<hr>
-
+          <h4 id="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"><a href="#根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。" class="headerlink" title="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"></a>根据浏览器的保护规则，<strong>跨域的时候我们创建的sessionId是不会被浏览器保存下来的</strong>，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。</h4>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/d6ed39098ad1.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -900,7 +858,7 @@ requestAnimationFrame(repeatOften);
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -910,7 +868,7 @@ requestAnimationFrame(repeatOften);
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>489</span>
+      <span>490</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -936,11 +894,14 @@ requestAnimationFrame(repeatOften);
 <li>将<code>$fileInput.trigger(&#39;click&#39;)</code> 改为 <code>$(&#39;#id&#39;).trigger(&#39;click&#39;)</code>对保证新元素进行trigger而不是旧元素</li>
 </ol>
 <p>如果你想要知道具体原因，请往下看</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * ajaxFileUpload源码</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"> <span class="comment">// 原input[type=file] </span></span><br><span class="line"> <span class="keyword">var</span> oldElement = $(<span class="string">&#x27;#&#x27;</span> + fileElementId);</span><br><span class="line"> <span class="comment">// clone一份新元素 此处需要添加true为参数 即上文第一步所提到的 复制元素的同时复制事件</span></span><br><span class="line"> <span class="keyword">var</span> newElement = $(oldElement).<span class="title function_">clone</span>(<span class="literal">true</span>);</span><br><span class="line"> <span class="comment">// 修改旧元素的id</span></span><br><span class="line"> $(oldElement).<span class="title function_">attr</span>(<span class="string">&#x27;id&#x27;</span>, fileId);</span><br><span class="line"> <span class="comment">// 将新元素放在旧元素的位置</span></span><br><span class="line"> $(oldElement).<span class="title function_">before</span>(newElement);</span><br><span class="line"> <span class="comment">// 将旧元素移动到目标表单</span></span><br><span class="line"> $(oldElement).<span class="title function_">appendTo</span>(form);</span><br><span class="line"> <span class="comment">// 设置表单样式</span></span><br><span class="line"> $(form).<span class="title function_">css</span>(<span class="string">&#x27;position&#x27;</span>, <span class="string">&#x27;absolute&#x27;</span>);</span><br><span class="line"> $(form).<span class="title function_">css</span>(<span class="string">&#x27;top&#x27;</span>, <span class="string">&#x27;-1200px&#x27;</span>);</span><br><span class="line"> $(form).<span class="title function_">css</span>(<span class="string">&#x27;left&#x27;</span>, <span class="string">&#x27;-1200px&#x27;</span>);</span><br><span class="line"> $(form).<span class="title function_">appendTo</span>(<span class="string">&#x27;body&#x27;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>所以提交完后 原来上传的位置实际已经被newElement替代 但是如果在上传之前就指定了变量指向原input[type&#x3D;file] ，那么上传之后将依旧指向oldElement（其实已经在表单里）,此时trigger会生效，但是该元素实际已经被ajaxFileUpload所删除 ,只存在于内存中，change事件似乎不会生效了（此处原因不详，如果知晓请告诉我）</p>
-<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><h3 id="1-（治标）将change事件写为内联onchange-quot-func-quot-形式"><a href="#1-（治标）将change事件写为内联onchange-quot-func-quot-形式" class="headerlink" title="1.（治标）将change事件写为内联onchange=&quot;func()&quot;形式"></a>1.（治标）将change事件写为内联<code>onchange=&quot;func()&quot;</code>形式</h3><h3 id="2-（治标）将change事件重新绑定"><a href="#2-（治标）将change事件重新绑定" class="headerlink" title="2.（治标）将change事件重新绑定"></a>2.（治标）将change事件重新绑定</h3><h3 id="3-（推荐-治本）将ajaxFileUpload内-oldElement-clone-添加true为参数后-将-fileInput-trigger-39-click-39-改为-39-id-39-trigger-39-click-39"><a href="#3-（推荐-治本）将ajaxFileUpload内-oldElement-clone-添加true为参数后-将-fileInput-trigger-39-click-39-改为-39-id-39-trigger-39-click-39" class="headerlink" title="3.（推荐 治本）将ajaxFileUpload内$(oldElement).clone()添加true为参数后 将$fileInput.trigger(&#39;click&#39;) 改为 $(&#39;#id&#39;).trigger(&#39;click&#39;)"></a>3.（推荐 治本）将ajaxFileUpload内<code>$(oldElement).clone()</code>添加true为参数后 将<code>$fileInput.trigger(&#39;click&#39;)</code> 改为 <code>$(&#39;#id&#39;).trigger(&#39;click&#39;)</code></h3><hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/c50248a257e4.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1093,7 +1054,7 @@ requestAnimationFrame(repeatOften);
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -1103,7 +1064,7 @@ requestAnimationFrame(repeatOften);
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>154</span>
+      <span>155</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -1123,27 +1084,14 @@ requestAnimationFrame(repeatOften);
     <div class="post-body" itemprop="articleBody">
           <p>原文:<a target="_blank" rel="noopener" href="http://www.bcty365.com/content-146-5588-1.html">http://www.bcty365.com/content-146-5588-1.html</a></p>
 <h2 id="组件介绍"><a href="#组件介绍" class="headerlink" title="组件介绍"></a>组件介绍</h2><p>轮播组件是mui提供的一个核心组件，在该核心组件基础上，衍生出了图片轮播、可拖动式图文表格、可拖动式选项卡、左右滑动9宫格等组件。</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>获取slide组件对象</p>
-<pre><code>var slider = mui(&#39;#slider&#39;).slider();
-</code></pre>
-<h2 id="常用API"><a href="#常用API" class="headerlink" title="常用API"></a>常用API</h2><h3 id="gotoItem-index"><a href="#gotoItem-index" class="headerlink" title="gotoItem(index)"></a>gotoItem(index)</h3><p>切换到指定轮播</p>
-<pre><code>slider.gotoItem(1); //切换至第二个轮播
-</code></pre>
-<h3 id="prevItem"><a href="#prevItem" class="headerlink" title="prevItem()"></a>prevItem()</h3><p>上一个轮播</p>
-<pre><code>slider.prevItem();
-</code></pre>
-<h3 id="nextItem"><a href="#nextItem" class="headerlink" title="nextItem()"></a>nextItem()</h3><p>下一个轮播</p>
-<pre><code>slider.nextItem();
-</code></pre>
-<h3 id="getSlideNumber"><a href="#getSlideNumber" class="headerlink" title="getSlideNumber()"></a>getSlideNumber()</h3><p>当前所处位置</p>
-<pre><code>slider.getSlideNumber();
-</code></pre>
-<h3 id="stopped"><a href="#stopped" class="headerlink" title="stopped"></a>stopped</h3><p>禁用&#x2F;开启滑动切换</p>
-<pre><code>slider.stopped = false; //开启滑动切换
-slider.stopped = true; //关闭滑动切换
-</code></pre>
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/ab374a9a7cf3.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

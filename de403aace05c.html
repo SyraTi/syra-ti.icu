@@ -22,25 +22,25 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"syra-ti.icu","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.14.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="前情提要hexo发现经过CI之后，所有文章的 更新时间(mtime) 变成了CI运行的时间。 解决思路在CI checkout代码时，使用文件最后一次涉及的commit时间作为文件的修改时间，进行mtime的恢复。 解决方案1234567891011# .github&#x2F;workflows&#x2F;action.yml...- uses: actions&#x2F;checkout@v3  # 如果使用的是Githu">
+    <meta name="description" content="前情提要hexo发现经过CI之后，所有文章的 更新时间(mtime) 变成了CI运行的时间。 解决思路在CI checkout代码时，使用文件最后一次涉及的commit时间作为文件的修改时间，进行mtime的恢复。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="修复gitCI中文件的创建时间与修改时间">
-<meta property="og:url" content="https://syra-ti.icu/befecf49889e.html">
+<meta property="og:url" content="https://syra-ti.icu/de403aace05c.html">
 <meta property="og:site_name" content="SyraTi.ICU">
-<meta property="og:description" content="前情提要hexo发现经过CI之后，所有文章的 更新时间(mtime) 变成了CI运行的时间。 解决思路在CI checkout代码时，使用文件最后一次涉及的commit时间作为文件的修改时间，进行mtime的恢复。 解决方案1234567891011# .github&#x2F;workflows&#x2F;action.yml...- uses: actions&#x2F;checkout@v3  # 如果使用的是Githu">
+<meta property="og:description" content="前情提要hexo发现经过CI之后，所有文章的 更新时间(mtime) 变成了CI运行的时间。 解决思路在CI checkout代码时，使用文件最后一次涉及的commit时间作为文件的修改时间，进行mtime的恢复。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-04-10T16:06:43.000Z">
-<meta property="article:modified_time" content="2022-04-10T16:23:22.000Z">
+<meta property="article:modified_time" content="2023-01-31T02:58:21.000Z">
 <meta property="article:author" content="白茶SyraTi">
 <meta property="article:tag" content="CI&#x2F;CD">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://syra-ti.icu/befecf49889e.html">
+<link rel="canonical" href="https://syra-ti.icu/de403aace05c.html">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://syra-ti.icu/befecf49889e.html","path":"befecf49889e.html","title":"修复gitCI中文件的创建时间与修改时间"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://syra-ti.icu/de403aace05c.html","path":"de403aace05c.html","title":"修复gitCI中文件的创建时间与修改时间"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>修复gitCI中文件的创建时间与修改时间 | SyraTi.ICU</title>
@@ -229,7 +229,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/befecf49889e.html">
+    <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/de403aace05c.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -257,9 +257,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-04-11 00:06:43 / 修改时间：00:23:22" itemprop="dateCreated datePublished" datetime="2022-04-11T00:06:43+08:00">2022-04-11</time>
+      <time title="创建时间：2022-04-11 00:06:43" itemprop="dateCreated datePublished" datetime="2022-04-11T00:06:43+08:00">2022-04-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -276,7 +282,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>243</span>
+      <span>244</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -296,6 +302,7 @@
     <div class="post-body" itemprop="articleBody">
         <h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>hexo发现经过CI之后，所有文章的 <strong>更新时间(mtime)</strong> 变成了CI运行的时间。</p>
 <h1 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h1><p>在CI checkout代码时，使用文件最后一次涉及的commit时间作为文件的修改时间，进行mtime的恢复。</p>
+<span id="more"></span>
 <h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .github/workflows/action.yml</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v3</span></span><br><span class="line">  <span class="comment"># 如果使用的是GithubAction的actions/checkout，记得加上下面的内容，对仓库历史进行完整的签出</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">fetch-depth:</span> <span class="number">0</span></span><br><span class="line"><span class="comment"># 恢复文件修改时间</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Restore</span> <span class="string">file</span> <span class="string">modification</span> <span class="string">time</span></span><br><span class="line">  <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">    find source/_posts -name &#x27;*.md&#x27; | while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span></span><br><span class="line"><span class="string"></span><span class="string">...</span></span><br></pre></td></tr></table></figure>
 
 <h1 id="代码解释"><a href="#代码解释" class="headerlink" title="代码解释"></a>代码解释</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">列出需要恢复修改时间的文件</span></span><br><span class="line">find source/_posts -name &#x27;*.md&#x27;</span><br><span class="line"><span class="meta"># </span><span class="language-bash">循环</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 git <span class="built_in">log</span> -- <span class="variable">$file</span> 得到该文件最后修改的commit 并且使用pretty选项获取时间戳</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 <span class="built_in">touch</span> -d 来将文件的atime以及mtime修改为commit的时间戳</span></span><br><span class="line">while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span><br></pre></td></tr></table></figure>
@@ -441,7 +448,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"SyraTi","repo":"syra-ti.icu","client_id":"9b208922e8ef1e613ff5","client_secret":"bfcedd4fc22b80cfca1fdc953e503395b2de774a","admin_user":"SyraTi","distraction_free_mode":false,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"6b66a56574d8d960ff40d8abebf740d2"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"SyraTi","repo":"syra-ti.icu","client_id":"9b208922e8ef1e613ff5","client_secret":"bfcedd4fc22b80cfca1fdc953e503395b2de774a","admin_user":"SyraTi","distraction_free_mode":false,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"3bc85bd0af3005eb5c6ea40448c849db"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 <canvas id="live2dCanvas"></canvas>
 <script src="/scripts/live2d/sdk-web/cubismcore/live2dcubismcore.min.js"></script>

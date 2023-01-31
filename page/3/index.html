@@ -260,7 +260,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -288,165 +288,16 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv</p>
+          <h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv。</p>
 <p><strong>原拓扑图如下</strong><br><img data-src="https://img-blog.csdnimg.cn/20190210155452299.png#pic_center" alt="原拓扑图"></p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>材料：</strong><br>1、水星Mercury SG105Pro 五口千兆网管交换机 价格 98 元 放置在客厅（下称SW5）<br>2、水星Mercury SG108Pro 八口千兆网管交换机 价格 169 元 放置在弱电箱（下称SW8）</p>
-<p><strong>整体解决思路：</strong><br>在弱电箱端，使用一台交换机，将itv和网络的数据包合并至一条主干道网线上，到使用端（客厅）使用另一台交换机进行识别后拆分为两条线使用——达到墙内一条线，实际承载两条线路的目的。</p>
-<p><strong>实际解决方案（看不明白可以先往下看）：</strong><br>利用802.1Q VLAN的Tag机制划分两路VLAN：一路走itv（下称VLAN2）一路走网络（下称VLAN3），由交换机为收到的包打Tag后送入网线，进入Tag所示VLAN传输，由另一台交换机判断Tag，送入指定设备——达到目的。</p>
-<p><strong>先行说明：</strong><br>在说明解决步骤之前先说明几个概念，po也是用了不少时间加实践去理解了VLAN、802.1Q标准中的Tag、Untagged、VLAN ID、PVID等概念，在这里做简单的讲述</p>
-<p>*<strong>这里我们先打个比方，方便讲概念：</strong></p>
-<blockquote>
-<p>我们把数据包在交换机中的传输比作一场从出发地到目的地传送小球的游戏</p>
-<ul>
-<li>数据包比作小球；</li>
-<li>交换机是一个小球的中转站，决定来到这里的小球应该去到哪里；</li>
-<li>交换机的端口是小球的出入口，我们将它比作检查站，每个检查站都有一把刷子和一把水枪（至于为什么是刷子和水枪？后面会说到），可以对小球进行上色和洗色；</li>
-</ul>
-</blockquote>
-<p>*<strong>下面开始讲概念：</strong><br><em>VLAN——是一条传送小球的管道：</em></p>
-<blockquote>
-<p>VLAN（Virtual Local Area Network）的中文名为”虚拟局域网”。划分到同一VLAN下的端口可以互相通信，不同VLAN不能互相通信。</p>
-<p>——如果我们把数据传输比作小球过管道，数据包是小球，那么VLAN就好比是管道，进入A管道的球是不能去到B管道的。</p>
-</blockquote>
-<p><em>802.1Q——是制作管道的标准:</em></p>
-<blockquote>
-<p>802.1Q是VLAN标准的一种。<br>——你可以理解为制作管道的标准。</p>
-</blockquote>
-<p><em>VLAN ID——是颜色：</em></p>
-<blockquote>
-<p>802.1Q标准中为数据包附加的一个值 标识该包在VLAN ID所示的VLAN中传输<br>——标准规定管道必须涂上颜色（VLAN ID），里面只能通过管道对应颜色（VLAN ID）的球。</p>
-</blockquote>
-<p><em>TAG帧——带颜色的小球：</em></p>
-<blockquote>
-<p>带有VLAN ID的数据包<br>——带颜色（VLAN ID）的小球</p>
-</blockquote>
-<p><em>UNTAG帧——白色的小球：</em></p>
-<blockquote>
-<p>不带有VLAN ID的数据包<br>——不带颜色（VLAN ID）的小球</p>
-</blockquote>
-<p><em>PVID——是检查站刷子上的油漆：</em></p>
-<blockquote>
-<p>Port VLAN ID，即端口缺省VLAN ID  ，在交换机中提前配置<br>当端口接收到数据包时，可以为该包打上等于该端口PVID值的VLAN ID，此后该包成为TAG帧，在该VLAN ID所表示的VLAN中传输，是否打上tag由端口模式决定（Tagged&#x2F;Untagged）。<br>——每个检查站都有一把刷子，刷子上都沾了我们指定颜色的油漆（PVID），当遇到小球的时候，可以把它刷成油漆的颜色(VLAN ID)，接下来小球就只能进到对应颜色的管道里了，是不是要涂色，根据检查站的模式来决定。</p>
-</blockquote>
-<p><em>Tagged与Untagged及端口收发包逻辑——检查站的两种模式</em></p>
-<blockquote>
-<h6 id="端口处理数据有两种方式：Tagged-x2F-Untagged"><a href="#端口处理数据有两种方式：Tagged-x2F-Untagged" class="headerlink" title="端口处理数据有两种方式：Tagged&#x2F;Untagged"></a><em>端口处理数据有两种方式：Tagged&#x2F;Untagged</em></h6><p><strong>端口接收数据时：</strong></p>
-<ul>
-<li>如果端口是tagged方式<ul>
-<li>当数据包为UNTAG帧的话，就加上该端口的PVID，送入PVID所示的VLAN中传输；</li>
-<li>如果数据包为TAG帧，那么就不再添加，直接送入TAG所示的VLAN中传输；</li>
-</ul>
-</li>
-<li>如果是untagged方式，<ul>
-<li>输入的数据包全部都要加上该端口的PVID。不管输入的数据包是TAG帧还是UNTAG帧。</li>
-</ul>
-</li>
-</ul>
-<p><strong>端口发送数据时：</strong></p>
-<ul>
-<li>如果端口是tagged方式<ul>
-<li>如果端口PVID等于发送的数据包所含的VLAN ID，那么就会将VLAN ID从发送的数据包中去掉；</li>
-<li>如果不相等，则数据包将保持原样发送出去。</li>
-</ul>
-</li>
-<li>如果端口是untagged方式</li>
-<li>则不管端口PVID为多少，是否等于要输出的数据包的VLAN，都会将VLAN ID从数据包中去掉。</li>
-</ul>
-<hr>
-<h6 id="检查站有两种模式：Tagged和Untagged"><a href="#检查站有两种模式：Tagged和Untagged" class="headerlink" title="检查站有两种模式：Tagged和Untagged"></a><em>检查站有两种模式：Tagged和Untagged</em></h6><p><strong>检查站遇到外面来的小球：</strong></p>
-<ul>
-<li>如果检查站是tagged模式<ul>
-<li>如果小球是白色的，就用刷子为小球涂上油漆的颜色，送进对应颜色的管道里传输；</li>
-<li>如果小球有颜色，那就不再处理小球，直接送到小球对应颜色的管道里传输；</li>
-</ul>
-</li>
-<li>如果检查站在untagged模式<ul>
-<li>碰到的小球全部用刷子刷上油漆，强行送进对应的管道传输；</li>
-</ul>
-</li>
-</ul>
-<p><strong>检查站准备送走从管子里出来的小球时</strong></p>
-<ul>
-<li>如果检查站是tagged模式</li>
-<li>如果油漆的颜色和小球的颜色一致，就把小球的油漆用水枪洗掉再送走。<ul>
-<li>如果油漆的颜色和小球的颜色不一致，就把小球原样送走。</li>
-</ul>
-</li>
-<li>如果检查站是untagged方式<ul>
-<li>不管油漆颜色还是小球颜色，都将小球的油漆用水枪洗掉再送走。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p>讲解完概念后，我们再回来看解决方案</p>
-<blockquote>
-<p><strong>实际解决方案（看不明白可以先往下看）：</strong><br>利用802.1Q VLAN的Tag机制划分两路VLAN：一路走itv（下称VLAN2）一路走网络（下称VLAN3），由交换机为收到的包打Tag后送入网线，进入Tag所示VLAN传输，由另一台交换机判断Tag，送入指定设备——达到目的。</p>
-</blockquote>
-<p><strong>如果你还是看不懂，我们再换成传送小球：</strong></p>
-<blockquote>
-<p>我们按照标准制造了两根管道，一根涂成红色（itv），一根涂成蓝色（网络），将这两条管道埋设到一条网线中，由一头的中转站为光猫送来的白色小球上色，分别送入两条管道，经过同一条网线，另一头的中转站判断颜色，送到指定的目的地——达到目的。</p>
-</blockquote>
-<p><strong>具体解决步骤：</strong></p>
-<ul>
-<li><p>1、配置SW8的VLAN</p>
-<ul>
-<li><p>VLAN划分如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210233114958.png#pic_center" alt="SW8 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,7端口配置为itv交换<br>VLAN3 将1-6 以及8 端口配置为网络交换</p>
-<p><strong>将端口1作为主干道端口<br>*此端口连接SW5<br>**接收：由SW5发送过来的TAG帧 并根据TAG帧中的VLAN ID 决定送入VLAN2还是VLAN3（即广播至VLAN2的7端口或VLAN3的2-6、8端口）<br>**发送：由SW8其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW5</strong></p>
-</li>
-<li><p>PVID配置如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210161628593.png#pic_center" alt="VLAN PVID配置"><br>端口1：接SW5 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口7：接光猫ITV口 PVID设置为2 接收光猫ITV口发送来的UNTAG帧 送入VLAN2<br>端口8：接光猫千兆口 PVID设置为3 接收光猫千兆网络口发送来的UNTAG帧 送入VLAN3<br>端口2-6：接其他房间电脑 PVID设置为3 接收其他房间电脑发送来的UNTAG帧 送入VLAN3 与端口8光猫千兆口相互通信</p>
-</li>
-</ul>
-</li>
-<li><p>2、配置SW5的VLAN</p>
-<ul>
-<li><p>VLAN划分如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210223800782.png#pic_center" alt="SW5 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,4 端口配置为itv交换 令4端口可以与主干道端口进行通信<br>VLAN3 将1,5 端口配置为网络交换 令5端口可以与主干道端口进行通信</p>
-<p><strong>将端口1作为主干道端口<br>**接收：由SW8发送过来的TAG帧 并根据TAG帧中的VLAN ID 决定送入VLAN2还是VLAN3（即 广播至VLAN2的4端口或VLAN3的5端口）<br>**发送：由SW5其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW8</strong></p>
-</li>
-<li><p>PVID配置如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210224225870.png#pic_center" alt="SW5 PVID配置"><br>端口1：接SW8 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口4：接机顶盒 PVID设置为2 接收机顶盒发来的UNTAG帧 打上VLAN ID值为2后将该TAG帧交由端口1<br>端口5：接路由器 PVID设置为3 接收路由器发送来的UNTAG帧 打上VLAN ID值为3后将该TAG帧交由端口1<br>端口2-3：闲置 可无视</p>
-</li>
-<li><p>最终VLAN端口一览<br>VLAN2（ITV）：SW8P1、SW8P7、SW5P1、SW5P4<br>VLAN3（网络）：SW8P1、SW8P2-6、SW8P8、SW5P1、SW5P5</p>
-</li>
-</ul>
-<blockquote>
-<p>至此ITV通过SW5P4与SW8P7可互相通信 网络通过SW5P5与SW8P8可互相通信<br>ITV与网络互不干扰 但通过SW8P1与SW5P1之间只连接了一根网线 目的达成</p>
-</blockquote>
-</li>
-<li><p>3、连接拓扑图<br><img data-src="https://img-blog.csdnimg.cn/20190210230243826.png#pic_center" alt="连接拓扑图"></p>
-</li>
-<li><p>4、问题解决</p>
-</li>
-</ul>
-<p><strong>交换逻辑：</strong></p>
-<p><em>网络数据帧传输：</em></p>
-<p>1.去程 光猫千兆口-&gt;客厅路由器</p>
-<blockquote>
-<p>1.光猫千兆口发送UNTAG帧 到达SW8 8端口<br>2.判断8端口PVID为3 为数据帧打上VLAN ID标记值为3 转为TAG帧 传入VLAN3 交换至1-6端口<br>3.TAG帧到达2-6端口 与其他房间各电脑通信直接拨号上网；同时，TAG帧到达1端口 送至SW5<br>5.TAG帧到达SW5的1端口 判断TAG帧中VLAN ID为3 送入VLAN3 交换至5端口<br>6.TAG帧到达5端口 送至客厅路由器<br>7.完成光猫千兆口-&gt;客厅路由器的传输 全程数据帧在VLAN3中传输 与SW8 7端口ITV无关</p>
-</blockquote>
-<p>2.回程 客厅路由器-&gt;光猫千兆口</p>
-<blockquote>
-<p>1.客厅路由器发送UNTAG帧 到达SW5 5端口<br>2.判断5端口PVID为3 为数据帧打上VLAN ID标记值为3 转为TAG帧 传入VLAN3 交换至1端口 送至SW8<br>3.TAG帧到达SW8的1端口 判断TAG帧中VLAN ID为3 送入VLAN3 交换至1-6端口<br>4.TAG帧到达2-6端口 实现客厅路由器与其他各房间的局域网通信；同时TAG帧到达8端口 送至光猫千兆口<br>5.完成客厅路由器-&gt;光猫千兆口的传输 全程数据帧在VLAN3中传输 与SW8 7端口ITV无关</p>
-</blockquote>
-<p><em>ITV数据帧传输：</em></p>
-<p>1.去程 光猫ITV口-&gt;客厅机顶盒</p>
-<blockquote>
-<p>1.光猫ITV口发送UNTAG帧 到达SW8 7端口<br>2.判断7端口PVID为2 为数据帧打上VLAN ID标记值为2 转为TAG帧 传入VLAN2 交换至1-6端口<br>3.TAG帧到达1端口 送至SW5<br>5.TAG帧到达SW5的1端口 判断TAG帧中VLAN ID为2 送入VLAN2 交换至4端口<br>6.TAG帧到达4端口 送至机顶盒<br>7.完成光猫ITV口-&gt;客厅机顶盒的传输 全程数据帧在VLAN2中传输 与SW8 8端口网络无关</p>
-</blockquote>
-<p>2.回程 客厅机顶盒-&gt;光猫ITV口</p>
-<blockquote>
-<p>1.客厅机顶盒发送UNTAG帧 到达SW5 4端口<br>2.判断4端口PVID为2 为数据帧打上VLAN ID标记值为2 转为TAG帧 传入VLAN2 交换至1端口 送至SW8<br>3.TAG帧到达SW8的1端口 判断TAG帧中VLAN ID为2 送入VLAN2 交换至7端口<br>4.TAG帧到达7端口 送至光猫ITV口<br>5.完成客厅路由器-&gt;光猫ITV口的传输 全程数据帧在VLAN2中传输  与SW8 8端口网络无关</p>
-</blockquote>
-<h4 id="至此问题解决！-也是钻研了三四天-临时起意肯定有写的不对的地方-欢迎各位在评论指出！"><a href="#至此问题解决！-也是钻研了三四天-临时起意肯定有写的不对的地方-欢迎各位在评论指出！" class="headerlink" title="至此问题解决！ 也是钻研了三四天 临时起意肯定有写的不对的地方 欢迎各位在评论指出！"></a>至此问题解决！ 也是钻研了三四天 临时起意肯定有写的不对的地方 欢迎各位在评论指出！</h4><hr>
-<p>参考资料</p>
-<ol>
-<li><a target="_blank" rel="noopener" href="http://blog.chinaunix.net/uid-24020646-id-3065954.html">交换机Vlan中 tagged和untagged的区别-platinaluo-ChinaUnix博客</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/xiaohaijiejie/article/details/70208549">802.1Q VLAN 技术原理—理解PVID和VID - 小海的专栏 - CSDN博客</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.chiphell.com/thread-1670251-1-1.html">一根网线走iptv及网络的实践经验 - 电脑讨论 -  Chiphell - 分享与交流用户体验</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.chiphell.com/thread-1524134-1-1.html">一根网线怎么走局域网和iptv - 电脑讨论 -  Chiphell - 分享与交流用户体验</a></li>
-</ol>
-<hr>
-<p>2019年10月13日：有读者来问问题，似乎还是看的不太明白，加了小球的比方，希望能有助于理解吧！各位看官如果有啥不明白的，评论私信都可以哈！多多的来！</p>
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/c27c61f84cfd.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -602,7 +453,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -612,7 +463,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>220</span>
+      <span>221</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -636,18 +487,14 @@
 <h4 id="要求"><a href="#要求" class="headerlink" title="要求"></a>要求</h4><blockquote>
 <p>HTML不得被前台全局样式污染</p>
 </blockquote>
-<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>1、使用iframe 的 srcdoc</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">srcdoc</span>=<span class="string">&quot;&lt;p&gt;这是HTML&lt;p&gt;&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>2、 src&#x3D;”text&#x2F;html,xxxx”</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;data:text/html,&lt;p&gt;这是HTML&lt;p&gt;&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>3、 在src中使用javascript （ueditor的方案）</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> </span></span><br><span class="line"><span class="tag">	<span class="attr">src</span>=<span class="string">&quot;javascript:void(function()&#123;</span></span></span><br><span class="line"><span class="string"><span class="tag">	document.open();document.write(&#x27;&lt;p&gt;这是HTML&lt;p&gt;&#x27;);</span></span></span><br><span class="line"><span class="string"><span class="tag">	document.close();&#125;())&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><blockquote>
-<p>微信浏览器中以上方案都无效 似乎对iframe的src都进行了特殊处理 （惨）</p>
-</blockquote>
-<h1 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h1><p>直接对iframe的contentWindow进行操作 使用document.write 最终解决问题 此方法应该兼容性最好<br> <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;about:blank;&quot;</span> <span class="attr">id</span>=<span class="string">&quot;target&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript">	</span></span><br><span class="line"><span class="language-javascript">	<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;target&#x27;</span>).<span class="property">contentWindow</span>.<span class="property">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;&lt;p&gt;这是HTML&lt;p&gt;&#x27;</span>) </span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure><br>*百谷一番都没有找到任何的解决方案 最终自己得出以下方案 记录一下 也为开发者们做一些微小的贡献（笑）</p>
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/b0ba270a0600.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -709,7 +556,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -719,7 +566,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>337</span>
+      <span>338</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -740,15 +587,16 @@
           <h5 id="开发需求"><a href="#开发需求" class="headerlink" title="开发需求"></a>开发需求</h5><p>在页面中加入一个定高的iframe</p>
 <h5 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h5><p>IOS safari中iframe会根据内容高度进行iframe的内容自扩展以适应内容高度 设置height无效</p>
 <h6 id="百谷之后"><a href="#百谷之后" class="headerlink" title="百谷之后"></a>百谷之后</h6><blockquote>
-<p>在 iOS Safari 上，对于一个 scrollable 的 iframe 元素，iOS Safari 会选择扩展 iframe 的高度来自适应其中 web 页面内容的高度。所以当页面内容超过 iframe 设置的高度时，iOS Safari 并不会像在 Android 浏览器中那样维持 iframe 的高度并在右侧显示一个拖动条，而是直接扩展 iframe 的高度</p>
+<p>在 iOS Safari 上，对于一个 scrollable 的 iframe 元素，iOS Safari 会选择扩展 iframe 的高度来自适应其中 web 页面内容的高度。所以当页面内容超过 iframe 设置的高度时，iOS Safari 并不会像在 Android 浏览器中那样维持 iframe 的高度并在右侧显示一个拖动条，而是直接扩展 iframe 的高度。</p>
 </blockquote>
-<h5 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h5><p>① 在iframe上添加 scrollable&#x3D;no<br>此方案会使safari中iframe的设置高度生效不再自扩展，但是页面会直接被裁剪 产生类似于overflow:hidden的效果 不是想要的效果<br>②在iframe外增加一个定高div 并overflow-y:hidden，至此IOS满足需求，发现安卓显示高度不正确，令iframe高度100% 至此双端表现一致 满足需求 采用该方案</p>
-<h5 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h5><h6 id="问题代码"><a href="#问题代码" class="headerlink" title="问题代码"></a>问题代码</h6><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;url&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height:300px&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h6 id="方案①代码"><a href="#方案①代码" class="headerlink" title="方案①代码"></a>方案①代码</h6><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;url&quot;</span> <span class="attr">scrollable</span>=<span class="string">&quot;no&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height:300px&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h6 id="方案②代码（最终代码）"><a href="#方案②代码（最终代码）" class="headerlink" title="方案②代码（最终代码）"></a>方案②代码（最终代码）</h6><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;wrap&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height:300px;overflow-y:hidden&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;url&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height:100%&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="—-以上-问题解决"><a href="#—-以上-问题解决" class="headerlink" title="— 以上 问题解决"></a>— 以上 问题解决</h3><h3 id="有什么不明白的可以在评论里留言-￣▽￣-／"><a href="#有什么不明白的可以在评论里留言-￣▽￣-／" class="headerlink" title="有什么不明白的可以在评论里留言(￣▽￣)／"></a>有什么不明白的可以在评论里留言(￣▽￣)／</h3><hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/3ed582fbe64f.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -810,7 +658,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -820,7 +668,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>266</span>
+      <span>260</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -846,42 +694,16 @@ var o1 = new Base()
 var o2 = Object.create(Base)
 </code></pre>
 <blockquote>
-<p>那这样到底有什么不一样呢？<br>这里写图片描述</p>
+<p>那这样到底有什么不一样呢？</p>
 </blockquote>
-<blockquote>
-<p>我先来一段Object.create的实现方式</p>
-</blockquote>
-<pre><code>Object.create =  function (o) &#123;
-    var F = function () &#123;&#125;
-    F.prototype = o
-    return new F()
-&#125;
-</code></pre>
-<blockquote>
-<p>可以看出来。Object.create是内部定义一个对象，并且让F.prototype对象 赋值为引进的对象&#x2F;函数 o，并return出一个新的对象。<br>再看看var o1 &#x3D; new Base()的时候new做了什么。</p>
-</blockquote>
-<blockquote>
-<p>JavaScript 实际上执行的是：</p>
-</blockquote>
-<pre><code>var o1 = new Object()
-o1.[[Prototype]] = Base.prototype
-Base.call(o1)
-</code></pre>
-<blockquote>
-<p>new做法是新建一个obj对象o1，并且让o1的__proto__指向了Base.prototype对象。并且使用call 进行强转作用环境。从而实现了实例的创建。</p>
-</blockquote>
-<h3 id="那么new-Obj-与-Object-create-Obj-prototype-有什么区别呢"><a href="#那么new-Obj-与-Object-create-Obj-prototype-有什么区别呢" class="headerlink" title="那么new Obj() 与 Object.create(Obj.prototype)有什么区别呢"></a>那么new Obj() 与 Object.create(Obj.prototype)有什么区别呢</h3><h6 id="以下为原创内容"><a href="#以下为原创内容" class="headerlink" title="以下为原创内容"></a>以下为原创内容</h6><pre><code>var Obj = function()&#123;
-    console.log(&#39;obj\&#39;s constructor&#39;)
-&#125;
-
-&gt; new Obj()
-&lt; obj&#39;s constructor
-&lt; Obj &#123;&#125;
-&gt; Object.create(Obj.prototype)
-&lt; Obj &#123;&#125;
-</code></pre>
-<h2 id="——-得出结论-Object-create-Obj-prototype-将不会触发Obj的构造函数"><a href="#——-得出结论-Object-create-Obj-prototype-将不会触发Obj的构造函数" class="headerlink" title="—— 得出结论 Object.create(Obj.prototype)将不会触发Obj的构造函数"></a>—— 得出结论 Object.create(Obj.prototype)将不会触发Obj的构造函数</h2><hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/dd7ca3310acb.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -943,7 +765,7 @@ Base.call(o1)
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -953,7 +775,7 @@ Base.call(o1)
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>136</span>
+      <span>137</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -971,14 +793,15 @@ Base.call(o1)
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>之前用atom、sublime的时候 Emmet 的模板是可配置的 但是在webstorm配置中的Editor &gt; Emmet选项下没有发现任何有关模板的配置 只有一些选项的配置</p>
-<hr>
-<p><img data-src="https://img-blog.csdn.net/20180327135651291?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="webstorm Emmet相关配置"></p>
-<p>其实模板配置在Editor&gt;Live Templates 下 会找到有Zen字样开头的 Zen CSS、 Zen HTML、Zen XSL 分别是CSS、HTML、XSL的模板</p>
-<hr>
-<h2 id=""><a href="#" class="headerlink" title=""></a><img data-src="https://img-blog.csdn.net/20180327140915194?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="模板配置"></h2><p>*Emmet前身叫做ZenCoding 所以这里会用Zen开头 模板的配置方式与webstorm其他模板配置相同 这里不再赘述</p>
-<hr>
-
+          <p>之前用atom、sublime的时候 Emmet 的模板是可配置的 但是在webstorm配置中的Editor &gt; Emmet选项下没有发现任何有关模板的配置 只有一些选项的配置。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/180cb4d78d79.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1134,7 +957,7 @@ Base.call(o1)
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -1162,41 +985,15 @@ Base.call(o1)
     
     
     <div class="post-body" itemprop="articleBody">
-          <h4 id="——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案"><a href="#——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案" class="headerlink" title="—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案"></a>—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案</h4><h3 id="A-Few-Minutes-Later…"><a href="#A-Few-Minutes-Later…" class="headerlink" title="A Few Minutes Later….."></a><strong>A Few Minutes Later…..</strong></h3><p>经过一番Demo和文档的查找，惊喜的发现正式版中TransitRoute，WalkingRoute，以及DrivingRoute 的searchComplete回调中有个“moreResultsUrl” 打开正是百度地图的导航结果页！<br>&amp;nbsp;</p>
-<h3 id="事情并没有那么简单-——-使用DrivingRoute"><a href="#事情并没有那么简单-——-使用DrivingRoute" class="headerlink" title="事情并没有那么简单  —— 使用DrivingRoute"></a><strong>事情并没有那么简单  —— 使用DrivingRoute</strong></h3><p>当我打开DrivingRoute的moreResultsUrl 度娘很友好的向我展示了下面的界面 并且不管我如何调整参数 emmmmm 毫无变化！</p>
-<p><img data-src="https://img-blog.csdnimg.cn/img_convert/d953d2f1c93ba21043d2bb65adfcd32b.png" alt="DrivingRoute未能找到相应结果"></p>
-<p>&amp;nbsp;<br>&amp;nbsp;</p>
-<h3 id="Fine-不开车我走路行了吧-——-使用WalkingRoute"><a href="#Fine-不开车我走路行了吧-——-使用WalkingRoute" class="headerlink" title="Fine 不开车我走路行了吧  —— 使用WalkingRoute!"></a><strong>Fine 不开车我走路行了吧  —— 使用WalkingRoute!</strong></h3><p><img data-src="https://img-blog.csdnimg.cn/img_convert/0576d2b2c8e66659d39bb9c500dabe9c.png" alt="ops!"></p>
-<p><img data-src="https://img-blog.csdnimg.cn/img_convert/0385b0475d2f8f0784130c8f3d045013.png" alt="这里写图片描述"><br>..<br>………………<br>……………………..<br>…………………………………. <img data-src="https://img-blog.csdnimg.cn/img_convert/f052cca3f5e3eee8bb5117452a8b5264.png" alt="这里写图片描述"></p>
-<p>*以上自行感受（崩溃）<br>&amp;nbsp;<br>&amp;nbsp;</p>
-<h3 id="…好吧下下策-坐公交吧-з」∠-——-使用TransitRoute"><a href="#…好吧下下策-坐公交吧-з」∠-——-使用TransitRoute" class="headerlink" title="…好吧下下策  坐公交吧_(:з」∠)_ —— 使用TransitRoute"></a><strong>…好吧下下策  坐公交吧_(:з」∠)_ —— 使用TransitRoute</strong></h3><p>那个,出来是出来了…….</p>
-<p><img data-src="https://img-blog.csdnimg.cn/img_convert/5b554afc825dfce4c6cf9f2cc824b8f7.png" alt="这里写图片描述"></p>
-<p>为什么地图还要我切换选项卡才能看到啊！！！！（拿烟的手微微颤抖.jpg</p>
-<h3 id="OK-冷静-我们来分析一下公交的链接…"><a href="#OK-冷静-我们来分析一下公交的链接…" class="headerlink" title="OK 冷静 我们来分析一下公交的链接…"></a><strong>OK 冷静 我们来分析一下公交的链接…</strong></h3><blockquote>
-<p><a target="_blank" rel="noopener" href="http://api.map.baidu.com/direction?region=%E6%9D%AD%E5%B7%9E%E5%B8%82&amp;origin=30.26348989892,120.21415684874&amp;destination=30.235552,120.205199&amp;output=html&amp;mode=transit&amp;src=baidu_map_jsapi">http://api.map.baidu.com/direction?region=杭州市&amp;origin=30.26348989892,120.21415684874&amp;destination=30.235552,120.205199&amp;output=html&amp;mode=transit&amp;src=baidu_map_jsapi</a></p>
-</blockquote>
-<p>↓<br>↓仔细看↓<br>↓</p>
-<blockquote>
-<p>?region&#x3D;city&amp;origin&#x3D;30.26348989892,120.21415684874&amp;destination&#x3D;30.235552,120.205199&amp;output&#x3D;html&amp;mode&#x3D;transit&amp;src&#x3D;baidu_map_jsapi</p>
-</blockquote>
-<p>↓<br>↓仔细看↓<br>↓</p>
-<blockquote>
-<p>&amp;mode&#x3D;transit&amp;src&#x3D;baidu_map_jsapi</p>
-</blockquote>
-<p>↓<br>↓仔细看↓<br>↓</p>
-<blockquote>
-<p>&amp;mode&#x3D;transit</p>
-</blockquote>
-<p>是不是明白了什么（滑稽）？</p>
-<h3 id="Magic！——使用Driving模式和Walking模式的变通方式"><a href="#Magic！——使用Driving模式和Walking模式的变通方式" class="headerlink" title="Magic！——使用Driving模式和Walking模式的变通方式"></a><strong>Magic！——使用Driving模式和Walking模式的变通方式</strong></h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">moreResultsUrl.<span class="title function_">replace</span>(<span class="string">&#x27;transit&#x27;</span>, <span class="string">&#x27;driving&#x27;</span>);</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">moreResultsUrl.<span class="title function_">replace</span>(<span class="string">&#x27;transit&#x27;</span>, <span class="string">&#x27;walking&#x27;</span>);</span><br></pre></td></tr></table></figure>
-<p>PS.希望百度早点修复吧、、、 有什么问题在下面问或者说有更好的办法请告诉我 谢谢~☆</p>
-<h4 id="2018-x2F-5-x2F-3-更新"><a href="#2018-x2F-5-x2F-3-更新" class="headerlink" title="2018&#x2F;5&#x2F;3 更新"></a>2018&#x2F;5&#x2F;3 更新</h4><p>现在似乎三种都无法获取到moreResultsUrl了替代方案为 直接传入region、origin、destination、mode 拼接下面的url然后跳转</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">href</span> = <span class="string">&#x27;http://api.map.baidu.com/direction&#x27;</span>+</span><br><span class="line">							<span class="string">&#x27;?region=&#x27;</span>+region+</span><br><span class="line">							<span class="string">&#x27;&amp;origin=&#x27;</span>+origin.<span class="property">lat</span>+<span class="string">&#x27;,&#x27;</span>+origin.<span class="property">lng</span>+</span><br><span class="line">							<span class="string">&#x27;&amp;destination=&#x27;</span>+dest.<span class="property">lat</span>+<span class="string">&#x27;,&#x27;</span>+dest.<span class="property">lng</span>+</span><br><span class="line">							<span class="string">&#x27;&amp;output=html&#x27;</span>+</span><br><span class="line">							<span class="string">&#x27;&amp;mode=&#x27;</span>+transit/walking/driving+</span><br><span class="line">							<span class="string">&#x27;&amp;src=baidu_map_jsapi&#x27;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<hr>
-
+          <h4 id="——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案"><a href="#——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案" class="headerlink" title="—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案"></a>—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案</h4><h3 id="A-Few-Minutes-Later…"><a href="#A-Few-Minutes-Later…" class="headerlink" title="A Few Minutes Later….."></a><strong>A Few Minutes Later…..</strong></h3><p>经过一番Demo和文档的查找，惊喜的发现正式版中TransitRoute，WalkingRoute，以及DrivingRoute 的searchComplete回调中有个“moreResultsUrl” 打开正是百度地图的导航结果页！</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/b8e315d25c83.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

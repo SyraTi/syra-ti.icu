@@ -17,6 +17,8 @@
 <p>由于项目里视频比较少，这问题还是在上线前三天发现的，那个急的，一开始还找不到是什么问题，找到老版本的代码后发现前端代码毫无区别（亏得还在前端调试了半天），最后发现使用静态文件就没什么问题。</p>
 <p>确定下来大致是文件流的缘故没跑了，百度+谷歌发现safari不支持整个文件流，服务器必须支持分段请求，也就是下面要说的Range分段请求了。</p>
 <hr>
+<span id="more"></span>
+
 <h2 id="请求头-Range-和-响应头-Content-Range"><a href="#请求头-Range-和-响应头-Content-Range" class="headerlink" title="请求头 Range 和 响应头 Content-Range"></a>请求头 <code>Range</code> 和 响应头 <code>Content-Range</code></h2><p>Http协议从1.1开始支持获取文件的部分内容，这为并行下载以及断点续传提供了技术支持。该标准分为两个Header，分别为一个请求头<code>Range</code>， 和一个响应头<code>Content-Range</code> 。</p>
 <hr>
 <h2 id="请求头-Range"><a href="#请求头-Range" class="headerlink" title="请求头 Range"></a>请求头 <code>Range</code></h2><p>先来看看请求头，safari对于文件流的请求会带上这个头，服务器需要正确的对其作出响应，浏览器才能正确的展示文件。之前没法播放文件流正是因为没有正确响应这个请求头。</p>
@@ -92,7 +94,8 @@
     <content><![CDATA[<h1 id="举例来讲"><a href="#举例来讲" class="headerlink" title="举例来讲"></a>举例来讲</h1><h3 id="我们现在有一个input-demo"><a href="#我们现在有一个input-demo" class="headerlink" title="我们现在有一个input#demo"></a>我们现在有一个input#demo</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;demo&quot;</span> <span class="attr">value</span>=<span class="string">&quot;attr&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <hr>
 <h4 id="Attribute和Property都被翻译成“属性”"><a href="#Attribute和Property都被翻译成“属性”" class="headerlink" title="- Attribute和Property都被翻译成“属性”"></a>- Attribute和Property都被翻译成“属性”</h4><h4 id="“value”就是input-demo的属性之一"><a href="#“value”就是input-demo的属性之一" class="headerlink" title="- “value”就是input#demo的属性之一"></a>- “value”就是input#demo的属性之一</h4><h4 id="也就是说，没错，就像你想的一样"><a href="#也就是说，没错，就像你想的一样" class="headerlink" title="- 也就是说，没错，就像你想的一样"></a>- 也就是说，没错，就像你想的一样</h4><h4 id="input-demo的-Attribute-“value”值为”attr”"><a href="#input-demo的-Attribute-“value”值为”attr”" class="headerlink" title="- input#demo的 Attribute “value”值为”attr”"></a>- input#demo的 Attribute “value”值为”attr”</h4><h4 id="input-demo的-Property-“value”值同为”attr”"><a href="#input-demo的-Property-“value”值同为”attr”" class="headerlink" title="- input#demo的 Property “value”值同为”attr”"></a>- input#demo的 Property “value”值同为”attr”</h4><hr>
-<h3 id="这时候你可能会问了-什么时候他们不一样？"><a href="#这时候你可能会问了-什么时候他们不一样？" class="headerlink" title="这时候你可能会问了:什么时候他们不一样？"></a>这时候你可能会问了:<strong>什么时候他们不一样？</strong></h3><hr>
+<h3 id="这时候你可能会问了：什么时候他们不一样？"><a href="#这时候你可能会问了：什么时候他们不一样？" class="headerlink" title="这时候你可能会问了：什么时候他们不一样？"></a>这时候你可能会问了：<strong>什么时候他们不一样？</strong></h3><hr>
+<span id="more"></span>
 <h4 id="wendehao！"><a href="#wendehao！" class="headerlink" title="wendehao！"></a><strong>wendehao！</strong></h4><blockquote>
 <h4 id="当我们使用如下js代码对input-demo进行操作后"><a href="#当我们使用如下js代码对input-demo进行操作后" class="headerlink" title="当我们使用如下js代码对input#demo进行操作后"></a>当我们使用如下js代码对input#demo进行操作后</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt;<span class="variable language_">document</span>.<span class="title function_">getElementbyId</span>(<span class="string">&#x27;demo&#x27;</span>).<span class="property">value</span>=<span class="string">&#x27;changed&#x27;</span>;</span><br></pre></td></tr></table></figure>
 </blockquote>
@@ -136,6 +139,7 @@
 </blockquote>
 <p>总之 LV建立在VG之上，VG建立在PV之上，是PV的集合，PV即物理卷。</p>
 <p><strong>本文的总体思路为： 扩容PV-&gt; 扩容LV -&gt; 扩容根目录空间</strong></p>
+<span id="more"></span> 
 <h1 id="1-VM添加空间"><a href="#1-VM添加空间" class="headerlink" title="1.VM添加空间"></a>1.VM添加空间</h1><p>使用vmware增加空间 ↓<br><img data-src="https://img-blog.csdnimg.cn/6bcae82012ad45d6afcd2a9a55bda7a4.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
 <h1 id="2-使用fdisk扩展原有分区"><a href="#2-使用fdisk扩展原有分区" class="headerlink" title="2.使用fdisk扩展原有分区"></a>2.使用fdisk扩展原有分区</h1><p>此处参考了<a href="https://www.linuxprobe.com/linux-fdisk-size.html">Linux下使用fdisk扩展分区容量</a>，原文关键部分摘录如下</p>
 <blockquote>
@@ -157,7 +161,7 @@
     <title>Vue绑定&amp;lt;audio&amp;gt;/&amp;lt;video&amp;gt;标记的muted属性无效问题随记</title>
     <url>/dd17a46f0b1d.html</url>
     <content><![CDATA[<h2 id="问题代码"><a href="#问题代码" class="headerlink" title="问题代码"></a>问题代码</h2><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--这里的muted绑定不起作用--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">:muted</span>=<span class="string">&quot;isMuted&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;audioPlayer&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
+<span id="more"></span>
 <h2 id="援引Github上的issue回复"><a href="#援引Github上的issue回复" class="headerlink" title="援引Github上的issue回复"></a>援引Github上的issue回复</h2><p><img data-src="https://img-blog.csdnimg.cn/20210127220113689.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <p>翻译：muted属性类似于<code>&lt;input&gt;</code>的<code>value</code>属性，如果他在元素初始化时是内联的，那么属性值将作为初始值；但是如果在一开始并没有内联，只是后续更改了attribute <a href="%E5%85%B3%E4%BA%8Eattribute%E5%92%8Cproperty%E5%80%BC%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E6%88%91%E5%BE%80%E6%9C%9F%E7%9A%84%5B%E6%96%87%E7%AB%A0%5D(https://blog.csdn.net/sinat_34930640/article/details/76310396)%E3%80%82">^1</a> 值，那么将不会起任何效果，正确的做法是设置相对应的property <a href="%E5%85%B3%E4%BA%8Eattribute%E5%92%8Cproperty%E5%80%BC%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E6%88%91%E5%BE%80%E6%9C%9F%E7%9A%84%5B%E6%96%87%E7%AB%A0%5D(https://blog.csdn.net/sinat_34930640/article/details/76310396)%E3%80%82">^1</a> 值。</p>
 <h3 id="解决方式：使用watch来手动设置muted"><a href="#解决方式：使用watch来手动设置muted" class="headerlink" title="解决方式：使用watch来手动设置muted"></a>解决方式：使用watch来手动设置muted</h3><p><em>html</em></p>
@@ -169,7 +173,11 @@
   <entry>
     <title>Windows 使用 ssh-agent 添加多个ssh key后，git依旧无权限的解决方法</title>
     <url>/162b476ff9bf.html</url>
-    <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在windows安装完ssh-agent，添加多个ssh key之后,git clone依旧提示Permission Denied。<br>（安装参见：<a href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement">https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement</a>）</p>
+    <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在windows安装完ssh-agent，添加多个ssh key之后,git clone依旧提示Permission Denied。</p>
+<blockquote>
+<p>安装参见：<br><a href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement">https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement</a></p>
+</blockquote>
+<span id="more"></span>
 <h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>Git需要知道Windows ssh-agent服务的位置， 可以通过添加<code>GIT_SSH</code>环境变量来解决该问题。</p>
 <p>以下文字来源：<a href="https://snowdrift.tech/cli/ssh/git/tutorials/2019/01/31/using-ssh-agent-git-windows.html">https://snowdrift.tech/cli/ssh/git/tutorials/2019/01/31/using-ssh-agent-git-windows.html</a></p>
 <blockquote>
@@ -178,7 +186,8 @@
 <h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><blockquote>
 <p>Run the following command to update the environment variable:<br>在PowerShell中运行以下命令添加环境变量：</p>
 </blockquote>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> &gt;  [<span class="type">Environment</span>]::SetEnvironmentVariable(<span class="string">&quot;GIT_SSH&quot;</span>, <span class="string">&quot;<span class="variable">$</span>((Get-Command ssh).Source)&quot;</span>, [<span class="type">System.EnvironmentVariableTarget</span>]::User)</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> &gt;  [<span class="type">Environment</span>]::SetEnvironmentVariable(<span class="string">&quot;GIT_SSH&quot;</span>, <span class="string">&quot;<span class="variable">$</span>((Get-Command ssh).Source)&quot;</span>, [<span class="type">System.EnvironmentVariableTarget</span>]::User)</span><br></pre></td></tr></table></figure>
+]]></content>
   </entry>
   <entry>
     <title>apt-get临时设置代理方式</title>
@@ -207,8 +216,9 @@
     <content><![CDATA[<h5 id="开发需求"><a href="#开发需求" class="headerlink" title="开发需求"></a>开发需求</h5><p>在页面中加入一个定高的iframe</p>
 <h5 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h5><p>IOS safari中iframe会根据内容高度进行iframe的内容自扩展以适应内容高度 设置height无效</p>
 <h6 id="百谷之后"><a href="#百谷之后" class="headerlink" title="百谷之后"></a>百谷之后</h6><blockquote>
-<p>在 iOS Safari 上，对于一个 scrollable 的 iframe 元素，iOS Safari 会选择扩展 iframe 的高度来自适应其中 web 页面内容的高度。所以当页面内容超过 iframe 设置的高度时，iOS Safari 并不会像在 Android 浏览器中那样维持 iframe 的高度并在右侧显示一个拖动条，而是直接扩展 iframe 的高度</p>
+<p>在 iOS Safari 上，对于一个 scrollable 的 iframe 元素，iOS Safari 会选择扩展 iframe 的高度来自适应其中 web 页面内容的高度。所以当页面内容超过 iframe 设置的高度时，iOS Safari 并不会像在 Android 浏览器中那样维持 iframe 的高度并在右侧显示一个拖动条，而是直接扩展 iframe 的高度。</p>
 </blockquote>
+<span id="more"></span>
 <h5 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h5><p>① 在iframe上添加 scrollable&#x3D;no<br>此方案会使safari中iframe的设置高度生效不再自扩展，但是页面会直接被裁剪 产生类似于overflow:hidden的效果 不是想要的效果<br>②在iframe外增加一个定高div 并overflow-y:hidden，至此IOS满足需求，发现安卓显示高度不正确，令iframe高度100% 至此双端表现一致 满足需求 采用该方案</p>
 <h5 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h5><h6 id="问题代码"><a href="#问题代码" class="headerlink" title="问题代码"></a>问题代码</h6><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;url&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height:300px&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <h6 id="方案①代码"><a href="#方案①代码" class="headerlink" title="方案①代码"></a>方案①代码</h6><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;url&quot;</span> <span class="attr">scrollable</span>=<span class="string">&quot;no&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height:300px&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -239,6 +249,7 @@
     <url>/ab374a9a7cf3.html</url>
     <content><![CDATA[<p>原文:<a href="http://www.bcty365.com/content-146-5588-1.html">http://www.bcty365.com/content-146-5588-1.html</a></p>
 <h2 id="组件介绍"><a href="#组件介绍" class="headerlink" title="组件介绍"></a>组件介绍</h2><p>轮播组件是mui提供的一个核心组件，在该核心组件基础上，衍生出了图片轮播、可拖动式图文表格、可拖动式选项卡、左右滑动9宫格等组件。</p>
+<span id="more"></span>
 <h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>获取slide组件对象</p>
 <pre><code>var slider = mui(&#39;#slider&#39;).slider();
 </code></pre>
@@ -272,8 +283,10 @@ var o1 = new Base()
 var o2 = Object.create(Base)
 </code></pre>
 <blockquote>
-<p>那这样到底有什么不一样呢？<br>这里写图片描述</p>
+<p>那这样到底有什么不一样呢？</p>
 </blockquote>
+<span id="more"></span>
+
 <blockquote>
 <p>我先来一段Object.create的实现方式</p>
 </blockquote>
@@ -315,6 +328,7 @@ Base.call(o1)
     <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>公司里放了一台黑裙，但是没有公网IP，想到用openvpn拨到家里的路由器，再进行端口转发达到内网穿透，公网访问的目的。</p>
 <p><strong>总之的总之三步走，需要openwrt上有server，以及群晖能够有client进行拨入，最后配置端口转发</strong></p>
 <hr>
+<span id="more"></span>
 <h2 id="1-openwrt部署openvpn-server"><a href="#1-openwrt部署openvpn-server" class="headerlink" title="1. openwrt部署openvpn server"></a>1. openwrt部署openvpn server</h2><blockquote>
 <p>openwrt官方提供了详实的文档，如下<br><a href="https://openwrt.org/docs/guide-user/services/vpn/openvpn/server">[OpenWrt Wiki] OpenVPN server</a></p>
 </blockquote>
@@ -367,31 +381,16 @@ Base.call(o1)
 ]]></content>
   </entry>
   <entry>
-    <title>修复gitCI中文件的创建时间与修改时间</title>
-    <url>/befecf49889e.html</url>
-    <content><![CDATA[<h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>hexo发现经过CI之后，所有文章的 <strong>更新时间(mtime)</strong> 变成了CI运行的时间。</p>
-<h1 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h1><p>在CI checkout代码时，使用文件最后一次涉及的commit时间作为文件的修改时间，进行mtime的恢复。</p>
-<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># .github/workflows/action.yml</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v3</span></span><br><span class="line">  <span class="comment"># 如果使用的是GithubAction的actions/checkout，记得加上下面的内容，对仓库历史进行完整的签出</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">fetch-depth:</span> <span class="number">0</span></span><br><span class="line"><span class="comment"># 恢复文件修改时间</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Restore</span> <span class="string">file</span> <span class="string">modification</span> <span class="string">time</span></span><br><span class="line">  <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">    find source/_posts -name &#x27;*.md&#x27; | while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span></span><br><span class="line"><span class="string"></span><span class="string">...</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="代码解释"><a href="#代码解释" class="headerlink" title="代码解释"></a>代码解释</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">列出需要恢复修改时间的文件</span></span><br><span class="line">find source/_posts -name &#x27;*.md&#x27;</span><br><span class="line"><span class="meta"># </span><span class="language-bash">循环</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 git <span class="built_in">log</span> -- <span class="variable">$file</span> 得到该文件最后修改的commit 并且使用pretty选项获取时间戳</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 <span class="built_in">touch</span> -d 来将文件的atime以及mtime修改为commit的时间戳</span></span><br><span class="line">while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span><br></pre></td></tr></table></figure>
-
-
-<p>以上！まいど～</p>
-<hr>
-]]></content>
-      <tags>
-        <tag>CI/CD</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>webstorm中 emmet 模板的修改步骤</title>
     <url>/180cb4d78d79.html</url>
-    <content><![CDATA[<p>之前用atom、sublime的时候 Emmet 的模板是可配置的 但是在webstorm配置中的Editor &gt; Emmet选项下没有发现任何有关模板的配置 只有一些选项的配置</p>
+    <content><![CDATA[<p>之前用atom、sublime的时候 Emmet 的模板是可配置的 但是在webstorm配置中的Editor &gt; Emmet选项下没有发现任何有关模板的配置 只有一些选项的配置。</p>
+<span id="more"></span>
+
 <hr>
-<p><img data-src="https://img-blog.csdn.net/20180327135651291?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="webstorm Emmet相关配置"></p>
+<p><img data-src="/images/posts/20180327135651291.png" alt="webstorm Emmet相关配置"></p>
 <p>其实模板配置在Editor&gt;Live Templates 下 会找到有Zen字样开头的 Zen CSS、 Zen HTML、Zen XSL 分别是CSS、HTML、XSL的模板</p>
 <hr>
-<h2 id=""><a href="#" class="headerlink" title=""></a><img data-src="https://img-blog.csdn.net/20180327140915194?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="模板配置"></h2><p>*Emmet前身叫做ZenCoding 所以这里会用Zen开头 模板的配置方式与webstorm其他模板配置相同 这里不再赘述</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><img data-src="/images/posts/20180327140915194.png" alt="模板配置"></h2><p>*Emmet前身叫做ZenCoding 所以这里会用Zen开头 模板的配置方式与webstorm其他模板配置相同 这里不再赘述</p>
 <hr>
 ]]></content>
   </entry>
@@ -424,6 +423,7 @@ Base.call(o1)
 </blockquote>
 <pre><code>requestID = window.requestAnimationFrame(callback);
 </code></pre>
+<span id="more"></span>
 <h2 id="Polyfill"><a href="#Polyfill" class="headerlink" title="Polyfill"></a>Polyfill</h2><blockquote>
 <p>目前，高版本浏览器Firefox 23 &#x2F; IE 10 &#x2F; Chrome &#x2F; Safari）都支持这个方法。可以用下面的方法，检查浏览器是否支持这个API。如果不支持，则自行模拟部署该方法。</p>
 </blockquote>
@@ -468,8 +468,9 @@ requestAnimationFrame(repeatOften);
   <entry>
     <title>一根网线同时搭载电信itv及网络 解决方案</title>
     <url>/c27c61f84cfd.html</url>
-    <content><![CDATA[<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv</p>
+    <content><![CDATA[<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv。</p>
 <p><strong>原拓扑图如下</strong><br><img data-src="https://img-blog.csdnimg.cn/20190210155452299.png#pic_center" alt="原拓扑图"></p>
+<span id="more"></span>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>材料：</strong><br>1、水星Mercury SG105Pro 五口千兆网管交换机 价格 98 元 放置在客厅（下称SW5）<br>2、水星Mercury SG108Pro 八口千兆网管交换机 价格 169 元 放置在弱电箱（下称SW8）</p>
 <p><strong>整体解决思路：</strong><br>在弱电箱端，使用一台交换机，将itv和网络的数据包合并至一条主干道网线上，到使用端（客厅）使用另一台交换机进行识别后拆分为两条线使用——达到墙内一条线，实际承载两条线路的目的。</p>
 <p><strong>实际解决方案（看不明白可以先往下看）：</strong><br>利用802.1Q VLAN的Tag机制划分两路VLAN：一路走itv（下称VLAN2）一路走网络（下称VLAN3），由交换机为收到的包打Tag后送入网线，进入Tag所示VLAN传输，由另一台交换机判断Tag，送入指定设备——达到目的。</p>
@@ -650,7 +651,7 @@ requestAnimationFrame(repeatOften);
   字节码 --Ignition--> 逐行解释为机器码执行
   字节码 -.Ignition高频执行.-> HotSpot
   HotSpot --TurboFan--> 编译为机器码执行</pre>
-
+<span id="more"></span>
 <h3 id="1-1-Parser-解析器-生成语法抽象树（AST）"><a href="#1-1-Parser-解析器-生成语法抽象树（AST）" class="headerlink" title="1.1 Parser 解析器 生成语法抽象树（AST）"></a>1.1 Parser 解析器 生成语法抽象树（AST）</h3><p>生成AST中的一个优化是惰性解析(Lazy Parsing)，因为源码在执行前如果全部完全解析的话，不仅执行时间过长，而且会消耗更多的内存。<br>惰性解析就是指如果遇到并不是立即执行的函数，只会对其进行预解析(Pre-Parser)，当函数被调用时，才会对其完全解析。<br>预解析时，只会验证函数的语法是否有效、解析函数声明以及确定函数作用域，并不会生成AST，这项工作由Pre-Parser预解析器完成。</p>
 <h3 id="1-2-Ignition-解释器-生成字节码及解释执行"><a href="#1-2-Ignition-解释器-生成字节码及解释执行" class="headerlink" title="1.2 Ignition 解释器 生成字节码及解释执行"></a>1.2 Ignition 解释器 生成字节码及解释执行</h3><p>Ignition 是 V8 的解释器，负责生成和执行字节码。字节码与平台无关，也就是说无论 X86 架构或 ARM 架构，同一份 JavaScript 源码生成的字节码序列是相同的，解释器逐条读取字节码并执行。</p>
 <p>字节码是机器码的抽象，可以看作是小型的构建块。相比机器码，字节码不仅占用内存少，而且生成字节码的时间很快，提升了启动速度。</p>
@@ -722,6 +723,7 @@ requestAnimationFrame(repeatOften);
 <p>噢，有个注意点:</p>
 <p>每次调用<code>createObjectURL</code>的时候，一个新的URL对象就被创建了，即使是同一个file对象，也会创建一个新对URL对象，所以，为了最佳性能和内存使用，当不再需要这个对象的时候要<code>URL.revokeObjectURL()</code>释放它。</p>
 <p>开始压缩</p>
+<span id="more"></span>
 <p>创建一个<code>compressImage</code>函数，将之图片的地址url作参数传入：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">compressImage (url) &#123;</span><br><span class="line">	<span class="keyword">let</span> cvs = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;canvas&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> ctx = cvs.<span class="title function_">getContext</span>(<span class="string">&#x27;2d&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> img = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Image</span>()</span><br><span class="line">	img.<span class="property">src</span> = url</span><br><span class="line">	img.<span class="property">onload</span> = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">		cvs.<span class="property">width</span> = img.<span class="property">width</span></span><br><span class="line">		cvs.<span class="property">height</span> = img.<span class="property">height</span></span><br><span class="line">		<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">			ctx.<span class="title function_">drawImage</span>(img, <span class="number">0</span>, <span class="number">0</span>, cvs.<span class="property">width</span>, cvs.<span class="property">height</span>)</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">newImageData</span> = cvs.<span class="title function_">toDataURL</span>(<span class="string">&#x27;image/jpeg&#x27;</span>, <span class="number">0.1</span>)</span><br><span class="line">	    &#125;, <span class="number">0</span>)</span><br><span class="line">	    <span class="variable language_">this</span>.<span class="property">showPreviewer</span> = <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这里说说</p>
@@ -736,9 +738,28 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
+    <title>修复gitCI中文件的创建时间与修改时间</title>
+    <url>/de403aace05c.html</url>
+    <content><![CDATA[<h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>hexo发现经过CI之后，所有文章的 <strong>更新时间(mtime)</strong> 变成了CI运行的时间。</p>
+<h1 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h1><p>在CI checkout代码时，使用文件最后一次涉及的commit时间作为文件的修改时间，进行mtime的恢复。</p>
+<span id="more"></span>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># .github/workflows/action.yml</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v3</span></span><br><span class="line">  <span class="comment"># 如果使用的是GithubAction的actions/checkout，记得加上下面的内容，对仓库历史进行完整的签出</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">fetch-depth:</span> <span class="number">0</span></span><br><span class="line"><span class="comment"># 恢复文件修改时间</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Restore</span> <span class="string">file</span> <span class="string">modification</span> <span class="string">time</span></span><br><span class="line">  <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">    find source/_posts -name &#x27;*.md&#x27; | while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span></span><br><span class="line"><span class="string"></span><span class="string">...</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="代码解释"><a href="#代码解释" class="headerlink" title="代码解释"></a>代码解释</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">列出需要恢复修改时间的文件</span></span><br><span class="line">find source/_posts -name &#x27;*.md&#x27;</span><br><span class="line"><span class="meta"># </span><span class="language-bash">循环</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 git <span class="built_in">log</span> -- <span class="variable">$file</span> 得到该文件最后修改的commit 并且使用pretty选项获取时间戳</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 <span class="built_in">touch</span> -d 来将文件的atime以及mtime修改为commit的时间戳</span></span><br><span class="line">while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span><br></pre></td></tr></table></figure>
+
+
+<p>以上！まいど～</p>
+<hr>
+]]></content>
+      <tags>
+        <tag>CI/CD</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>关于Ajax跨域访问 session不能保存或之后无法访问session取值为空等问题</title>
     <url>/d6ed39098ad1.html</url>
-    <content><![CDATA[<h4 id="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"><a href="#根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。" class="headerlink" title="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"></a>根据浏览器的保护规则，<strong>跨域的时候我们创建的sessionId是不会被浏览器保存下来的</strong>，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。</h4><p>在ajax 请求要加配置</p>
+    <content><![CDATA[<h4 id="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"><a href="#根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。" class="headerlink" title="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"></a>根据浏览器的保护规则，<strong>跨域的时候我们创建的sessionId是不会被浏览器保存下来的</strong>，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。</h4><span id="more"></span>
+<p>在ajax 请求要加配置</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$.<span class="title function_">ajax</span>(&#123;</span><br><span class="line">	<span class="attr">url</span>:url,</span><br><span class="line">	<span class="comment">//加上 xhrFields及crossDomain</span></span><br><span class="line">	<span class="attr">xhrFields</span>: &#123;</span><br><span class="line">		<span class="comment">//允许带上凭据</span></span><br><span class="line">        <span class="attr">withCredentials</span>: <span class="literal">true</span></span><br><span class="line">	&#125;,</span><br><span class="line">       <span class="attr">crossDomain</span>: <span class="literal">true</span>,</span><br><span class="line">       <span class="comment">//以上</span></span><br><span class="line">	<span class="attr">success</span>:<span class="keyword">function</span>(<span class="params">result</span>)&#123;</span><br><span class="line">		<span class="title function_">alert</span>(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">error</span>:<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <h3 id="关于-withCredentials"><a href="#关于-withCredentials" class="headerlink" title="关于 withCredentials"></a>关于 withCredentials</h3><blockquote>
 <p><strong>withCredentials：</strong><br>默认情况下，跨源请求不提供凭据(cookie、HTTP认证及客户端SSL证明等)。通过将withCredentials属性设置为true，可以指定某个请求应该发送凭据。如果服务器接收带凭据的请求，会用下面的HTTP头部来响应。</p>
@@ -770,6 +791,7 @@ requestAnimationFrame(repeatOften);
 <p><em>问题样式 ↓</em><br><img data-src="https://img-blog.csdnimg.cn/20200326102440376.png" alt="问题样式"><br><em>jQuery能选择到 ↓</em><br><img data-src="https://img-blog.csdnimg.cn/20200326102815730.png" alt="jQuery能选择到"></p>
 <p><em>然而Chrome的开发者工具里面根本没有出现这一行 ↓</em><br><img data-src="https://img-blog.csdnimg.cn/20200326102544543.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw,size_16,color_FFFFFF,t_70" alt="Chrome不识别"></p>
 <hr>
+<span id="more"></span>
 <p><strong>排查到最后尝试删除了选择器末尾的空格，发现居然神奇的被识别了。。。。</strong></p>
 <p><em>删除末尾空格 ↓</em><br><img data-src="https://img-blog.csdnimg.cn/20200326103031581.png" alt="删除空格"><br><em>识别成功 ↓</em><br><img data-src="https://img-blog.csdnimg.cn/20200326103217265.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw,size_16,color_FFFFFF,t_70" alt="识别成功"></p>
 <hr>
@@ -825,6 +847,7 @@ requestAnimationFrame(repeatOften);
 <p>看起来一段非常简单的构建命令，实际会出现一些问题：当<code>NODE_ENV=production</code>时，<code>npm install</code>不会下载<code>devDependencies</code>，例如<code>webpack</code>、Typescript项目中的<code>@types/xxx</code>等。从而导致<code>npm run build</code>失败。</p>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>这时候可能有人会问了：我把<code>@types/xxx</code>丢到<code>dependencies</code>不就好了？</strong></p>
 <p>话虽如此，但是这样真的正确吗？</p>
+<span id="more"></span>
 <p>在构建过程中<code>@types</code>会被用于编译js时的类型校验，<code>webpack</code>更不用说本身就用于构建，但是这些依赖在js产物中其实并不会用到。 所以它们理应存在于<code>devDependencies</code>而不是<code>dependencies</code>。</p>
 <p><strong>那么在不更改<code>devDependencies</code>的情况下，这里得出的“能跑”的方案应该是：</strong></p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">NODE_ENV=development &amp;&amp; npm install &amp;&amp; NODE_ENV=production &amp;&amp; npm run build</span><br></pre></td></tr></table></figure>
@@ -858,6 +881,7 @@ requestAnimationFrame(repeatOften);
 <li>将<code>$fileInput.trigger(&#39;click&#39;)</code> 改为 <code>$(&#39;#id&#39;).trigger(&#39;click&#39;)</code>对保证新元素进行trigger而不是旧元素</li>
 </ol>
 <p>如果你想要知道具体原因，请往下看</p>
+<span id="more"></span>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * ajaxFileUpload源码</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"> <span class="comment">// 原input[type=file] </span></span><br><span class="line"> <span class="keyword">var</span> oldElement = $(<span class="string">&#x27;#&#x27;</span> + fileElementId);</span><br><span class="line"> <span class="comment">// clone一份新元素 此处需要添加true为参数 即上文第一步所提到的 复制元素的同时复制事件</span></span><br><span class="line"> <span class="keyword">var</span> newElement = $(oldElement).<span class="title function_">clone</span>(<span class="literal">true</span>);</span><br><span class="line"> <span class="comment">// 修改旧元素的id</span></span><br><span class="line"> $(oldElement).<span class="title function_">attr</span>(<span class="string">&#x27;id&#x27;</span>, fileId);</span><br><span class="line"> <span class="comment">// 将新元素放在旧元素的位置</span></span><br><span class="line"> $(oldElement).<span class="title function_">before</span>(newElement);</span><br><span class="line"> <span class="comment">// 将旧元素移动到目标表单</span></span><br><span class="line"> $(oldElement).<span class="title function_">appendTo</span>(form);</span><br><span class="line"> <span class="comment">// 设置表单样式</span></span><br><span class="line"> $(form).<span class="title function_">css</span>(<span class="string">&#x27;position&#x27;</span>, <span class="string">&#x27;absolute&#x27;</span>);</span><br><span class="line"> $(form).<span class="title function_">css</span>(<span class="string">&#x27;top&#x27;</span>, <span class="string">&#x27;-1200px&#x27;</span>);</span><br><span class="line"> $(form).<span class="title function_">css</span>(<span class="string">&#x27;left&#x27;</span>, <span class="string">&#x27;-1200px&#x27;</span>);</span><br><span class="line"> $(form).<span class="title function_">appendTo</span>(<span class="string">&#x27;body&#x27;</span>);</span><br></pre></td></tr></table></figure>
 
 <p>所以提交完后 原来上传的位置实际已经被newElement替代 但是如果在上传之前就指定了变量指向原input[type&#x3D;file] ，那么上传之后将依旧指向oldElement（其实已经在表单里）,此时trigger会生效，但是该元素实际已经被ajaxFileUpload所删除 ,只存在于内存中，change事件似乎不会生效了（此处原因不详，如果知晓请告诉我）</p>
@@ -876,7 +900,7 @@ requestAnimationFrame(repeatOften);
     <url>/32502d134cc1.html</url>
     <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在<code>vue.config.js</code>中无法配置自定义<code>devtool</code>选项，无论是使用<code>configureWebpack</code>还是<code>chainWebpack</code>都无法改变<code>source-map</code>的类型。官方文档也没有提供相关的说明。</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// vue.config.js</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Components</span> = <span class="built_in">require</span>(<span class="string">&#x27;unplugin-vue-components/webpack&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">ElementPlusResolver</span> &#125; = <span class="built_in">require</span>(<span class="string">&#x27;unplugin-vue-components/resolvers&#x27;</span>)</span><br><span class="line"><span class="comment">// 两种方式均无法更改devtool</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">configureWebpack</span>: &#123;</span><br><span class="line">    <span class="attr">devtool</span>: <span class="string">&quot;source-map&quot;</span>,</span><br><span class="line">    <span class="comment">// 2021.10.26更新 ↓罪魁祸首</span></span><br><span class="line">    <span class="attr">plugins</span>: [</span><br><span class="line">      <span class="title class_">Components</span>(&#123;</span><br><span class="line">        <span class="attr">resolvers</span>: [<span class="title class_">ElementPlusResolver</span>()]</span><br><span class="line">      &#125;)</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">chainWebpack</span>: <span class="function"><span class="params">config</span> =&gt;</span> &#123;</span><br><span class="line">    config</span><br><span class="line">      .<span class="title function_">devtool</span>(<span class="string">&#x27;source-map&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<span id="more"></span>
 <h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p><strong>2021.10.26更新</strong>： 问题产生的原因不是<code>vue-cli</code>，而是<code>element-ui</code>提供的按需加载插件<code>unplugin-vue-components/resolvers</code>破坏了sourcemap，具体的原因不清楚，似乎插件作者也不是很有<code>sourcemap</code>方面的开发意愿。 总之遇到这个问题的话看一看有没有这个玩应吧。<br><img data-src="https://img-blog.csdnimg.cn/e7165c44fff043758752a54008586582.png" alt="在这里插入图片描述"></p>
 <hr>
 <h3 id="本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x-下面的都可以不用看了"><a href="#本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x-下面的都可以不用看了" class="headerlink" title="本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x 下面的都可以不用看了"></a>本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x 下面的都可以不用看了</h3><p><del><code>vue-cli</code>在<code>npm run serve</code>时强制使用了<code>&#39;eval-cheap-module-source-map&#39;</code></del></p>
@@ -894,7 +918,8 @@ requestAnimationFrame(repeatOften);
   <entry>
     <title>关于百度地图 DrivingRoute moreResultsUrl为“未能找到相应结果，请您:返回上一步操作..” 以及 WalkingRoute moreResultsUrl为空 的解决方案</title>
     <url>/b8e315d25c83.html</url>
-    <content><![CDATA[<h4 id="——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案"><a href="#——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案" class="headerlink" title="—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案"></a>—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案</h4><h3 id="A-Few-Minutes-Later…"><a href="#A-Few-Minutes-Later…" class="headerlink" title="A Few Minutes Later….."></a><strong>A Few Minutes Later…..</strong></h3><p>经过一番Demo和文档的查找，惊喜的发现正式版中TransitRoute，WalkingRoute，以及DrivingRoute 的searchComplete回调中有个“moreResultsUrl” 打开正是百度地图的导航结果页！<br>&amp;nbsp;</p>
+    <content><![CDATA[<h4 id="——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案"><a href="#——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案" class="headerlink" title="—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案"></a>—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案</h4><h3 id="A-Few-Minutes-Later…"><a href="#A-Few-Minutes-Later…" class="headerlink" title="A Few Minutes Later….."></a><strong>A Few Minutes Later…..</strong></h3><p>经过一番Demo和文档的查找，惊喜的发现正式版中TransitRoute，WalkingRoute，以及DrivingRoute 的searchComplete回调中有个“moreResultsUrl” 打开正是百度地图的导航结果页！</p>
+<span id="more"></span>
 <h3 id="事情并没有那么简单-——-使用DrivingRoute"><a href="#事情并没有那么简单-——-使用DrivingRoute" class="headerlink" title="事情并没有那么简单  —— 使用DrivingRoute"></a><strong>事情并没有那么简单  —— 使用DrivingRoute</strong></h3><p>当我打开DrivingRoute的moreResultsUrl 度娘很友好的向我展示了下面的界面 并且不管我如何调整参数 emmmmm 毫无变化！</p>
 <p><img data-src="https://img-blog.csdnimg.cn/img_convert/d953d2f1c93ba21043d2bb65adfcd32b.png" alt="DrivingRoute未能找到相应结果"></p>
 <p>&amp;nbsp;<br>&amp;nbsp;</p>
@@ -966,7 +991,7 @@ requestAnimationFrame(repeatOften);
 <li>不要省略可选的结束标签（closing tag）（例如，<code>&lt;/li&gt;</code>或 <code>&lt;/body&gt;</code>）。</li>
 </ul>
 <h2 id="HTML5-doctype"><a href="#HTML5-doctype" class="headerlink" title="HTML5 doctype"></a>HTML5 doctype</h2><ul>
-<li>为每个 HTML 页面的第一行添加标准模式（standard mode）的声明，这样能够确保在每个浏览器中拥有一致的展现。</li>
+<li>为每个 HTML 页面的第一行添加标准模式（standard mode）的声明，这样能够确保在每个浏览器中拥有一致的展现。<span id="more"></span></li>
 </ul>
 <h2 id="语言属性"><a href="#语言属性" class="headerlink" title="语言属性"></a>语言属性</h2><p>根据 HTML5 规范：</p>
 <blockquote>
@@ -1138,6 +1163,7 @@ requestAnimationFrame(repeatOften);
 <h4 id="要求"><a href="#要求" class="headerlink" title="要求"></a>要求</h4><blockquote>
 <p>HTML不得被前台全局样式污染</p>
 </blockquote>
+<span id="more"></span>
 <h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>1、使用iframe 的 srcdoc</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">srcdoc</span>=<span class="string">&quot;&lt;p&gt;这是HTML&lt;p&gt;&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>2、 src&#x3D;”text&#x2F;html,xxxx”</p>
@@ -1156,6 +1182,7 @@ requestAnimationFrame(repeatOften);
     <url>/8346145d85f0.html</url>
     <content><![CDATA[<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p><img data-src="https://img-blog.csdnimg.cn/20190607225358253.png" alt="要实现的直角梯形"><br><strong>↑需要实现一个背景为半透明且带边框的直角梯形</strong><br><br></p>
 <h2 id="百谷解决方案"><a href="#百谷解决方案" class="headerlink" title="百谷解决方案"></a>百谷解决方案</h2><p>碰到问题，程序猿的优良传统，先百谷一下（？） 得到的解决方案总结一下有这些：<br>1.利用border交界处为斜边来制作，即border-top:none;border-right:transparent<br><strong>→问题：使用border来做背景，没法在border上再做边框，只能得到一个半透明的直角梯形</strong><br>2.在用border制作的梯形外侧套上一个上下左右大出1像素，以边框色为背景的梯形，作为边框<br><strong>→问题：中间小梯形无法做成半透明，会叠加上大梯形的背景色</strong><br>3.利用矩形和三角形拼接<br><strong>→问题：右边直角三角形的边框依旧无法解决</strong><br>4.边框使用矩形旋转来做<br><strong>→问题：至少要用到4个div，过于复杂</strong><br><br></p>
+<span id="more"></span>
 <h2 id="没有条件就自己上！"><a href="#没有条件就自己上！" class="headerlink" title="没有条件就自己上！"></a>没有条件就自己上！</h2><p>就在要放弃打算导出png来做的时候，导出界面给了我灵感！<br><img data-src="https://img-blog.csdnimg.cn/20190607230522372.png" alt="导出图片界面"><br><strong>↑这不就是一个矩形overflow:hidden套上一个平行四边形吗！给力！</strong></p>
 <p>不废话立马做了出来</p>
 <h4 id="html"><a href="#html" class="headerlink" title="html"></a>html</h4><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 真·空心直角三角形 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;tri&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 真·空心直角梯形 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;trapezoid&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -1185,6 +1212,7 @@ requestAnimationFrame(repeatOften);
     <title>添加了~/.bash_profile之后，~/.bashrc失效以及bash失去高亮的原因及解决方案</title>
     <url>/463d951c5853.html</url>
     <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>添加<code>~/.bash_profile</code>之后，bash失去高亮，<code>~/.bashrc</code>中的逻辑不运行。<br><img data-src="https://img-blog.csdnimg.cn/b49d241eeab14f43b53edb783eb9d8f1.png" alt="添加前"><br>添加前↑<br><img data-src="https://img-blog.csdnimg.cn/fd0ce34e0824462fb70387c80a53c57f.png" alt="添加后"><br>添加后↑</p>
+<span id="more"></span>
 <h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>在添加<code>~/.bash_profile</code>之后，<code>~/.profile</code>会被覆盖不再运行，而load bashrc的逻辑在<code>~/.profile</code>中，导致<code>~/.bashrc</code>也一并失效。<br><img data-src="https://img-blog.csdnimg.cn/50f8cda872f34b57a3f9f7e7b3d1f48c.png" alt="~/.profile中加载bashrc的逻辑"></p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">## 解决方案</span><br><span class="line">- 方案一：将```~/.bash_profile```中的逻辑移至```~/.profile```，并删除```~/.bash_profile```。</span><br><span class="line">- 方案二：在```~/.bash_profile```中添加以下代码保证```~/.profile```中的代码运行。</span><br><span class="line"> ```bash</span><br><span class="line"> source ~/.profile</span><br></pre></td></tr></table></figure>
 
@@ -1197,10 +1225,11 @@ requestAnimationFrame(repeatOften);
   </entry>
   <entry>
     <title>群晖使用BGmi+Aria2+Emby完成蜜柑的番剧订阅与自动下载</title>
-    <url>/fe08bf43fac1.html</url>
+    <url>/a62049a2e79b.html</url>
     <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>已经在群晖部署了Emby+Aria2，但是番剧一直是手动下载，比较麻烦。想着能不能订阅自动下载之类的，翻了一遍Github看到了<a href="https://github.com/BGmi/BGmi">BGmi</a>这个仓库，尝试下来体验还算不错。</p>
 <h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>由于是在群晖部署，自然能用docker就用docker，BGmi也贴心提供了<a href="https://github.com/BGmi/bgmi-docker-all-in-one">docker镜像</a>。镜像除了BGmi本体之外，还包含了一个Transmission，如果没有安装Aria2的姥爷们，也可以直接使用Transmission。 </p>
 <p>ok，那么下面开始正式部署：</p>
+<span id="more"></span>
 <ol>
 <li>打开群晖的<code>docker-注册表</code>，搜索<code>codysk/bgmi-all-in-one</code>，下载并启动。<br><img data-src="/images/posts/20220729162316.jpg" alt="下载"><br><img data-src="/images/posts/20220729162521.jpg" alt="启动"></li>
 <li>选择高级设置，进行相关配置<br><img data-src="/../images/posts/20220729162719.jpg" alt="高级设置"></li>

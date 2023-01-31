@@ -260,7 +260,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-31 10:18:33" itemprop="dateModified" datetime="2023-01-31T10:18:33+08:00">2023-01-31</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -270,7 +270,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>645</span>
+      <span>646</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -293,22 +293,14 @@
 <p>看起来一段非常简单的构建命令，实际会出现一些问题：当<code>NODE_ENV=production</code>时，<code>npm install</code>不会下载<code>devDependencies</code>，例如<code>webpack</code>、Typescript项目中的<code>@types/xxx</code>等。从而导致<code>npm run build</code>失败。</p>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>这时候可能有人会问了：我把<code>@types/xxx</code>丢到<code>dependencies</code>不就好了？</strong></p>
 <p>话虽如此，但是这样真的正确吗？</p>
-<p>在构建过程中<code>@types</code>会被用于编译js时的类型校验，<code>webpack</code>更不用说本身就用于构建，但是这些依赖在js产物中其实并不会用到。 所以它们理应存在于<code>devDependencies</code>而不是<code>dependencies</code>。</p>
-<p><strong>那么在不更改<code>devDependencies</code>的情况下，这里得出的“能跑”的方案应该是：</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NODE_ENV=development &amp;&amp; npm install &amp;&amp; NODE_ENV=production &amp;&amp; npm run build</span><br></pre></td></tr></table></figure>
-<p>确实问题得到了解决，<code>devDependencies</code>也被下载，不必担心<code>npm run build</code>过程中因为缺少依赖导致失败。</p>
-<p><strong>至少，能跑了</strong></p>
-<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>问题是解决了，但是本着尽可能优雅的精神，能跑是能跑了，看到两遍<code>NODE_ENV</code>赋值，总有一些舍本逐末的感觉。下面是我的思考：</p>
-<blockquote>
-<p>首先，理论上来讲，<code>build</code>确实是应该在dev环境下的行为，所以这时候下载<code>devDependencies</code>是合理的，那么运行<code>build</code>时，<code>NODE_ENV</code>理应为<code>development</code>。<br>但是，我们希望<code>build</code>命令所构建出的产物运行在生产环境下，那么，似乎<code>NODE_ENV</code>又应该是<code>production</code>。</p>
-</blockquote>
-<p>于是歧义就产生了： <strong><code>build</code>过程中所使用的<code>NODE_ENV</code>，代表的的含义究竟是<code>build</code>命令运行时的环境，还是构建产物的环境？</strong></p>
-<h2 id="个人认为最优雅的方式"><a href="#个人认为最优雅的方式" class="headerlink" title="个人认为最优雅的方式"></a>个人认为最优雅的方式</h2><p>我的想法是：环境变量应当代表的是当前环境，而不是目标环境，所以<code>NODE_ENV</code>理应为<code>development</code>，但是各大开源库已经把<code>NODE_ENV=production &amp;&amp; npm run build</code>这样的模式带成了惯例，导致了我们先入为主。<br>所以推翻这样的模式，采用额外的参数来代表目标环境更为合理：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NODE_ENV=development &amp;&amp; npm install &amp;&amp; npm run build --production</span><br></pre></td></tr></table></figure>
-<p>添加一个参数来决定构建目标，这样既明确了<code>install</code>和<code>build</code>都是dev环境下的行为，又确定了<code>build</code>的target是prod环境下的产物。<br>个人觉得是最优雅的方式，也欢迎大家指点和讨论。<br><br></p>
-<p>以上！まいど～</p>
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/396d21b69cae.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -334,7 +326,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/fe08bf43fac1.html">
+    <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/a62049a2e79b.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -352,7 +344,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/fe08bf43fac1.html" class="post-title-link" itemprop="url">群晖使用BGmi+Aria2+Emby完成蜜柑的番剧订阅与自动下载</a>
+          <a href="/a62049a2e79b.html" class="post-title-link" itemprop="url">群晖使用BGmi+Aria2+Emby完成蜜柑的番剧订阅与自动下载</a>
         </h2>
 
         <div class="post-meta-container">
@@ -370,7 +362,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-30 17:57:08" itemprop="dateModified" datetime="2023-01-30T17:57:08+08:00">2023-01-30</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -401,63 +393,14 @@
           <h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>已经在群晖部署了Emby+Aria2，但是番剧一直是手动下载，比较麻烦。想着能不能订阅自动下载之类的，翻了一遍Github看到了<a target="_blank" rel="noopener" href="https://github.com/BGmi/BGmi">BGmi</a>这个仓库，尝试下来体验还算不错。</p>
 <h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>由于是在群晖部署，自然能用docker就用docker，BGmi也贴心提供了<a target="_blank" rel="noopener" href="https://github.com/BGmi/bgmi-docker-all-in-one">docker镜像</a>。镜像除了BGmi本体之外，还包含了一个Transmission，如果没有安装Aria2的姥爷们，也可以直接使用Transmission。 </p>
 <p>ok，那么下面开始正式部署：</p>
-<ol>
-<li>打开群晖的<code>docker-注册表</code>，搜索<code>codysk/bgmi-all-in-one</code>，下载并启动。<br><img data-src="/images/posts/20220729162316.jpg" alt="下载"><br><img data-src="/images/posts/20220729162521.jpg" alt="启动"></li>
-<li>选择高级设置，进行相关配置<br><img data-src="/../images/posts/20220729162719.jpg" alt="高级设置"></li>
-<li>配置应用开机自启<br><img data-src="/../images/posts/20220729162810.jpg" alt="开机自启"></li>
-<li>配置文件映射，这里有两个文件夹需要映射，<ul>
-<li>首先是<code>/bgmi</code>这是所有数据文件以及配置文件所在的地方，映射到群晖方便管理。</li>
-<li>其次是将Emby的资源文件夹映射到docker内，<strong>需要注意的是，由于BGmi的配置项中下载路径只有一个，所以这里的路径要与Aria访问的路径保持一致。</strong><br><img data-src="/../images/posts/20220729163000.jpg" alt="文件映射"></li>
-</ul>
-</li>
-<li>配置端口映射，这里也有两个端口需要映射：<ul>
-<li>80端口：这是BGmi的web管理界面端口，可以映射到自己想要的端口上去。</li>
-<li>9091端口：这是内置的Transmission端口，这里我们用Aria2，所以可以自动，也可以干脆删除。<br><img data-src="/../images/posts/20220729163107.jpg" alt="端口映射"></li>
-</ul>
-</li>
-<li>配置环境变量，添加一项环境变量<code>BGMI_SOURCE</code>，代表默认的数据源类型，这里可以填写<code>bangumi_moe/mikan_project/dmhy</code>，我们使用蜜柑计划作为我们默认的数据源。<br><img data-src="/../images/posts/20220729163204.jpg" alt="环境变量"><br>完成docker配置之后，就可以一路启动啦！</li>
-</ol>
-<h2 id="BGmi配置"><a href="#BGmi配置" class="headerlink" title="BGmi配置"></a>BGmi配置</h2><p>部署完成后，进入到docker的bash，进行BGmi的配置。<br>这里需要用到<code>bgmi config</code>命令，下面先来介绍一下用法：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bgmi config <span class="comment"># 查看当前各项设置的默认值.</span></span><br><span class="line">bgmi config KEY <span class="comment"># 查看某项设置的默认值</span></span><br><span class="line">bgmi config KEY value <span class="comment"># 修改某项设置</span></span><br><span class="line"><span class="comment"># example:</span></span><br><span class="line">bgmi config ARIA2_RPC_TOKEN <span class="string">&#x27;token:xxxxx&#x27;</span></span><br></pre></td></tr></table></figure>
-<p>我们需要修改的配置项如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bgmi config SAVE_PATH <span class="string">&quot;/bangumi&quot;</span> <span class="comment">#下载路径，这个路径要确保Aria2能够访问到</span></span><br><span class="line">bgmi config DOWNLOAD_DELEGATE <span class="string">&quot;aria2-rpc&quot;</span> <span class="comment">#设置下载工具</span></span><br><span class="line">bgmi config ARIA2_RPC_URL <span class="string">&quot;http://172.17.0.1:6800/rpc&quot;</span> <span class="comment">#ARIA2 RPC URL，这里由于我们使用的是docker，所以填写宿主机ip 172.17.0.1，具体可以根据情况更改</span></span><br><span class="line">bgmi config ARIA2_RPC_TOKEN <span class="string">&quot;token:xxx&quot;</span> <span class="comment">#这里填写Aria2的token，如果没有则留空，或者不做修改 </span></span><br></pre></td></tr></table></figure>
-
-<h2 id="订阅"><a href="#订阅" class="headerlink" title="订阅"></a>订阅</h2><p>配置完成后，则可以开始进行番剧的订阅。 下面，我们以最近大火的《石蒜反冲》为例（乐</p>
-<ol>
-<li>先前往<a target="_blank" rel="noopener" href="https://mikanani.me/">蜜柑</a>，得到番剧名称“莉可丽丝”<br><img data-src="/../images/posts/20220729173029.jpg" alt="莉可丽丝"></li>
-<li>订阅番剧，使用BGmi的命令行进行订阅：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bgmi add <span class="string">&quot;莉可丽丝&quot;</span> </span><br><span class="line"><span class="comment"># 这里可以跟多个参数同时订阅多部番剧，如：</span></span><br><span class="line">bgmi add <span class="string">&quot;莉可丽丝&quot;</span> <span class="string">&quot;鬼灭之刃&quot;</span> <span class="string">&quot;Love Live! Superstar!!&quot;</span></span><br><span class="line"><span class="comment"># 要注意的是，此处订阅默认是从最新一集开始的，如果想要从头开始下载，需要加上 --episode 0</span></span><br><span class="line">bgmi add <span class="string">&quot;莉可丽丝&quot;</span> --episode 0</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="筛选"><a href="#筛选" class="headerlink" title="筛选"></a>筛选</h2><p>由于一部番剧下有不同的字幕组&#x2F;清晰度&#x2F;语言，所以在下载前需要设置番剧的筛选规则。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bgmi list <span class="comment"># 列出目前订阅的番剧</span></span><br><span class="line">bgmi fetch <span class="string">&quot;莉可丽丝&quot;</span></span><br><span class="line"><span class="comment"># include和exclude会忽略大小写。`720p`和`720P`的效果是相同的</span></span><br><span class="line">bgmi filter <span class="string">&quot;莉可丽丝&quot;</span> --subtitle <span class="string">&quot;喵萌奶茶屋&quot;</span> --include 1080P --exclude <span class="string">&quot;繁体&quot;</span></span><br><span class="line">bgmi fetch <span class="string">&quot;莉可丽丝&quot;</span></span><br></pre></td></tr></table></figure>
-<p>你可以按照自己的喜好，直到<code>fetch</code>到的列表是你所想要的内容。</p>
-<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>运行下面的命令更新番剧列表并且下载番剧，如果一切顺利的话，下载任务就会发送到Aria2啦！ 前往<code>SAVE_PATH</code>查看吧！</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bgmi update --download</span><br></pre></td></tr></table></figure>
-
-<h2 id="定时任务"><a href="#定时任务" class="headerlink" title="定时任务"></a>定时任务</h2><h4 id="2022-8-2：发现docker里自带了10分钟一次的crontab，群晖的定时任务似乎没有什么必要了（点点点"><a href="#2022-8-2：发现docker里自带了10分钟一次的crontab，群晖的定时任务似乎没有什么必要了（点点点" class="headerlink" title="2022.8.2：发现docker里自带了10分钟一次的crontab，群晖的定时任务似乎没有什么必要了（点点点"></a>2022.8.2：发现docker里自带了10分钟一次的crontab，群晖的定时任务似乎没有什么必要了（点点点</h4><p><img data-src="/../images/posts/20220802161904.jpg" alt="《笨蛋白茶》"></p>
-<details>
-<summary>先前的内容，可以不用看</summary>
-
-<p><del>既然已经完全了解如何下载番剧，那我们自然可以用任务来让BGmi定时运行来自动下载订阅的番剧啦！</del></p>
-<ol>
-<li><del>进入docker创建更新脚本</del><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入docker容器</span></span><br><span class="line">&gt; docker <span class="built_in">exec</span> -it codysk-bgmi-all-in-one1 /bin/bash</span><br><span class="line"><span class="comment"># 创建更新脚本</span></span><br><span class="line">docker@codysk-bgmi-all-in-one1 &lt; <span class="built_in">cd</span> /bgmi/conf &amp;&amp; <span class="built_in">touch</span> cron-update.sh</span><br><span class="line">docker@codysk-bgmi-all-in-one1 &lt; vi cron-update.sh</span><br><span class="line"><span class="comment"># 脚本内容</span></span><br><span class="line">---- cron-update.sh -----</span><br><span class="line"><span class="comment">#!/bin/sh</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;subscribe list:&quot;</span></span><br><span class="line">bgmi list</span><br><span class="line">bgmi update --download</span><br><span class="line">---- cron-update.sh -----</span><br><span class="line"><span class="comment"># 更改文件权限</span></span><br><span class="line">docker@b2a8cf4027e8 &lt; <span class="built_in">chmod</span> a+rwx ./cron-update.sh</span><br><span class="line"><span class="comment"># 退出docker容器</span></span><br><span class="line">docker@b2a8cf4027e8 &lt; <span class="built_in">exit</span></span><br><span class="line">&gt; <span class="built_in">exit</span></span><br></pre></td></tr></table></figure></li>
-<li><del>建立定时任务</del> <ul>
-<li><del>打开群晖 <strong>控制面板-&gt;任务计划</strong>，选择 <strong>新增-&gt;计划的任务-&gt;用户定义的脚本</strong></del><br><img data-src="/../images/posts/20220802111235.jpg" alt="新增-&gt;计划的任务-&gt;用户定义的脚本"></li>
-<li><del>配置任务</del><br><img data-src="/../images/posts/20220802111350.jpg" alt="账号选择root"><br><img data-src="/../images/posts/20220802111411.jpg" alt="调度时间"></li>
-<li><del>填写执行脚本</del> <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> codysk-bgmi-all-in-one1 /bin/bash -c <span class="string">&quot;/bgmi/conf/cron-update.sh&quot;</span></span><br></pre></td></tr></table></figure>
- <img data-src="/../images/posts/20220802111506.jpg" alt="执行脚本"></li>
-</ul>
-</li>
-</ol>
-<p><del>ok！这样就可以每天自动下载番剧，而不用去关心字幕组什么时候更新啦！</del></p>
-</details>
-
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a target="_blank" rel="noopener" href="https://github.com/BGmi/BGmi">BGmi</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/BGmi/bgmi-docker-all-in-one">bgmi-docker-all-in-one</a></li>
-</ol>
-<p>以上！まいど～</p>
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/a62049a2e79b.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -519,7 +462,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-06-16 10:38:51" itemprop="dateModified" datetime="2022-06-16T10:38:51+08:00">2022-06-16</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -559,63 +502,14 @@
   字节码 --Ignition--> 逐行解释为机器码执行
   字节码 -.Ignition高频执行.-> HotSpot
   HotSpot --TurboFan--> 编译为机器码执行</pre>
-
-<h3 id="1-1-Parser-解析器-生成语法抽象树（AST）"><a href="#1-1-Parser-解析器-生成语法抽象树（AST）" class="headerlink" title="1.1 Parser 解析器 生成语法抽象树（AST）"></a>1.1 Parser 解析器 生成语法抽象树（AST）</h3><p>生成AST中的一个优化是惰性解析(Lazy Parsing)，因为源码在执行前如果全部完全解析的话，不仅执行时间过长，而且会消耗更多的内存。<br>惰性解析就是指如果遇到并不是立即执行的函数，只会对其进行预解析(Pre-Parser)，当函数被调用时，才会对其完全解析。<br>预解析时，只会验证函数的语法是否有效、解析函数声明以及确定函数作用域，并不会生成AST，这项工作由Pre-Parser预解析器完成。</p>
-<h3 id="1-2-Ignition-解释器-生成字节码及解释执行"><a href="#1-2-Ignition-解释器-生成字节码及解释执行" class="headerlink" title="1.2 Ignition 解释器 生成字节码及解释执行"></a>1.2 Ignition 解释器 生成字节码及解释执行</h3><p>Ignition 是 V8 的解释器，负责生成和执行字节码。字节码与平台无关，也就是说无论 X86 架构或 ARM 架构，同一份 JavaScript 源码生成的字节码序列是相同的，解释器逐条读取字节码并执行。</p>
-<p>字节码是机器码的抽象，可以看作是小型的构建块。相比机器码，字节码不仅占用内存少，而且生成字节码的时间很快，提升了启动速度。</p>
-<h3 id="1-3-Turbofan-优化编译器-对部分代码直接编译执行"><a href="#1-3-Turbofan-优化编译器-对部分代码直接编译执行" class="headerlink" title="1.3 Turbofan 优化编译器 对部分代码直接编译执行"></a>1.3 Turbofan 优化编译器 对部分代码直接编译执行</h3><p>Turbofan 是 V8 的优化编译器，它使 JavaScript 执行的更快，但比Ignition需要更多的编译时间，所以 V8 只对热点代码（HotCode）使用 Turbofan。</p>
-<p>JavaScript 代码先由 Ignition 执行，并判断当该代码片段执行次数达到设定值时变为热点代码，由TurboFan把它编译为更高效的机器码储存起来，等到下次再执行到这段代码时，就会用现在的机器码替换原来的字节码进行执行，这样大大提升了代码的执行效率。</p>
-<h2 id="2-V8工作流程中一些具体实现"><a href="#2-V8工作流程中一些具体实现" class="headerlink" title="2.  V8工作流程中一些具体实现"></a>2.  V8工作流程中一些具体实现</h2><h3 id="2-1-隐藏类-JavaScript-动态类型"><a href="#2-1-隐藏类-JavaScript-动态类型" class="headerlink" title="2.1 隐藏类  JavaScript 动态类型"></a>2.1 隐藏类  JavaScript 动态类型</h3><p>我们知道，JavaScript是动态类型语言，运行时数据类型会发生变化。V8 采用 C++ 编写，C++ 是强类型语言，要求类型确定。类型确定的 C++ 是如何表达类型不确定的 JavaScript 呢？</p>
-<p>答案是：C++ 申请一块内存，这块是 JavaScript 的一个对象，并约定这块内存的开始位置保存内存的解读方式，操作这块内存之前先查解读方法，通过改变解读方式来模拟 JavaScript 对象的动态变化。</p>
-<p>具体来说：操作 JS 数据前先查询类型，再操作。为此，V8采用了隐藏类（Hidden Class），因为 JavaScript 程序员看不到这个 class，所以称为隐藏类。注意： 隐藏类的术语是 Map，它的含义是地图，说明如何解读内存，不是 JavaScript Map 机制。</p>
-<p>V8通过查询存储空间的第一个位置，就可以找到Map。这个Map大小是80byte，存储信息的格式与位置也是固定的，存储信息包括：JavaScript 对象的存储空间有哪些成员，成员类型，成员偏移地址等。所以说，Map 就是地图。</p>
-<h3 id="2-2-Inline-Cache-内联缓存"><a href="#2-2-Inline-Cache-内联缓存" class="headerlink" title="2.2 Inline Cache 内联缓存"></a>2.2 Inline Cache 内联缓存</h3><p>我们已经知道，V8在查找对象的属性（例如obj.x）时流程是这样的：查找对象 obj 的隐藏类，再通过隐藏类查找 x 属性偏移量，然后根据偏移量获取属性值。</p>
-<p>我们把上面这个获取 x 属性偏移量的过程称为寻址方法。</p>
-<p>简单的来说：IC负责缓存对象的寻址方法，下次执行该函数时，直接使用寻址方法（V8 中的术语是 Handler），节省了计算寻址方法的时间。</p>
-<h2 id="3-如何编写优化的-JavaScript"><a href="#3-如何编写优化的-JavaScript" class="headerlink" title="3. 如何编写优化的 JavaScript"></a>3. 如何编写优化的 JavaScript</h2><h3 id="3-1-隐藏类"><a href="#3-1-隐藏类" class="headerlink" title="3.1 隐藏类"></a>3.1 隐藏类</h3><p>我们已经知道，V8 通过查询 Map，可以知道存储空间内存放了什么，怎么存放的，进而正确操作该对象。</p>
-<p>例如有以下代码：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Point</span>(<span class="params">x,y</span>) &#123; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">x</span> = x; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">y</span> = y; </span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">const</span> obj = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
-
-<p>一旦声明了一个新的方法实例，Javascript就会创建一个隐藏类C0。</p>
-<p><img data-src="/images/posts/de92f2f8.png"></p>
-<p>在此时还没有声明任何的属性，所以C0现在为空。<br>一旦第一个语句“this.x&#x3D;x”被执行，V8将会基于C0创建第二个隐藏类C1。C1记录了可以找到属性x在内存中的位置。</p>
-<p>在这个例子中，x保存在偏移量为0的位置，这表示可以将一个内存中的对象目标看作是一段连续的空间。而这段空间中的第一段偏移代表着属性x。与此同时，V8将会用“类偏移”操作更新C0，这代表着属性x已经添加到了目标对象。之后，目标对象所对应的隐藏类指针将指向C1。</p>
-<p><img data-src="/images/posts/1b25a842.png"></p>
-<p>每当目标对象添加一个新的属性，对象的旧的隐藏类就会变换路径到一个新的隐藏类。隐藏类的重要之处在于可以使经过相同创建过程创建的对象共享隐藏类。假如两个对象共享一个隐藏类，并向两个对象中同时添加相同的属性，那么这种变换将会保证变换后得到相同的隐藏类，这样代码就得到了优化。<br>当“this.y&#x3D;y”执行时将重复上面的操作。一个新的叫C2的隐藏类将被创建，然后对C1进行类变换表明属性y已经添加到了目标对象，最后将隐藏类指向C2。这样目标对象的隐藏类就更新到了C2。</p>
-<p><img data-src="/images/posts/4943fa23.png"></p>
-<p>注意：隐藏类的变换取决于对目标对象的属性添加顺序。请注意下面的代码：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Point</span>(<span class="params">x,y</span>) &#123; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">x</span> = x; </span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">y</span> = y;</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">var</span> obj1 = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">var</span> obj2 = <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line"><span class="comment">// 至此为止 obj1和obj2都共享同一个隐藏类</span></span><br><span class="line">obj1.<span class="property">a</span> = <span class="number">5</span>; </span><br><span class="line">obj1.<span class="property">b</span> = <span class="number">10</span>; </span><br><span class="line">obj2.<span class="property">b</span> = <span class="number">10</span>; </span><br><span class="line">obj2.<span class="property">a</span> = <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
-
-
-<p>直到第6行为止，obj1和obj2都共享同一个隐藏类。但是，当属性a和b以相反的顺序添加到了两个对象中，这导致最后两个对象以不同的变换路径产生了两个不同的的隐藏类。</p>
-<p><img data-src="/images/posts/0c995993.png"></p>
-<p><strong>因此，隐藏类更希望开发者不要频繁添加对象的属性，更希望对象的属性实例化顺序是固定的。像上述的例子，希望你只按照相同的顺序添加属性，先添加a，后添加b，这样obj1与obj2就可以共享同一个隐藏类。如果经常毫无规律的变动对象的内部成员，就会保存越来越多的隐藏类，带来不必要的性能开销。</strong></p>
-<h3 id="3-2-Inline-Cache"><a href="#3-2-Inline-Cache" class="headerlink" title="3.2 Inline Cache"></a>3.2 Inline Cache</h3><p>inline cache 提升了 JavaScript 的运行性能，但对于使用次数较少的 JavaScript 函数使用 inline cache 不会带来太多的性能，反而影响 V8 的性能。因此 V8 规定，函数调用次数超过 8 次时才开启 inline cache。<br>例如有以下函数：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getfoo</span>(<span class="params">obj</span>)&#123;</span><br><span class="line"> <span class="keyword">return</span> obj.<span class="property">foo</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> o1 = &#123;<span class="string">&quot;x&quot;</span>:<span class="number">42</span>,<span class="string">&quot;y&quot;</span>:<span class="number">43</span>,<span class="string">&quot;foo&quot;</span>,<span class="string">&quot;41&quot;</span>&#125;;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++)&#123;</span><br><span class="line"> <span class="title function_">getfoo</span>(o1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行getfoo时，V8会先读取obj的Map，找到foo的偏移量，然后才能获取foo。 当运行超过8次时，obj.foo的寻址方法会被缓存。</p>
-<p><strong>所以inline cache更希望开发者不要变动o1的结构，更希望开发者对 o1 的读写操作是固定的。具体在本例中，希望你只对 foo 操作，inline cache 只需保存属性 foo 的寻址方式即可，如果经常变动o1的内部成员，inline cache就会保存越来越多的寻址方法，并且增加很多不必要的判断过程。影响性能。</strong></p>
-<h3 id="3-3-TurboFan"><a href="#3-3-TurboFan" class="headerlink" title="3.3 TurboFan"></a>3.3 TurboFan</h3><p>TurboFan将字节码编译为机器码并存储起来执行，来使得JavaScript运行的更快，但相比解释执行也需要更多的首次编译时间，这也是为什么V8只针对热点代码使用TurboFan。</p>
-<p>TurboFan不希望程序的行为发生变化，例如我们有以下代码：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">add</span>(<span class="params">x,y</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> x+y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add</span>(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add</span>(<span class="string">&quot;hello &quot;</span>, <span class="string">&quot;world&quot;</span>));</span><br></pre></td></tr></table></figure>
-<p>我们知道 add() 是多态的，可以传入多种类型的参数。但是灵活也就意味着效率不高，需要判断类型，越界检测等等…</p>
-<p>Turbofan 针对 add(1,2) 优化时，它笃定你的 add() 只用于整数加法运行，把其编译为本地机器码的加法运算，去掉了各种不必要的判断。针对 add(“hello “,”world”) 优化时，TurboFan会把其编译为字符串的拼接操作。add() 的多态方便了开发者，减少了代码量，<strong>但如果 add() 毫无规律地在不同操作数之间使用，会导致TurboFan编译更多的时间，存储更多的机器码，优化效果很差，所以 Turbofan 不希望程序行为变化。</strong></p>
-<h2 id="优化建议"><a href="#优化建议" class="headerlink" title="优化建议"></a>优化建议</h2><ol>
-<li>对象属性： 以相同顺序实例化对象的成员，以便于共享隐藏类。</li>
-<li>对象结构： 不要变动对象的结构，减少寻址方法内联缓存造成的额外开销。</li>
-<li>无规律的程序行为：减少无规律的程序行为，例如随意的多态调用，减少turbofan编译和存储机器码的额外开销。</li>
-<li>可复用的方法：方法尽量复用，提高使用频次，增加热点代码，使turbofan能够介入进行编译运行，提高程序运行效率</li>
-</ol>
-<hr>
-<h2 id="参考内容："><a href="#参考内容：" class="headerlink" title="参考内容："></a>参考内容：</h2><ol>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/514716577">《Chrome V8 源码》55. 优化技术综述，如何提升 JS 运行速度</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.sessionstack.com/how-javascript-works-inside-the-v8-engine-5-tips-on-how-to-write-optimized-code-ac089e62b12e">How JavaScript works: inside the V8 engine + 5 tips on how to write optimized code</a></li>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/469962133">V8中的隐藏类（Hidden Classes）和内联缓存（Inline Caching）</a></li>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/491369553">浅析V8引擎，让你更懂JavaScript！</a></li>
-</ol>
-<p>以上！まいど～</p>
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/1e0c091d29a1.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -641,7 +535,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/befecf49889e.html">
+    <link itemprop="mainEntityOfPage" href="https://syra-ti.icu/de403aace05c.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -659,7 +553,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/befecf49889e.html" class="post-title-link" itemprop="url">修复gitCI中文件的创建时间与修改时间</a>
+          <a href="/de403aace05c.html" class="post-title-link" itemprop="url">修复gitCI中文件的创建时间与修改时间</a>
         </h2>
 
         <div class="post-meta-container">
@@ -669,9 +563,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-04-11 00:06:43 / 修改时间：00:23:22" itemprop="dateCreated datePublished" datetime="2022-04-11T00:06:43+08:00">2022-04-11</time>
+      <time title="创建时间：2022-04-11 00:06:43" itemprop="dateCreated datePublished" datetime="2022-04-11T00:06:43+08:00">2022-04-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -681,7 +581,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>243</span>
+      <span>244</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -701,14 +601,14 @@
     <div class="post-body" itemprop="articleBody">
           <h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>hexo发现经过CI之后，所有文章的 <strong>更新时间(mtime)</strong> 变成了CI运行的时间。</p>
 <h1 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h1><p>在CI checkout代码时，使用文件最后一次涉及的commit时间作为文件的修改时间，进行mtime的恢复。</p>
-<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .github/workflows/action.yml</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v3</span></span><br><span class="line">  <span class="comment"># 如果使用的是GithubAction的actions/checkout，记得加上下面的内容，对仓库历史进行完整的签出</span></span><br><span class="line">  <span class="attr">with:</span></span><br><span class="line">    <span class="attr">fetch-depth:</span> <span class="number">0</span></span><br><span class="line"><span class="comment"># 恢复文件修改时间</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Restore</span> <span class="string">file</span> <span class="string">modification</span> <span class="string">time</span></span><br><span class="line">  <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">    find source/_posts -name &#x27;*.md&#x27; | while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span></span><br><span class="line"><span class="string"></span><span class="string">...</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="代码解释"><a href="#代码解释" class="headerlink" title="代码解释"></a>代码解释</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">列出需要恢复修改时间的文件</span></span><br><span class="line">find source/_posts -name &#x27;*.md&#x27;</span><br><span class="line"><span class="meta"># </span><span class="language-bash">循环</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 git <span class="built_in">log</span> -- <span class="variable">$file</span> 得到该文件最后修改的commit 并且使用pretty选项获取时间戳</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用 <span class="built_in">touch</span> -d 来将文件的atime以及mtime修改为commit的时间戳</span></span><br><span class="line">while read file; do touch -d &quot;$(git log -1 --pretty=&quot;@%ct&quot; -- $file)&quot; $file; done</span><br></pre></td></tr></table></figure>
-
-
-<p>以上！まいど～</p>
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/de403aace05c.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -770,7 +670,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-02-01 14:24:50" itemprop="dateModified" datetime="2022-02-01T14:24:50+08:00">2022-02-01</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -801,56 +701,14 @@
           <h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>公司里放了一台黑裙，但是没有公网IP，想到用openvpn拨到家里的路由器，再进行端口转发达到内网穿透，公网访问的目的。</p>
 <p><strong>总之的总之三步走，需要openwrt上有server，以及群晖能够有client进行拨入，最后配置端口转发</strong></p>
 <hr>
-<h2 id="1-openwrt部署openvpn-server"><a href="#1-openwrt部署openvpn-server" class="headerlink" title="1. openwrt部署openvpn server"></a>1. openwrt部署openvpn server</h2><blockquote>
-<p>openwrt官方提供了详实的文档，如下<br><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/services/vpn/openvpn/server">[OpenWrt Wiki] OpenVPN server</a></p>
-</blockquote>
-<p>但是这个版本生成的配置，因为用到了<code>&lt;tls-crypt-v2&gt;</code>，群晖没法识别。可以使用下面这个<code> previous version of OpenWrt</code> 的旧版本。</p>
-<blockquote>
-<p><img data-src="https://img-blog.csdnimg.cn/8196fece92354dfda722165d47ba5c54.png" alt="在这里插入图片描述"><br>链接在这里↓<br><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/services/vpn/openvpn/server?rev=1632708683">[OpenWrt Wiki] OpenVPN server (old)</a></p>
-</blockquote>
-<hr>
-<p>接下来就是跟着文档走一遍, 我会对官方的文档进行一个翻译和加注：</p>
-<blockquote>
-<p><strong>1. 准备</strong><br>如果需要请先设置DDNS客户端。 安装依赖包. 指定一些临时的环境变量</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装包</span></span><br><span class="line">opkg update</span><br><span class="line">opkg install openvpn-openssl openvpn-easy-rsa</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">OVPN_DIR=<span class="string">&quot;/etc/openvpn&quot;</span></span><br><span class="line">OVPN_PKI=<span class="string">&quot;/etc/easy-rsa/pki&quot;</span></span><br><span class="line">OVPN_PORT=<span class="string">&quot;1194&quot;</span></span><br><span class="line">OVPN_PROTO=<span class="string">&quot;udp&quot;</span></span><br><span class="line">OVPN_POOL=<span class="string">&quot;192.168.8.0 255.255.255.0&quot;</span>  <span class="comment"># 注：这里可以指定openvpn的网段</span></span><br><span class="line">OVPN_DNS=<span class="string">&quot;<span class="variable">$&#123;OVPN_POOL%.* *&#125;</span>.1&quot;</span></span><br><span class="line">OVPN_DOMAIN=<span class="string">&quot;<span class="subst">$(uci get dhcp.@dnsmasq[0].domain)</span>&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 拿到外网ip作为外网地址</span></span><br><span class="line">. /lib/functions/network.sh</span><br><span class="line">network_flush_cache</span><br><span class="line">network_find_wan NET_IF</span><br><span class="line">network_get_ipaddr NET_ADDR <span class="string">&quot;<span class="variable">$&#123;NET_IF&#125;</span>&quot;</span></span><br><span class="line">OVPN_SERV=<span class="string">&quot;<span class="variable">$&#123;NET_ADDR&#125;</span>&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 如果有ddns 则从ddns拿到全域名(FQDN)作为外网地址</span></span><br><span class="line">NET_FQDN=<span class="string">&quot;<span class="subst">$(uci -q get ddns.@service[0].lookup_host)</span>&quot;</span></span><br><span class="line"><span class="keyword">if</span> [ -n <span class="string">&quot;<span class="variable">$&#123;NET_FQDN&#125;</span>&quot;</span> ]</span><br><span class="line"><span class="keyword">then</span> OVPN_SERV=<span class="string">&quot;<span class="variable">$&#123;NET_FQDN&#125;</span>&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>2. 秘钥管理</strong><br>使用 EasyRSA 管理 PKI. 必要时使用私钥密码保护.</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_PKI=<span class="string">&quot;<span class="variable">$&#123;OVPN_PKI&#125;</span>&quot;</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_REQ_CN=<span class="string">&quot;ovpnca&quot;</span></span><br><span class="line"><span class="built_in">export</span> EASYRSA_BATCH=<span class="string">&quot;1&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 移除并且重新初始化pki目录</span></span><br><span class="line">easyrsa init-pki</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 生成DH变量</span></span><br><span class="line">easyrsa gen-dh</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 创建新的CA</span></span><br><span class="line">easyrsa build-ca nopass</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 为服务端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-server-full server nopass</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 为客户端生成密钥对并在本地签名</span></span><br><span class="line">easyrsa build-client-full client nopass  </span><br><span class="line"><span class="comment">#注：此处为生成客户端配置必要，如果需要多个客户端的，可以多次运行本行 只需要更改“client”, 如：</span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client1 nopass </span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client2 nopass </span></span><br><span class="line"><span class="comment">#easyrsa build-client-full client-dsm nopass</span></span><br><span class="line"><span class="comment">#注：更改后的名称会作为生成后配置文件的名称 </span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 生成TLS PSK</span></span><br><span class="line">openvpn --genkey --secret <span class="variable">$&#123;OVPN_PKI&#125;</span>/tc.pem</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>3. 防火墙</strong><br>将VPN网络视为私有网络，将VPN接口分配到LAN区域，以减少防火墙的设置。允许从WAN区域访问VPN服务器。</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置防火墙</span></span><br><span class="line">uci rename firewall.@zone[0]=<span class="string">&quot;lan&quot;</span></span><br><span class="line">uci rename firewall.@zone[1]=<span class="string">&quot;wan&quot;</span></span><br><span class="line">uci del_list firewall.lan.device=<span class="string">&quot;tun+&quot;</span></span><br><span class="line">uci add_list firewall.lan.device=<span class="string">&quot;tun+&quot;</span></span><br><span class="line">uci -q delete firewall.ovpn</span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn=<span class="string">&quot;rule&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.name=<span class="string">&quot;Allow-OpenVPN&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.src=<span class="string">&quot;wan&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.dest_port=<span class="string">&quot;<span class="variable">$&#123;OVPN_PORT&#125;</span>&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.proto=<span class="string">&quot;<span class="variable">$&#123;OVPN_PROTO&#125;</span>&quot;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.ovpn.target=<span class="string">&quot;ACCEPT&quot;</span></span><br><span class="line">uci commit firewall</span><br><span class="line">/etc/init.d/firewall restart</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>4. VPN服务</strong><br>配置VPN服务，生成客户端配置文件。</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">OVPN_DH=<span class="string">&quot;<span class="subst">$(cat $&#123;OVPN_PKI&#125;/dh.pem)</span>&quot;</span></span><br><span class="line">OVPN_TC=<span class="string">&quot;<span class="subst">$(sed -e <span class="string">&quot;/^#/d;/^\w/N;s/\n//&quot;</span> $&#123;OVPN_PKI&#125;/tc.pem)</span>&quot;</span></span><br><span class="line">OVPN_CA=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/ca.crt)</span>&quot;</span></span><br><span class="line">NL=$<span class="string">&#x27;\n&#x27;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 配置VPN服务，生成客户端配置文件。 </span></span><br><span class="line"><span class="comment">#注：如果你清楚的知道你在做什么，可以更改下方ovpn配置相关的代码，可以省掉后续多个客户端单独修改配置的工作量</span></span><br><span class="line"><span class="built_in">umask</span> go=</span><br><span class="line"><span class="built_in">ls</span> <span class="variable">$&#123;OVPN_PKI&#125;</span>/issued \</span><br><span class="line">| sed -e <span class="string">&quot;s/\.\w*$//&quot;</span> \</span><br><span class="line">| <span class="keyword">while</span> <span class="built_in">read</span> -r OVPN_ID</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">OVPN_KEY=<span class="string">&quot;<span class="subst">$(cat $&#123;OVPN_PKI&#125;/private/$&#123;OVPN_ID&#125;.key)</span>&quot;</span></span><br><span class="line">OVPN_CERT=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt)</span>&quot;</span></span><br><span class="line">OVPN_EKU=<span class="string">&quot;<span class="subst">$(openssl x509 -in $&#123;OVPN_PKI&#125;/issued/$&#123;OVPN_ID&#125;.crt -purpose)</span>&quot;</span></span><br><span class="line"><span class="keyword">case</span> <span class="variable">$&#123;OVPN_EKU&#125;</span> <span class="keyword">in</span></span><br><span class="line">(*<span class="string">&quot;SSL server : Yes&quot;</span>*)</span><br><span class="line">OVPN_CONF=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">port <span class="variable">$&#123;OVPN_PORT&#125;</span></span></span><br><span class="line"><span class="string">proto <span class="variable">$&#123;OVPN_PROTO&#125;</span></span></span><br><span class="line"><span class="string">server <span class="variable">$&#123;OVPN_POOL&#125;</span></span></span><br><span class="line"><span class="string">topology subnet</span></span><br><span class="line"><span class="string">client-to-client</span></span><br><span class="line"><span class="string">keepalive 10 60</span></span><br><span class="line"><span class="string">persist-tun</span></span><br><span class="line"><span class="string">persist-key</span></span><br><span class="line"><span class="string">push \&quot;dhcp-option DNS <span class="variable">$&#123;OVPN_DNS&#125;</span>\&quot;</span></span><br><span class="line"><span class="string">push \&quot;dhcp-option DOMAIN <span class="variable">$&#123;OVPN_DOMAIN&#125;</span>\&quot;</span></span><br><span class="line"><span class="string">push \&quot;redirect-gateway def1\&quot;</span></span><br><span class="line"><span class="string">push \&quot;persist-tun\&quot;</span></span><br><span class="line"><span class="string">push \&quot;persist-key\&quot;</span></span><br><span class="line"><span class="string">&lt;dh&gt;<span class="variable">$&#123;NL&#125;</span><span class="variable">$&#123;OVPN_DH&#125;</span><span class="variable">$&#123;NL&#125;</span>&lt;/dh&gt;&quot;</span></span><br><span class="line">OVPN_EXT=<span class="string">&quot;conf&quot;</span> ;;</span><br><span class="line">(*<span class="string">&quot;SSL client : Yes&quot;</span>*)</span><br><span class="line">OVPN_CONF=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">nobind</span></span><br><span class="line"><span class="string">client</span></span><br><span class="line"><span class="string">remote <span class="variable">$&#123;OVPN_SERV&#125;</span> <span class="variable">$&#123;OVPN_PORT&#125;</span> <span class="variable">$&#123;OVPN_PROTO&#125;</span></span></span><br><span class="line"><span class="string">auth-nocache</span></span><br><span class="line"><span class="string">remote-cert-tls server&quot;</span></span><br><span class="line">OVPN_EXT=<span class="string">&quot;ovpn&quot;</span> ;;</span><br><span class="line"><span class="keyword">esac</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt; <span class="string">EOF &gt; $&#123;OVPN_DIR&#125;/$&#123;OVPN_ID&#125;.$&#123;OVPN_EXT&#125;</span></span><br><span class="line"><span class="string">user nobody</span></span><br><span class="line"><span class="string">group nogroup</span></span><br><span class="line"><span class="string">dev tun</span></span><br><span class="line"><span class="string">$&#123;OVPN_CONF&#125;</span></span><br><span class="line"><span class="string">&lt;tls-crypt&gt;$&#123;NL&#125;$&#123;OVPN_TC&#125;$&#123;NL&#125;&lt;/tls-crypt&gt;</span></span><br><span class="line"><span class="string">&lt;key&gt;$&#123;NL&#125;$&#123;OVPN_KEY&#125;$&#123;NL&#125;&lt;/key&gt;</span></span><br><span class="line"><span class="string">&lt;cert&gt;$&#123;NL&#125;$&#123;OVPN_CERT&#125;$&#123;NL&#125;&lt;/cert&gt;</span></span><br><span class="line"><span class="string">&lt;ca&gt;$&#123;NL&#125;$&#123;OVPN_CA&#125;$&#123;NL&#125;&lt;/ca&gt;</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">/etc/init.d/openvpn restart</span><br><span class="line"><span class="comment"># 此处就能够看到client.ovpn 把这个文件通过openwrt的备份功能导出来，上传到群晖即可</span></span><br><span class="line"><span class="built_in">ls</span> <span class="variable">$&#123;OVPN_DIR&#125;</span>/*.ovpn</span><br></pre></td></tr></table></figure>
-<p>到这里openwrt的openvpn服务端配置完毕，可以使用openvpn的备份功能（<code>System -&gt; Backup/Flash Firmware</code>）. 从备份包导出客户端的配置文件。</p>
-<hr>
-<h2 id="2-群晖连接openvpn"><a href="#2-群晖连接openvpn" class="headerlink" title="2. 群晖连接openvpn"></a>2. 群晖连接openvpn</h2><p>到了群晖这一步就比较简单，按照官网的流程，打开 <code>控制面板-&gt;网络-&gt;网络界面-&gt;新增-&gt;创建VPN配置文件</code>，把刚才导出的client.ovpn上传即可</p>
-<blockquote>
-<p>注：其实这里因为群晖的错误提示非常的“友好”，连接失败只会提示“失败，请检查配置”或者“认证错误”，导致排错非常的困难，踩了不少坑。比如不支持的标签，属性等等，总之注意点都写在第一步了。如果还是有问题，请自行前往<code>/var/log/messages</code>进行openvpn相关日志的排查。</p>
-</blockquote>
-<p>按照下图位置上传client.ovpn<br><img data-src="https://img-blog.csdnimg.cn/db605dfb49fe49aebf6ac6fe52d3c13c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>这里只需要填写 “导入.ovpn” 文件这一项<br><img data-src="https://img-blog.csdnimg.cn/3a403e5c14fe4f0493d5e95118e79b6c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_19,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>记得勾选这两个选项<br><img data-src="https://img-blog.csdnimg.cn/88e52cab7a7144d9a9d482b3391b4903.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>到这一步 openvpn的连接可以正常建立了。</p>
-<hr>
-<h2 id="3-配置端口转发"><a href="#3-配置端口转发" class="headerlink" title="3.配置端口转发"></a>3.配置端口转发</h2><p>需要完成端口转发，首先我们得先把群晖的ip固定下来，否则ip一变动，端口转发规则就失效了。<br>需要完成openvpn客户端的ip固定，我们需要在server配置中添加规则。</p>
-<p><strong>编辑服务端配置</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim <span class="variable">$&#123;OVPN_DIR&#125;</span>/server.ovpn</span><br></pre></td></tr></table></figure>
-<p><strong>添加下面这一行，用来指定客户端config文件夹</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里的文件夹路径可以自定</span></span><br><span class="line">client-config-dir /etc/openvpn/ccd</span><br></pre></td></tr></table></figure>
-<p><strong>保存后新增客户端config 注意这里的“client”需要和.ovpn文件名相符，也就是easyrsa创建客户端秘钥时的名字</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/openvpn/ccd/client</span><br></pre></td></tr></table></figure>
-<p><strong>添加下面这一行，来绑定ip</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里的192.168.8.108 即为你想要绑定的ip</span></span><br><span class="line">ifconfig-push 192.168.8.108 255.255.255.0</span><br></pre></td></tr></table></figure>
-<p><strong>保存后重启openvpn</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/openvpn restart</span><br></pre></td></tr></table></figure>
-<hr>
-<p>接下来正式开始配置端口转发，进入openwrt,  菜单选择 <code>Network-&gt;Firewall-&gt;Port Forwards</code><br><img data-src="https://img-blog.csdnimg.cn/b76d34e11f01421aaf38f7c9a4c6c0cb.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>新增一条端口转发，按照下图填写<br><img data-src="https://img-blog.csdnimg.cn/2df447f9ae0a470c8d3a3f65c98dba4a.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>至此，应该就能够使用openwrt的端口转发达到内网穿透的目的了。</p>
-<p>以上！まいど～</p>
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/5239703c80b8.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -912,7 +770,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-02-01 14:24:50" itemprop="dateModified" datetime="2022-02-01T14:24:50+08:00">2022-02-01</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -946,22 +804,14 @@
 </blockquote>
 <p>总之 LV建立在VG之上，VG建立在PV之上，是PV的集合，PV即物理卷。</p>
 <p><strong>本文的总体思路为： 扩容PV-&gt; 扩容LV -&gt; 扩容根目录空间</strong></p>
-<h1 id="1-VM添加空间"><a href="#1-VM添加空间" class="headerlink" title="1.VM添加空间"></a>1.VM添加空间</h1><p>使用vmware增加空间 ↓<br><img data-src="https://img-blog.csdnimg.cn/6bcae82012ad45d6afcd2a9a55bda7a4.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
-<h1 id="2-使用fdisk扩展原有分区"><a href="#2-使用fdisk扩展原有分区" class="headerlink" title="2.使用fdisk扩展原有分区"></a>2.使用fdisk扩展原有分区</h1><p>此处参考了<a target="_blank" rel="noopener" href="https://www.linuxprobe.com/linux-fdisk-size.html">Linux下使用fdisk扩展分区容量</a>，原文关键部分摘录如下</p>
-<blockquote>
-<p>对&#x2F;dev&#x2F;sda4进行扩容</p>
-</blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">[root@linuxprobe ~]: fdisk /dev/sda #对/dev/sda进行操作</span><br><span class="line"></span><br><span class="line">WARNING: DOS-compatible mode is deprecated. It&#x27;s strongly recommended to</span><br><span class="line">         switch off the mode (command &#x27;c&#x27;) and change display units to</span><br><span class="line">         sectors (command &#x27;u&#x27;).</span><br><span class="line"></span><br><span class="line">Command (m for help): p        #查看分区表信息</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line">/dev/sda4            1497        2611     8952832   83  Linux</span><br><span class="line"></span><br><span class="line">Command (m for help): d           #删除分区</span><br><span class="line">Partition number (1-4): 4         #删除需要扩容的分区（这里为sda4）</span><br><span class="line"></span><br><span class="line">Command (m for help): p       #再次查看分区信息，/dev/sda4已被删除</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line"></span><br><span class="line">Command (m for help): n      #创建新的分区</span><br><span class="line">Command action</span><br><span class="line">   e   extended</span><br><span class="line">   p   primary partition (1-4)</span><br><span class="line">p             #创建为主分区</span><br><span class="line">Selected partition 4</span><br><span class="line">First cylinder (1497-3916, default 1497):          #经对比，正好和上一个磁盘柱一致，默认即可</span><br><span class="line">Using default value 1497</span><br><span class="line">Last cylinder, +cylinders or +size&#123;K,M,G&#125; (1497-3916, default 3916): </span><br><span class="line">Using default value 3916              #直接默认就可以</span><br><span class="line"></span><br><span class="line">Command (m for help): p               #查看分区表信息</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 32.2 GB, 32212254720 bytes</span><br><span class="line">255 heads, 63 sectors/track, 3916 cylinders</span><br><span class="line">Units = cylinders of 16065 * 512 = 8225280 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x0005210c</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *           1          26      204800   83  Linux</span><br><span class="line">Partition 1 does not end on cylinder boundary.</span><br><span class="line">/dev/sda2              26        1301    10240000   83  Linux</span><br><span class="line">/dev/sda3            1301        1497     1572864   82  Linux swap / Solaris</span><br><span class="line">/dev/sda4            1497        3916    19436582   83  Linux</span><br><span class="line"></span><br><span class="line">Command (m for help): wp       #保存并退出，如果创建有误，直接退出不要保存即可</span><br><span class="line">The partition table has been altered!</span><br><span class="line"></span><br><span class="line">Calling ioctl() to re-read partition table.</span><br><span class="line"></span><br><span class="line">WARNING: Re-reading the partition table failed with error 16: Device or resource busy.</span><br><span class="line">The kernel still uses the old table. The new table will be used at</span><br><span class="line">the next reboot or after you run partprobe(8) or kpartx(8)</span><br><span class="line">Syncing disks.</span><br></pre></td></tr></table></figure>
-<h1 id="3-刷新PV空间"><a href="#3-刷新PV空间" class="headerlink" title="3.刷新PV空间"></a>3.刷新PV空间</h1><p>对分区扩容完成后，会发现空间依旧没有增加，此时需要先刷新pv大小，使用<code>pvresize</code>:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: pvdisplay #先列出pv</span><br><span class="line">  --- Physical volume ---</span><br><span class="line">  PV Name               /dev/sda4</span><br><span class="line">  VG Name               ubuntu-vg</span><br><span class="line">  PV Size               &lt;19.00 GiB / not usable 16.50 KiB</span><br><span class="line">  Allocatable           yes (but full)</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              9983</span><br><span class="line">  Free PE               0</span><br><span class="line">  Allocated PE          9983</span><br><span class="line">  PV UUID               2CF0fb-auL8-N1Xk-Lpo1-pdzo-MLN5-R0QAIX</span><br><span class="line">  </span><br><span class="line">[root@syra-ti_ubuntu~]: pvresize /dev/sda4 #调用pvresize进行刷新</span><br><span class="line">  Physical volume &quot;/dev/sda3&quot; changed</span><br><span class="line">  1 physical volume(s) resized / 0 physical volume(s) not resized</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: pvdisplay #再次查看pv大小 发现pv大小已经正常</span><br><span class="line">  --- Physical volume ---</span><br><span class="line">  PV Name               /dev/sda4</span><br><span class="line">  VG Name               ubuntu-vg</span><br><span class="line">  PV Size               &lt;39.00 GiB / not usable 16.50 KiB</span><br><span class="line">  Allocatable           yes (but full)</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              9983</span><br><span class="line">  Free PE               0</span><br><span class="line">  Allocated PE          9983</span><br><span class="line">  PV UUID               2CF0fb-auL8-N1Xk-Lpo1-pdzo-MLN5-R0QAIX</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
-<h1 id="4-为LV增加空间"><a href="#4-为LV增加空间" class="headerlink" title="4.为LV增加空间"></a>4.为LV增加空间</h1><p>对pv扩容完成后，会发现lv的空间依旧没有增加，此时需要扩展lv大小，使用<code>lvextend</code>:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: lvdisplay #列出lv信息 发现lv空间没有增加</span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Path                /dev/ubuntu-vg/ubuntu-lv</span><br><span class="line">  LV Name                ubuntu-lv</span><br><span class="line">  VG Name                ubuntu-vg</span><br><span class="line">  LV UUID                3THGqb-Me9D-KFEK-QxT5-dP8Y-hUqa-knbAa3</span><br><span class="line">  LV Write Access        read/write</span><br><span class="line">  LV Creation host, time ubuntu-server, 2021-10-12 06:49:31 +0000</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta">  # </span><span class="language-bash">open                 1</span></span><br><span class="line">  LV Size                &lt;19.00 GiB</span><br><span class="line">  Current LE             9983</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:0</span><br><span class="line">[root@syra-ti_ubuntu~]: lvextend -L +20G /dev/ubuntu-vg/ubuntu-lv /dev/sda4 #调用lvextend进行扩容</span><br><span class="line">[root@syra-ti_ubuntu~]: lvdisplay #再次列出lv信息 发现lv空间已经增加</span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Path                /dev/ubuntu-vg/ubuntu-lv</span><br><span class="line">  LV Name                ubuntu-lv</span><br><span class="line">  VG Name                ubuntu-vg</span><br><span class="line">  LV UUID                3THGqb-Me9D-KFEK-QxT5-dP8Y-hUqa-knbAa3</span><br><span class="line">  LV Write Access        read/write</span><br><span class="line">  LV Creation host, time ubuntu-server, 2021-10-12 06:49:31 +0000</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta">  # </span><span class="language-bash">open                 1</span></span><br><span class="line">  LV Size                &lt;39.00 GiB</span><br><span class="line">  Current LE             9983</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h1 id="5-扩展根目录空间"><a href="#5-扩展根目录空间" class="headerlink" title="5.扩展根目录空间"></a>5.扩展根目录空间</h1><p>对lv扩容完成后，会发现根目录的空间依旧没有增加，此时需要刷新根目录大小，使用<code>resize2fs</code>:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">[root@syra-ti_ubuntu~]: df -h #发现/根目录空间还是没有增加</span><br><span class="line">Filesystem                         Size  Used Avail Use% Mounted on</span><br><span class="line">udev                               1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs                              393M  1.8M  391M   1% /run</span><br><span class="line">/dev/mapper/ubuntu--vg-ubuntu--lv   19G   18G   19G  99% /</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs                              5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">/dev/loop0                          56M   56M     0 100% /snap/core18/2128</span><br><span class="line">/dev/loop1                          56M   56M     0 100% /snap/core18/2253</span><br><span class="line">/dev/loop3                          43M   43M     0 100% /snap/snapd/14066</span><br><span class="line">/dev/loop2                         117M  117M     0 100% /snap/docker/1125</span><br><span class="line">/dev/loop4                          33M   33M     0 100% /snap/snapd/13270</span><br><span class="line">/dev/sda2                          976M  150M  759M  17% /boot</span><br><span class="line">tmpfs                              393M     0  393M   0% /run/user/0</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv #使用resize2fs进行刷新</span><br><span class="line">resize2fs 1.44.1 (24-Mar-2018)</span><br><span class="line">Filesystem at /dev/mapper/ubuntu--vg-ubuntu--lv is mounted on /; on-line resizing required</span><br><span class="line">old_desc_blocks = 3, new_desc_blocks = 5</span><br><span class="line">The filesystem on /dev/mapper/ubuntu--vg-ubuntu--lv is now 10222592 (4k) blocks long.</span><br><span class="line"></span><br><span class="line">[root@syra-ti_ubuntu~]: df -h #再次查看，发现/根目录空间已经增加</span><br><span class="line">Filesystem                         Size  Used Avail Use% Mounted on</span><br><span class="line">udev                               1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs                              393M  1.8M  391M   1% /run</span><br><span class="line">/dev/mapper/ubuntu--vg-ubuntu--lv   39G   18G   19G  49% /</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs                              5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">/dev/loop0                          56M   56M     0 100% /snap/core18/2128</span><br><span class="line">/dev/loop1                          56M   56M     0 100% /snap/core18/2253</span><br><span class="line">/dev/loop3                          43M   43M     0 100% /snap/snapd/14066</span><br><span class="line">/dev/loop2                         117M  117M     0 100% /snap/docker/1125</span><br><span class="line">/dev/loop4                          33M   33M     0 100% /snap/snapd/13270</span><br><span class="line">/dev/sda2                          976M  150M  759M  17% /boot</span><br><span class="line">tmpfs                              393M     0  393M   0% /run/user/0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>以上！まいど～</p>
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/ddf76f824c86.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1023,7 +873,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -1033,7 +883,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>496</span>
+      <span>497</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -1053,20 +903,14 @@
     <div class="post-body" itemprop="articleBody">
           <h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在<code>vue.config.js</code>中无法配置自定义<code>devtool</code>选项，无论是使用<code>configureWebpack</code>还是<code>chainWebpack</code>都无法改变<code>source-map</code>的类型。官方文档也没有提供相关的说明。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// vue.config.js</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Components</span> = <span class="built_in">require</span>(<span class="string">&#x27;unplugin-vue-components/webpack&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">ElementPlusResolver</span> &#125; = <span class="built_in">require</span>(<span class="string">&#x27;unplugin-vue-components/resolvers&#x27;</span>)</span><br><span class="line"><span class="comment">// 两种方式均无法更改devtool</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">configureWebpack</span>: &#123;</span><br><span class="line">    <span class="attr">devtool</span>: <span class="string">&quot;source-map&quot;</span>,</span><br><span class="line">    <span class="comment">// 2021.10.26更新 ↓罪魁祸首</span></span><br><span class="line">    <span class="attr">plugins</span>: [</span><br><span class="line">      <span class="title class_">Components</span>(&#123;</span><br><span class="line">        <span class="attr">resolvers</span>: [<span class="title class_">ElementPlusResolver</span>()]</span><br><span class="line">      &#125;)</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">chainWebpack</span>: <span class="function"><span class="params">config</span> =&gt;</span> &#123;</span><br><span class="line">    config</span><br><span class="line">      .<span class="title function_">devtool</span>(<span class="string">&#x27;source-map&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p><strong>2021.10.26更新</strong>： 问题产生的原因不是<code>vue-cli</code>，而是<code>element-ui</code>提供的按需加载插件<code>unplugin-vue-components/resolvers</code>破坏了sourcemap，具体的原因不清楚，似乎插件作者也不是很有<code>sourcemap</code>方面的开发意愿。 总之遇到这个问题的话看一看有没有这个玩应吧。<br><img data-src="https://img-blog.csdnimg.cn/e7165c44fff043758752a54008586582.png" alt="在这里插入图片描述"></p>
-<hr>
-<h3 id="本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x-下面的都可以不用看了"><a href="#本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x-下面的都可以不用看了" class="headerlink" title="本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x 下面的都可以不用看了"></a>本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x 下面的都可以不用看了</h3><p><del><code>vue-cli</code>在<code>npm run serve</code>时强制使用了<code>&#39;eval-cheap-module-source-map&#39;</code></del></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @vue/cli-service/lib/commands/serve.js</span></span><br><span class="line"><span class="comment">// line: 51</span></span><br><span class="line"> api.<span class="title function_">chainWebpack</span>(<span class="function"><span class="params">webpackConfig</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (process.<span class="property">env</span>.<span class="property">NODE_ENV</span> !== <span class="string">&#x27;production&#x27;</span> &amp;&amp; process.<span class="property">env</span>.<span class="property">NODE_ENV</span> !== <span class="string">&#x27;test&#x27;</span>) &#123;</span><br><span class="line">       <span class="comment">// 注意这里：在npm run serve时强制使用了&#x27;eval-cheap-module-source-map&#x27;</span></span><br><span class="line">        webpackConfig</span><br><span class="line">          .<span class="title function_">devtool</span>(<span class="string">&#x27;eval-cheap-module-source-map&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        webpackConfig</span><br><span class="line">          .<span class="title function_">plugin</span>(<span class="string">&#x27;hmr&#x27;</span>)</span><br><span class="line">            .<span class="title function_">use</span>(<span class="built_in">require</span>(<span class="string">&#x27;webpack/lib/HotModuleReplacementPlugin&#x27;</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment">// https://github.com/webpack/webpack/issues/6642</span></span><br><span class="line">        <span class="comment">// https://github.com/vuejs/vue-cli/issues/3539</span></span><br><span class="line">        webpackConfig</span><br><span class="line">          .<span class="property">output</span></span><br><span class="line">            .<span class="title function_">globalObject</span>(<span class="string">`(typeof self !== &#x27;undefined&#x27; ? self : this)`</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!process.<span class="property">env</span>.<span class="property">VUE_CLI_TEST</span> &amp;&amp; options.<span class="property">devServer</span>.<span class="property">progress</span> !== <span class="literal">false</span>) &#123;</span><br><span class="line">          webpackConfig</span><br><span class="line">            .<span class="title function_">plugin</span>(<span class="string">&#x27;progress&#x27;</span>)</span><br><span class="line">            .<span class="title function_">use</span>(<span class="built_in">require</span>(<span class="string">&#x27;webpack/lib/ProgressPlugin&#x27;</span>))</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
-
-<p><del>截止目前（2021年10月26日），<code>vue-cli</code>的最新<code>realese</code>版本（v4.5.14）中，依旧存在这个问题。但是github的开源代码的<code>dev</code>分支已经修复此问题（<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue-cli/blob/dev/packages/%40vue/cli-service/lib/commands/serve.js">查看代码</a>），不知道什么时候会发布到正式版本中去。</del></p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a><del>解决方案</del></h2><p><del><strong>方案一：</strong> 手动修改<code>node_modules/@vue/cli-service/lib/commands/serve.js:54</code>， 将<code>&#39;eval-cheap-module-source-map&#39;</code>改为想要的模式。弊端是install之后可能需要再改一下，如果不在意<code>source-map</code>的话还是权衡一下利弊。</del></p>
-<p><del><strong>方案二：</strong> 使用<code>vue-cli</code>的<code>dev</code>分支源代码编译一份最新的来使用。</del></p>
-<br>
-
-<p>以上！まいど～</p>
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/32502d134cc1.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1128,7 +972,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-01-27 21:20:40" itemprop="dateModified" datetime="2022-01-27T21:20:40+08:00">2022-01-27</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -1138,7 +982,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>212</span>
+      <span>213</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -1156,16 +1000,18 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在windows安装完ssh-agent，添加多个ssh key之后,git clone依旧提示Permission Denied。<br>（安装参见：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement">https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement</a>）</p>
-<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>Git需要知道Windows ssh-agent服务的位置， 可以通过添加<code>GIT_SSH</code>环境变量来解决该问题。</p>
-<p>以下文字来源：<a target="_blank" rel="noopener" href="https://snowdrift.tech/cli/ssh/git/tutorials/2019/01/31/using-ssh-agent-git-windows.html">https://snowdrift.tech/cli/ssh/git/tutorials/2019/01/31/using-ssh-agent-git-windows.html</a></p>
+          <h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在windows安装完ssh-agent，添加多个ssh key之后,git clone依旧提示Permission Denied。</p>
 <blockquote>
-<p>Git for Windows uses the ssh binaries included with git by default. While this works well enough in most situations, one side-effect is that git has no idea how to talk to the Windows ssh-agent service. In order for git commands to use the Windows ssh-agent service, git needs to be informed of the system OpenSSH path. To accomplish this, the environment variable <code>GIT_SSH</code>needs to be set with the path of the system OpenSSH executable.</p>
+<p>安装参见：<br><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement">https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement</a></p>
 </blockquote>
-<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><blockquote>
-<p>Run the following command to update the environment variable:<br>在PowerShell中运行以下命令添加环境变量：</p>
-</blockquote>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> &gt;  [<span class="type">Environment</span>]::SetEnvironmentVariable(<span class="string">&quot;GIT_SSH&quot;</span>, <span class="string">&quot;<span class="variable">$</span>((Get-Command ssh).Source)&quot;</span>, [<span class="type">System.EnvironmentVariableTarget</span>]::User)</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/162b476ff9bf.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1227,7 +1073,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-02-01 14:24:50" itemprop="dateModified" datetime="2022-02-01T14:24:50+08:00">2022-02-01</time>
+      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
     </span>
 
   
@@ -1237,7 +1083,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>136</span>
+      <span>137</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -1256,15 +1102,14 @@
     
     <div class="post-body" itemprop="articleBody">
           <h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>添加<code>~/.bash_profile</code>之后，bash失去高亮，<code>~/.bashrc</code>中的逻辑不运行。<br><img data-src="https://img-blog.csdnimg.cn/b49d241eeab14f43b53edb783eb9d8f1.png" alt="添加前"><br>添加前↑<br><img data-src="https://img-blog.csdnimg.cn/fd0ce34e0824462fb70387c80a53c57f.png" alt="添加后"><br>添加后↑</p>
-<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>在添加<code>~/.bash_profile</code>之后，<code>~/.profile</code>会被覆盖不再运行，而load bashrc的逻辑在<code>~/.profile</code>中，导致<code>~/.bashrc</code>也一并失效。<br><img data-src="https://img-blog.csdnimg.cn/50f8cda872f34b57a3f9f7e7b3d1f48c.png" alt="~/.profile中加载bashrc的逻辑"></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 解决方案</span><br><span class="line">- 方案一：将```~/.bash_profile```中的逻辑移至```~/.profile```，并删除```~/.bash_profile```。</span><br><span class="line">- 方案二：在```~/.bash_profile```中添加以下代码保证```~/.profile```中的代码运行。</span><br><span class="line"> ```bash</span><br><span class="line"> source ~/.profile</span><br></pre></td></tr></table></figure>
-
-
-<br>
-以上！まいど～
-
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/463d951c5853.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

@@ -832,9 +832,11 @@ requestAnimationFrame(repeatOften);
 <p><strong>至少，能跑了</strong></p>
 <h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>问题是解决了，但是本着尽可能优雅的精神，能跑是能跑了，看到两遍<code>NODE_ENV</code>赋值，总有一些舍本逐末的感觉。下面是我的思考：</p>
 <blockquote>
-<p>首先，理论上来讲，<code>build</code>确实是应该在dev环境下的行为，所以这时候下载<code>devDependencies</code>是合理的。<br>反倒是<code>build</code>时使用<code>NODE_ENV</code>去判断生成的target似乎有一些哲学上的错误。<br>但是各大开源库已经把<code>NODE_ENV=production &amp;&amp; npm run build</code>这样的模式带成了惯例，导致了先入为主。<br>所以可不可以推翻这样的模式，从这里下手：</p>
+<p>首先，理论上来讲，<code>build</code>确实是应该在dev环境下的行为，所以这时候下载<code>devDependencies</code>是合理的，那么运行<code>build</code>时，<code>NODE_ENV</code>理应为<code>development</code>。<br>但是，我们希望<code>build</code>命令所构建出的产物运行在生产环境下，那么，似乎<code>NODE_ENV</code>又应该是<code>production</code>。</p>
 </blockquote>
-<h2 id="个人认为最优雅的方式"><a href="#个人认为最优雅的方式" class="headerlink" title="个人认为最优雅的方式"></a>个人认为最优雅的方式</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">NODE_ENV=development &amp;&amp; npm install &amp;&amp; npm run build --production</span><br></pre></td></tr></table></figure>
+<p>于是歧义就产生了： <strong><code>build</code>过程中所使用的<code>NODE_ENV</code>，代表的的含义究竟是<code>build</code>命令运行时的环境，还是构建产物的环境？</strong></p>
+<h2 id="个人认为最优雅的方式"><a href="#个人认为最优雅的方式" class="headerlink" title="个人认为最优雅的方式"></a>个人认为最优雅的方式</h2><p>我的想法是：环境变量应当代表的是当前环境，而不是目标环境，所以<code>NODE_ENV</code>理应为<code>development</code>，但是各大开源库已经把<code>NODE_ENV=production &amp;&amp; npm run build</code>这样的模式带成了惯例，导致了我们先入为主。<br>所以推翻这样的模式，采用额外的参数来代表目标环境更为合理：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">NODE_ENV=development &amp;&amp; npm install &amp;&amp; npm run build --production</span><br></pre></td></tr></table></figure>
 <p>添加一个参数来决定构建目标，这样既明确了<code>install</code>和<code>build</code>都是dev环境下的行为，又确定了<code>build</code>的target是prod环境下的产物。<br>个人觉得是最优雅的方式，也欢迎大家指点和讨论。<br><br></p>
 <p>以上！まいど～</p>
 <hr>

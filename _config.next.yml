@@ -270,9 +270,9 @@ reward_settings:
   comment: 你的东西都会还给你的ZE☆~
 
 reward:
-  爱发电: /images/afdian.jpg
-  #alipay: /images/alipay.jpg
-  #wechatpay: /images/wechat.jpg
+  #爱发电: /images/afdian.jpg
+  alipay: /images/alipay.jpg
+  wechatpay: /images/wechat.jpg
   #paypal: /images/paypal.png
   #bitcoin: /images/bitcoin.png
 

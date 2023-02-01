@@ -160,7 +160,6 @@ social_icons:
 # Blog rolls
 links_settings:
   icon: fa fa-star
-  title: '魔法店の常連客'
   # Available values: block | inline
   layout: block
 

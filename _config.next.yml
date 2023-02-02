@@ -266,7 +266,6 @@ reward_settings:
   # If true, a donate button will be displayed in every article by default.
   enable: true
   animation: false
-  comment: 你的东西都会还给你的ZE☆~
 
 reward:
   #爱发电: /images/afdian.jpg

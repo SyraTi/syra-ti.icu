@@ -14,7 +14,7 @@ ___
 [[OpenWrt Wiki] OpenVPN server](https://openwrt.org/docs/guide-user/services/vpn/openvpn/server)
 
 但是这个版本生成的配置，因为用到了``<tls-crypt-v2>``，群晖没法识别。可以使用下面这个`` previous version of OpenWrt`` 的旧版本。
->![在这里插入图片描述](https://img-blog.csdnimg.cn/8196fece92354dfda722165d47ba5c54.png)
+>![在这里插入图片描述](/images/posts/8196fece92354dfda722165d47ba5c54.png)
 链接在这里↓
 [[OpenWrt Wiki] OpenVPN server (old)](https://openwrt.org/docs/guide-user/services/vpn/openvpn/server?rev=1632708683)
 ___
@@ -172,11 +172,11 @@ ls ${OVPN_DIR}/*.ovpn
 >注：其实这里因为群晖的错误提示非常的“友好”，连接失败只会提示“失败，请检查配置”或者“认证错误”，导致排错非常的困难，踩了不少坑。比如不支持的标签，属性等等，总之注意点都写在第一步了。如果还是有问题，请自行前往``/var/log/messages``进行openvpn相关日志的排查。
 
 按照下图位置上传client.ovpn
-![在这里插入图片描述](https://img-blog.csdnimg.cn/db605dfb49fe49aebf6ac6fe52d3c13c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16)
+![在这里插入图片描述](/images/posts/db605dfb49fe49aebf6ac6fe52d3c13c.png)
 这里只需要填写 “导入.ovpn” 文件这一项
-![在这里插入图片描述](https://img-blog.csdnimg.cn/3a403e5c14fe4f0493d5e95118e79b6c.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_19,color_FFFFFF,t_70,g_se,x_16)
+![在这里插入图片描述](/images/posts/3a403e5c14fe4f0493d5e95118e79b6c.png)
 记得勾选这两个选项
-![在这里插入图片描述](https://img-blog.csdnimg.cn/88e52cab7a7144d9a9d482b3391b4903.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16)
+![在这里插入图片描述](/images/posts/88e52cab7a7144d9a9d482b3391b4903.png)
 到这一步 openvpn的连接可以正常建立了。
 
 ---
@@ -208,9 +208,9 @@ ifconfig-push 192.168.8.108 255.255.255.0
 ```
 ___
 接下来正式开始配置端口转发，进入openwrt,  菜单选择 ``Network->Firewall->Port Forwards``
-![在这里插入图片描述](https://img-blog.csdnimg.cn/b76d34e11f01421aaf38f7c9a4c6c0cb.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_15,color_FFFFFF,t_70,g_se,x_16)
+![在这里插入图片描述](/images/posts/b76d34e11f01421aaf38f7c9a4c6c0cb.png)
 新增一条端口转发，按照下图填写
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2df447f9ae0a470c8d3a3f65c98dba4a.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16)
+![在这里插入图片描述](/images/posts/2df447f9ae0a470c8d3a3f65c98dba4a.png)
 至此，应该就能够使用openwrt的端口转发达到内网穿透的目的了。
 
 

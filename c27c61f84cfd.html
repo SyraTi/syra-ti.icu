@@ -16,11 +16,11 @@
 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.20/fancybox/fancybox.css" integrity="sha256-RvRHGSuWAxZpXKV9lLDt2e+rZ+btzn48Wp4ueS3NZKs=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"syra-ti.icu","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"syra-ti.icu","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="需求想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv。 原拓扑图如下">
 <meta property="og:type" content="article">
@@ -149,7 +149,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE%E6%9C%89%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F%EF%BC%9ATagged-x2F-Untagged"><span class="nav-number">2.0.0.0.1.</span> <span class="nav-text">端口处理数据有两种方式：Tagged&#x2F;Untagged</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E7%AB%99%E6%9C%89%E4%B8%A4%E7%A7%8D%E6%A8%A1%E5%BC%8F%EF%BC%9ATagged%E5%92%8CUntagged"><span class="nav-number">2.0.0.0.2.</span> <span class="nav-text">检查站有两种模式：Tagged和Untagged</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%B3%E6%AD%A4%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%EF%BC%81-%E4%B9%9F%E6%98%AF%E9%92%BB%E7%A0%94%E4%BA%86%E4%B8%89%E5%9B%9B%E5%A4%A9-%E4%B8%B4%E6%97%B6%E8%B5%B7%E6%84%8F%E8%82%AF%E5%AE%9A%E6%9C%89%E5%86%99%E7%9A%84%E4%B8%8D%E5%AF%B9%E7%9A%84%E5%9C%B0%E6%96%B9-%E6%AC%A2%E8%BF%8E%E5%90%84%E4%BD%8D%E5%9C%A8%E8%AF%84%E8%AE%BA%E6%8C%87%E5%87%BA%EF%BC%81"><span class="nav-number">2.0.1.</span> <span class="nav-text">至此问题解决！ 也是钻研了三四天 临时起意肯定有写的不对的地方 欢迎各位在评论指出！</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE%E6%9C%89%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F%EF%BC%9ATagged-Untagged"><span class="nav-number">2.0.0.0.1.</span> <span class="nav-text">端口处理数据有两种方式：Tagged&#x2F;Untagged</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E6%97%B6%EF%BC%9A-%E5%A6%82%E6%9E%9C%E7%AB%AF%E5%8F%A3%E6%98%AFtagged%E6%96%B9%E5%BC%8F-%E5%A6%82%E6%9E%9C%E7%AB%AF%E5%8F%A3PVID%E7%AD%89%E4%BA%8E%E5%8F%91%E9%80%81%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8C%85%E6%89%80%E5%90%AB%E7%9A%84VLAN-ID%EF%BC%8C%E9%82%A3%E4%B9%88%E5%B0%B1%E4%BC%9A%E5%B0%86VLAN-ID%E4%BB%8E%E5%8F%91%E9%80%81%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8C%85%E4%B8%AD%E5%8E%BB%E6%8E%89%EF%BC%9B-%E5%A6%82%E6%9E%9C%E4%B8%8D%E7%9B%B8%E7%AD%89%EF%BC%8C%E5%88%99%E6%95%B0%E6%8D%AE%E5%8C%85%E5%B0%86%E4%BF%9D%E6%8C%81%E5%8E%9F%E6%A0%B7%E5%8F%91%E9%80%81%E5%87%BA%E5%8E%BB%E3%80%82-%E5%A6%82%E6%9E%9C%E7%AB%AF%E5%8F%A3%E6%98%AFuntagged%E6%96%B9%E5%BC%8F-%E5%88%99%E4%B8%8D%E7%AE%A1%E7%AB%AF%E5%8F%A3PVID%E4%B8%BA%E5%A4%9A%E5%B0%91%EF%BC%8C%E6%98%AF%E5%90%A6%E7%AD%89%E4%BA%8E%E8%A6%81%E8%BE%93%E5%87%BA%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8C%85%E7%9A%84VLAN%EF%BC%8C%E9%83%BD%E4%BC%9A%E5%B0%86VLAN-ID%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%8C%85%E4%B8%AD%E5%8E%BB%E6%8E%89%E3%80%82"><span class="nav-number">3.</span> <span class="nav-text">端口发送数据时：- 如果端口是tagged方式    - 如果端口PVID等于发送的数据包所含的VLAN ID，那么就会将VLAN ID从发送的数据包中去掉；     - 如果不相等，则数据包将保持原样发送出去。- 如果端口是untagged方式- 则不管端口PVID为多少，是否等于要输出的数据包的VLAN，都会将VLAN ID从数据包中去掉。</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E7%AB%99%E6%9C%89%E4%B8%A4%E7%A7%8D%E6%A8%A1%E5%BC%8F%EF%BC%9ATagged%E5%92%8CUntagged"><span class="nav-number">3.0.0.0.1.</span> <span class="nav-text">检查站有两种模式：Tagged和Untagged</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%B3%E6%AD%A4%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%EF%BC%81-%E4%B9%9F%E6%98%AF%E9%92%BB%E7%A0%94%E4%BA%86%E4%B8%89%E5%9B%9B%E5%A4%A9-%E4%B8%B4%E6%97%B6%E8%B5%B7%E6%84%8F%E8%82%AF%E5%AE%9A%E6%9C%89%E5%86%99%E7%9A%84%E4%B8%8D%E5%AF%B9%E7%9A%84%E5%9C%B0%E6%96%B9-%E6%AC%A2%E8%BF%8E%E5%90%84%E4%BD%8D%E5%9C%A8%E8%AF%84%E8%AE%BA%E6%8C%87%E5%87%BA%EF%BC%81"><span class="nav-number">3.0.1.</span> <span class="nav-text">至此问题解决！ 也是钻研了三四天 临时起意肯定有写的不对的地方 欢迎各位在评论指出！</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -346,7 +346,7 @@
 </blockquote>
 <p><em>Tagged与Untagged及端口收发包逻辑——检查站的两种模式</em></p>
 <blockquote>
-<h6 id="端口处理数据有两种方式：Tagged-x2F-Untagged"><a href="#端口处理数据有两种方式：Tagged-x2F-Untagged" class="headerlink" title="端口处理数据有两种方式：Tagged&#x2F;Untagged"></a><em>端口处理数据有两种方式：Tagged&#x2F;Untagged</em></h6><p><strong>端口接收数据时：</strong></p>
+<h6 id="端口处理数据有两种方式：Tagged-Untagged"><a href="#端口处理数据有两种方式：Tagged-Untagged" class="headerlink" title="端口处理数据有两种方式：Tagged&#x2F;Untagged"></a><em>端口处理数据有两种方式：Tagged&#x2F;Untagged</em></h6><p><strong>端口接收数据时：</strong></p>
 <ul>
 <li>如果端口是tagged方式<ul>
 <li>当数据包为UNTAG帧的话，就加上该端口的PVID，送入PVID所示的VLAN中传输；</li>
@@ -358,18 +358,7 @@
 </ul>
 </li>
 </ul>
-<p><strong>端口发送数据时：</strong></p>
-<ul>
-<li>如果端口是tagged方式<ul>
-<li>如果端口PVID等于发送的数据包所含的VLAN ID，那么就会将VLAN ID从发送的数据包中去掉；</li>
-<li>如果不相等，则数据包将保持原样发送出去。</li>
-</ul>
-</li>
-<li>如果端口是untagged方式</li>
-<li>则不管端口PVID为多少，是否等于要输出的数据包的VLAN，都会将VLAN ID从数据包中去掉。</li>
-</ul>
-<hr>
-<h6 id="检查站有两种模式：Tagged和Untagged"><a href="#检查站有两种模式：Tagged和Untagged" class="headerlink" title="检查站有两种模式：Tagged和Untagged"></a><em>检查站有两种模式：Tagged和Untagged</em></h6><p><strong>检查站遇到外面来的小球：</strong></p>
+<h2 id="端口发送数据时：-如果端口是tagged方式-如果端口PVID等于发送的数据包所含的VLAN-ID，那么就会将VLAN-ID从发送的数据包中去掉；-如果不相等，则数据包将保持原样发送出去。-如果端口是untagged方式-则不管端口PVID为多少，是否等于要输出的数据包的VLAN，都会将VLAN-ID从数据包中去掉。"><a href="#端口发送数据时：-如果端口是tagged方式-如果端口PVID等于发送的数据包所含的VLAN-ID，那么就会将VLAN-ID从发送的数据包中去掉；-如果不相等，则数据包将保持原样发送出去。-如果端口是untagged方式-则不管端口PVID为多少，是否等于要输出的数据包的VLAN，都会将VLAN-ID从数据包中去掉。" class="headerlink" title="端口发送数据时：- 如果端口是tagged方式    - 如果端口PVID等于发送的数据包所含的VLAN ID，那么就会将VLAN ID从发送的数据包中去掉；     - 如果不相等，则数据包将保持原样发送出去。- 如果端口是untagged方式- 则不管端口PVID为多少，是否等于要输出的数据包的VLAN，都会将VLAN ID从数据包中去掉。"></a><strong>端口发送数据时：</strong><br>- 如果端口是tagged方式<br>    - 如果端口PVID等于发送的数据包所含的VLAN ID，那么就会将VLAN ID从发送的数据包中去掉；<br>     - 如果不相等，则数据包将保持原样发送出去。<br>- 如果端口是untagged方式<br>- 则不管端口PVID为多少，是否等于要输出的数据包的VLAN，都会将VLAN ID从数据包中去掉。</h2><h6 id="检查站有两种模式：Tagged和Untagged"><a href="#检查站有两种模式：Tagged和Untagged" class="headerlink" title="检查站有两种模式：Tagged和Untagged"></a><em>检查站有两种模式：Tagged和Untagged</em></h6><p><strong>检查站遇到外面来的小球：</strong></p>
 <ul>
 <li>如果检查站是tagged模式<ul>
 <li>如果小球是白色的，就用刷子为小球涂上油漆的颜色，送进对应颜色的管道里传输；</li>
@@ -494,12 +483,12 @@
           <div class="post-nav">
             <div class="post-nav-item">
                 <a href="/d143dccef52e.html" rel="prev" title="Chrome DevTool 行号错位问题">
-                  <i class="fa fa-chevron-left"></i> Chrome DevTool 行号错位问题
+                  <i class="fa fa-angle-left"></i> Chrome DevTool 行号错位问题
                 </a>
             </div>
             <div class="post-nav-item">
                 <a href="/5b2ee5980b75.html" rel="next" title="前端代码规范">
-                  前端代码规范 <i class="fa fa-chevron-right"></i>
+                  前端代码规范 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -519,15 +508,14 @@
   <footer class="footer">
     <div class="footer-inner">
 
-
-<div class="copyright">
-  &copy; 
-  <span itemprop="copyrightYear">2023</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">白茶SyraTi</span>
-</div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">白茶SyraTi</span>
+  </div>
 <div class="wordcount">
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
@@ -577,8 +565,7 @@
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.20/fancybox/fancybox.umd.js" integrity="sha256-q8XkJ6dj5VwSvzI8+nATCHHQG+Xv/dAZBCgqmu93zOY=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
 
@@ -586,8 +573,9 @@
 <script src="/js/third-party/search/local-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.3/mermaid.min.js","integrity":"sha256-e0o3JYsdjqKajf9eOe22FhioYSz9WofRY4dLKo3F6do="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
+
 
   <script src="/js/third-party/fancybox.js"></script>
 

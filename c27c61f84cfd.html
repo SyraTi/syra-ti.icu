@@ -29,17 +29,17 @@
 <meta property="og:site_name" content="SyraTi.ICU">
 <meta property="og:description" content="需求想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv。 原拓扑图如下">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190210155452299.png#pic_center">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190210233114958.png#pic_center">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190210161628593.png#pic_center">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190210223800782.png#pic_center">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190210224225870.png#pic_center">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190210230243826.png#pic_center">
+<meta property="og:image" content="https://syra-ti.icu/images/posts/20190210155452299.png">
+<meta property="og:image" content="https://syra-ti.icu/images/posts/20190210233114958.png">
+<meta property="og:image" content="https://syra-ti.icu/images/posts/20190210161628593.png">
+<meta property="og:image" content="https://syra-ti.icu/images/posts/20190210223800782.png">
+<meta property="og:image" content="https://syra-ti.icu/images/posts/20190210224225870.png">
+<meta property="og:image" content="https://syra-ti.icu/images/posts/20190210230243826.png">
 <meta property="article:published_time" content="2019-02-10T15:43:58.000Z">
-<meta property="article:modified_time" content="2023-01-31T02:58:21.000Z">
+<meta property="article:modified_time" content="2024-05-30T01:57:48.000Z">
 <meta property="article:author" content="白茶SyraTi">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190210155452299.png#pic_center">
+<meta name="twitter:image" content="https://syra-ti.icu/images/posts/20190210155452299.png">
 
 
 <link rel="canonical" href="https://syra-ti.icu/c27c61f84cfd.html">
@@ -269,7 +269,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-31 10:58:21" itemprop="dateModified" datetime="2023-01-31T10:58:21+08:00">2023-01-31</time>
+      <time title="修改时间：2024-05-30 09:57:48" itemprop="dateModified" datetime="2024-05-30T09:57:48+08:00">2024-05-30</time>
     </span>
 
   
@@ -304,7 +304,7 @@
     
     
     <div class="post-body" itemprop="articleBody"><h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv。</p>
-<p><strong>原拓扑图如下</strong><br><img data-src="https://img-blog.csdnimg.cn/20190210155452299.png#pic_center" alt="原拓扑图"></p>
+<p><strong>原拓扑图如下</strong><br><img data-src="/../images/posts/20190210155452299.png" alt="原拓扑图"></p>
 <span id="more"></span>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>材料：</strong><br>1、水星Mercury SG105Pro 五口千兆网管交换机 价格 98 元 放置在客厅（下称SW5）<br>2、水星Mercury SG108Pro 八口千兆网管交换机 价格 169 元 放置在弱电箱（下称SW8）</p>
 <p><strong>整体解决思路：</strong><br>在弱电箱端，使用一台交换机，将itv和网络的数据包合并至一条主干道网线上，到使用端（客厅）使用另一台交换机进行识别后拆分为两条线使用——达到墙内一条线，实际承载两条线路的目的。</p>
@@ -395,19 +395,19 @@
 <ul>
 <li><p>1、配置SW8的VLAN</p>
 <ul>
-<li><p>VLAN划分如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210233114958.png#pic_center" alt="SW8 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,7端口配置为itv交换<br>VLAN3 将1-6 以及8 端口配置为网络交换</p>
+<li><p>VLAN划分如下：<br><img data-src="/../images/posts/20190210233114958.png" alt="SW8 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,7端口配置为itv交换<br>VLAN3 将1-6 以及8 端口配置为网络交换</p>
 <p><strong>将端口1作为主干道端口<br>*此端口连接SW5<br>**接收：由SW5发送过来的TAG帧 并根据TAG帧中的VLAN ID 决定送入VLAN2还是VLAN3（即广播至VLAN2的7端口或VLAN3的2-6、8端口）<br>**发送：由SW8其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW5</strong></p>
 </li>
-<li><p>PVID配置如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210161628593.png#pic_center" alt="VLAN PVID配置"><br>端口1：接SW5 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口7：接光猫ITV口 PVID设置为2 接收光猫ITV口发送来的UNTAG帧 送入VLAN2<br>端口8：接光猫千兆口 PVID设置为3 接收光猫千兆网络口发送来的UNTAG帧 送入VLAN3<br>端口2-6：接其他房间电脑 PVID设置为3 接收其他房间电脑发送来的UNTAG帧 送入VLAN3 与端口8光猫千兆口相互通信</p>
+<li><p>PVID配置如下：<br><img data-src="/../images/posts/20190210161628593.png" alt="VLAN PVID配置"><br>端口1：接SW5 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口7：接光猫ITV口 PVID设置为2 接收光猫ITV口发送来的UNTAG帧 送入VLAN2<br>端口8：接光猫千兆口 PVID设置为3 接收光猫千兆网络口发送来的UNTAG帧 送入VLAN3<br>端口2-6：接其他房间电脑 PVID设置为3 接收其他房间电脑发送来的UNTAG帧 送入VLAN3 与端口8光猫千兆口相互通信</p>
 </li>
 </ul>
 </li>
 <li><p>2、配置SW5的VLAN</p>
 <ul>
-<li><p>VLAN划分如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210223800782.png#pic_center" alt="SW5 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,4 端口配置为itv交换 令4端口可以与主干道端口进行通信<br>VLAN3 将1,5 端口配置为网络交换 令5端口可以与主干道端口进行通信</p>
+<li><p>VLAN划分如下：<br><img data-src="/../images/posts/20190210223800782.png" alt="SW5 VLAN配置"><br>VLAN1 为 局域网交换（默认 可以无视）<br>VLAN2 将1,4 端口配置为itv交换 令4端口可以与主干道端口进行通信<br>VLAN3 将1,5 端口配置为网络交换 令5端口可以与主干道端口进行通信</p>
 <p><strong>将端口1作为主干道端口<br>**接收：由SW8发送过来的TAG帧 并根据TAG帧中的VLAN ID 决定送入VLAN2还是VLAN3（即 广播至VLAN2的4端口或VLAN3的5端口）<br>**发送：由SW5其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW8</strong></p>
 </li>
-<li><p>PVID配置如下：<br><img data-src="https://img-blog.csdnimg.cn/20190210224225870.png#pic_center" alt="SW5 PVID配置"><br>端口1：接SW8 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口4：接机顶盒 PVID设置为2 接收机顶盒发来的UNTAG帧 打上VLAN ID值为2后将该TAG帧交由端口1<br>端口5：接路由器 PVID设置为3 接收路由器发送来的UNTAG帧 打上VLAN ID值为3后将该TAG帧交由端口1<br>端口2-3：闲置 可无视</p>
+<li><p>PVID配置如下：<br><img data-src="/../images/posts/20190210224225870.png" alt="SW5 PVID配置"><br>端口1：接SW8 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用<br>端口4：接机顶盒 PVID设置为2 接收机顶盒发来的UNTAG帧 打上VLAN ID值为2后将该TAG帧交由端口1<br>端口5：接路由器 PVID设置为3 接收路由器发送来的UNTAG帧 打上VLAN ID值为3后将该TAG帧交由端口1<br>端口2-3：闲置 可无视</p>
 </li>
 <li><p>最终VLAN端口一览<br>VLAN2（ITV）：SW8P1、SW8P7、SW5P1、SW5P4<br>VLAN3（网络）：SW8P1、SW8P2-6、SW8P8、SW5P1、SW5P5</p>
 </li>
@@ -416,7 +416,7 @@
 <p>至此ITV通过SW5P4与SW8P7可互相通信 网络通过SW5P5与SW8P8可互相通信<br>ITV与网络互不干扰 但通过SW8P1与SW5P1之间只连接了一根网线 目的达成</p>
 </blockquote>
 </li>
-<li><p>3、连接拓扑图<br><img data-src="https://img-blog.csdnimg.cn/20190210230243826.png#pic_center" alt="连接拓扑图"></p>
+<li><p>3、连接拓扑图<br><img data-src="/../images/posts/20190210230243826.png" alt="连接拓扑图"></p>
 </li>
 <li><p>4、问题解决</p>
 </li>

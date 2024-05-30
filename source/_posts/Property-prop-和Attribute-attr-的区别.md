@@ -28,16 +28,16 @@ tags:
 #### 此时打开你浏览器的F12（Chrome的Devtool，FireFox的Firebug等等）
 >#### 你会发现:
 >##### 修改前是这样的
->![这里写图片描述](https://img-blog.csdnimg.cn/img_convert/ba2166bd302da631d802b86d7fed8271.png)
+>![这里写图片描述](../images/posts/ba2166bd302da631d802b86d7fed8271.png)
 >##### 修改后是这样的
->![这里写图片描述](https://img-blog.csdnimg.cn/img_convert/ba2166bd302da631d802b86d7fed8271.png)
+>![这里写图片描述](../images/posts/ba2166bd302da631d802b86d7fed8271.png)
 
 ## ??????????????你在逗我呢吧
 #### 慌 不要慌 且看页面
 >##### 修改前是这样的
->![这里写图片描述](https://img-blog.csdnimg.cn/img_convert/895b15a482e4505be7bd88820d54ba64.png)
+>![这里写图片描述](../images/posts/895b15a482e4505be7bd88820d54ba64.png)
 >##### 修改后是这样的
->![这里写图片描述](https://img-blog.csdnimg.cn/img_convert/ded827f92ef89f4609d4c29dc60d9748.png)
+>![这里写图片描述](../images/posts/ded827f92ef89f4609d4c29dc60d9748.png)
 
 ***
 ### 没错 聪明的你可能已经想到了
@@ -50,9 +50,9 @@ tags:
 >```
 ### 此时你会发现更诡异的事情是
 >#### 页面的值并没有发生改变
->![这里写图片描述](https://img-blog.csdnimg.cn/img_convert/895b15a482e4505be7bd88820d54ba64.png)
+>![这里写图片描述](../images/posts/895b15a482e4505be7bd88820d54ba64.png)
 >#### 但是打开你的F12，你会发现value值发生了变化
->![这里写图片描述](https://img-blog.csdnimg.cn/img_convert/24be7dcca9b2cae9ebdb3be7cab210b5.png)
+>![这里写图片描述](../images/posts/24be7dcca9b2cae9ebdb3be7cab210b5.png)
 
 ### 得出结论
 ## ```.setAttribute()```方法修改的是input#demo的Attribute

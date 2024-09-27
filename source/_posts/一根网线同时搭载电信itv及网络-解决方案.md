@@ -8,7 +8,7 @@ tags:
 想把无线路由器放到客厅 但是客厅只有一个网口连接到弱电箱光猫的itv口 用来看电视 现在需要在该网口同时搭载网络和itv。
 
 **原拓扑图如下**
-![原拓扑图](https://img-blog.csdnimg.cn/20190210155452299.png#pic_center)
+![原拓扑图](../images/posts/20190210155452299.png)
 <!-- more -->
 ## 解决方案
 **材料：**
@@ -102,7 +102,7 @@ tags:
 - 1、配置SW8的VLAN
 
     * VLAN划分如下：
-      ![SW8 VLAN配置](https://img-blog.csdnimg.cn/20190210233114958.png#pic_center)
+      ![SW8 VLAN配置](../images/posts/20190210233114958.png)
       VLAN1 为 局域网交换（默认 可以无视）
       VLAN2 将1,7端口配置为itv交换
       VLAN3 将1-6 以及8 端口配置为网络交换
@@ -113,7 +113,7 @@ tags:
       \*\*发送：由SW8其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW5**
 
     * PVID配置如下：
-      ![VLAN PVID配置](https://img-blog.csdnimg.cn/20190210161628593.png#pic_center)
+      ![VLAN PVID配置](../images/posts/20190210161628593.png)
       端口1：接SW5 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用
       端口7：接光猫ITV口 PVID设置为2 接收光猫ITV口发送来的UNTAG帧 送入VLAN2
       端口8：接光猫千兆口 PVID设置为3 接收光猫千兆网络口发送来的UNTAG帧 送入VLAN3
@@ -121,7 +121,7 @@ tags:
 - 2、配置SW5的VLAN
 
     * VLAN划分如下：
-      ![SW5 VLAN配置](https://img-blog.csdnimg.cn/20190210223800782.png#pic_center)
+      ![SW5 VLAN配置](../images/posts/20190210223800782.png)
       VLAN1 为 局域网交换（默认 可以无视）
       VLAN2 将1,4 端口配置为itv交换 令4端口可以与主干道端口进行通信
       VLAN3 将1,5 端口配置为网络交换 令5端口可以与主干道端口进行通信
@@ -131,7 +131,7 @@ tags:
       \*\*发送：由SW5其他端口广播的TAG帧以 Tagged方式（即保留TAG）发送至SW8**
 
     * PVID配置如下：
-      ![SW5 PVID配置](https://img-blog.csdnimg.cn/20190210224225870.png#pic_center)
+      ![SW5 PVID配置](../images/posts/20190210224225870.png)
       端口1：接SW8 此口PVID随意设置 因为此端口接收到的全为TAG帧 PVID并不会起作用
       端口4：接机顶盒 PVID设置为2 接收机顶盒发来的UNTAG帧 打上VLAN ID值为2后将该TAG帧交由端口1
       端口5：接路由器 PVID设置为3 接收路由器发送来的UNTAG帧 打上VLAN ID值为3后将该TAG帧交由端口1
@@ -144,7 +144,7 @@ tags:
   >ITV与网络互不干扰 但通过SW8P1与SW5P1之间只连接了一根网线 目的达成
 
 - 3、连接拓扑图
-  ![连接拓扑图](https://img-blog.csdnimg.cn/20190210230243826.png#pic_center)
+  ![连接拓扑图](../images/posts/20190210230243826.png)
 - 4、问题解决
 
 **交换逻辑：**

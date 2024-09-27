@@ -17,7 +17,7 @@ tags:
 <!-- more --> 
 # 1.VM添加空间
 使用vmware增加空间 ↓
-![在这里插入图片描述](https://img-blog.csdnimg.cn/6bcae82012ad45d6afcd2a9a55bda7a4.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA55m96Iy2U3lyYVRp,size_20,color_FFFFFF,t_70,g_se,x_16)
+![在这里插入图片描述](../images/posts/6bcae82012ad45d6afcd2a9a55bda7a4.png)
 
 # 2.使用fdisk扩展原有分区
 此处参考了[Linux下使用fdisk扩展分区容量](https://www.linuxprobe.com/linux-fdisk-size.html)，原文关键部分摘录如下

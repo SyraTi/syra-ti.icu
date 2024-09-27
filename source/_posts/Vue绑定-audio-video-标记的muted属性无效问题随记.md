@@ -10,7 +10,7 @@ tags:
 ```
 <!-- more -->
 ## 援引Github上的issue回复
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210127220113689.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NpbmF0XzM0OTMwNjQw,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](../images/posts/20210127220113689.png)
 
 翻译：muted属性类似于`<input>`的`value`属性，如果他在元素初始化时是内联的，那么属性值将作为初始值；但是如果在一开始并没有内联，只是后续更改了attribute [^1] 值，那么将不会起任何效果，正确的做法是设置相对应的property [^1] 值。
 

@@ -131,19 +131,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>Vue绑定&amp;lt;audio&amp;gt;/&amp;lt;video&amp;gt;标记的muted属性无效问题随记</title>
-    <url>/dd17a46f0b1d.html</url>
-    <content><![CDATA[<h2 id="问题代码"><a href="#问题代码" class="headerlink" title="问题代码"></a>问题代码</h2><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--这里的muted绑定不起作用--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">:muted</span>=<span class="string">&quot;isMuted&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;audioPlayer&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<span id="more"></span>
-<h2 id="援引Github上的issue回复"><a href="#援引Github上的issue回复" class="headerlink" title="援引Github上的issue回复"></a>援引Github上的issue回复</h2><p><img data-src="/../images/posts/20210127220113689.png" alt="在这里插入图片描述"></p>
-<p>翻译：muted属性类似于<code>&lt;input&gt;</code>的<code>value</code>属性，如果他在元素初始化时是内联的，那么属性值将作为初始值；但是如果在一开始并没有内联，只是后续更改了attribute <a href="%E5%85%B3%E4%BA%8Eattribute%E5%92%8Cproperty%E5%80%BC%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E6%88%91%E5%BE%80%E6%9C%9F%E7%9A%84%5B%E6%96%87%E7%AB%A0%5D(https://blog.csdn.net/sinat_34930640/article/details/76310396)%E3%80%82">^1</a> 值，那么将不会起任何效果，正确的做法是设置相对应的property <a href="%E5%85%B3%E4%BA%8Eattribute%E5%92%8Cproperty%E5%80%BC%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E6%88%91%E5%BE%80%E6%9C%9F%E7%9A%84%5B%E6%96%87%E7%AB%A0%5D(https://blog.csdn.net/sinat_34930640/article/details/76310396)%E3%80%82">^1</a> 值。</p>
-<h3 id="解决方式：使用watch来手动设置muted"><a href="#解决方式：使用watch来手动设置muted" class="headerlink" title="解决方式：使用watch来手动设置muted"></a>解决方式：使用watch来手动设置muted</h3><p><em>html</em></p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">ref</span>=<span class="string">&quot;audioPlayer&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><em>javascript</em></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="attr">watch</span>:&#123;</span><br><span class="line">	<span class="title function_">isMuted</span>(<span class="params">val</span>)&#123;</span><br><span class="line">		<span class="keyword">if</span>(val)&#123;</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">$refs</span>.<span class="property">audioPlayer</span>.<span class="property">muted</span> = <span class="string">&#x27;muted&#x27;</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">$refs</span>.<span class="property">audioPlayer</span>.<span class="property">muted</span> = <span class="string">&#x27;&#x27;</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-  </entry>
-  <entry>
     <title>Ubuntu扩展根目录空间（扩展原有分区）</title>
     <url>/ddf76f824c86.html</url>
     <content><![CDATA[<h1 id="0-概念说明"><a href="#0-概念说明" class="headerlink" title="0.概念说明"></a>0.概念说明</h1><p>一切开始的开始 先说明一些概念</p>
@@ -168,6 +155,19 @@
 
 <p>以上！まいど～</p>
 <hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>Vue绑定&amp;lt;audio&amp;gt;/&amp;lt;video&amp;gt;标记的muted属性无效问题随记</title>
+    <url>/dd17a46f0b1d.html</url>
+    <content><![CDATA[<h2 id="问题代码"><a href="#问题代码" class="headerlink" title="问题代码"></a>问题代码</h2><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--这里的muted绑定不起作用--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">:muted</span>=<span class="string">&quot;isMuted&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;audioPlayer&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h2 id="援引Github上的issue回复"><a href="#援引Github上的issue回复" class="headerlink" title="援引Github上的issue回复"></a>援引Github上的issue回复</h2><p><img data-src="/../images/posts/20210127220113689.png" alt="在这里插入图片描述"></p>
+<p>翻译：muted属性类似于<code>&lt;input&gt;</code>的<code>value</code>属性，如果他在元素初始化时是内联的，那么属性值将作为初始值；但是如果在一开始并没有内联，只是后续更改了attribute <a href="%E5%85%B3%E4%BA%8Eattribute%E5%92%8Cproperty%E5%80%BC%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E6%88%91%E5%BE%80%E6%9C%9F%E7%9A%84%5B%E6%96%87%E7%AB%A0%5D(https://blog.csdn.net/sinat_34930640/article/details/76310396)%E3%80%82">^1</a> 值，那么将不会起任何效果，正确的做法是设置相对应的property <a href="%E5%85%B3%E4%BA%8Eattribute%E5%92%8Cproperty%E5%80%BC%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E6%88%91%E5%BE%80%E6%9C%9F%E7%9A%84%5B%E6%96%87%E7%AB%A0%5D(https://blog.csdn.net/sinat_34930640/article/details/76310396)%E3%80%82">^1</a> 值。</p>
+<h3 id="解决方式：使用watch来手动设置muted"><a href="#解决方式：使用watch来手动设置muted" class="headerlink" title="解决方式：使用watch来手动设置muted"></a>解决方式：使用watch来手动设置muted</h3><p><em>html</em></p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">audio</span> <span class="attr">ref</span>=<span class="string">&quot;audioPlayer&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">audio</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><em>javascript</em></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="attr">watch</span>:&#123;</span><br><span class="line">	<span class="title function_">isMuted</span>(<span class="params">val</span>)&#123;</span><br><span class="line">		<span class="keyword">if</span>(val)&#123;</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">$refs</span>.<span class="property">audioPlayer</span>.<span class="property">muted</span> = <span class="string">&#x27;muted&#x27;</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">$refs</span>.<span class="property">audioPlayer</span>.<span class="property">muted</span> = <span class="string">&#x27;&#x27;</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
   </entry>
   <entry>
@@ -323,6 +323,20 @@ Base.call(o1)
 ]]></content>
   </entry>
   <entry>
+    <title>webstorm中 emmet 模板的修改步骤</title>
+    <url>/180cb4d78d79.html</url>
+    <content><![CDATA[<p>之前用atom、sublime的时候 Emmet 的模板是可配置的 但是在webstorm配置中的Editor &gt; Emmet选项下没有发现任何有关模板的配置 只有一些选项的配置。</p>
+<span id="more"></span>
+
+<hr>
+<p><img data-src="/images/posts/20180327135651291.png" alt="webstorm Emmet相关配置"></p>
+<p>其实模板配置在Editor&gt;Live Templates 下 会找到有Zen字样开头的 Zen CSS、 Zen HTML、Zen XSL 分别是CSS、HTML、XSL的模板</p>
+<hr>
+<h2 id=""><a href="#" class="headerlink" title=""></a><img data-src="/images/posts/20180327140915194.png" alt="模板配置"></h2><p>*Emmet前身叫做ZenCoding 所以这里会用Zen开头 模板的配置方式与webstorm其他模板配置相同 这里不再赘述</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
     <title>openwrt部署openvpn server以及群晖连接（DSM7）完成内网穿透</title>
     <url>/5239703c80b8.html</url>
     <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>公司里放了一台黑裙，但是没有公网IP，想到用openvpn拨到家里的路由器，再进行端口转发达到内网穿透，公网访问的目的。</p>
@@ -377,20 +391,6 @@ Base.call(o1)
 <hr>
 <p>接下来正式开始配置端口转发，进入openwrt,  菜单选择 <code>Network-&gt;Firewall-&gt;Port Forwards</code><br><img data-src="/images/posts/b76d34e11f01421aaf38f7c9a4c6c0cb.png" alt="在这里插入图片描述"><br>新增一条端口转发，按照下图填写<br><img data-src="/images/posts/2df447f9ae0a470c8d3a3f65c98dba4a.png" alt="在这里插入图片描述"><br>至此，应该就能够使用openwrt的端口转发达到内网穿透的目的了。</p>
 <p>以上！まいど～</p>
-<hr>
-]]></content>
-  </entry>
-  <entry>
-    <title>webstorm中 emmet 模板的修改步骤</title>
-    <url>/180cb4d78d79.html</url>
-    <content><![CDATA[<p>之前用atom、sublime的时候 Emmet 的模板是可配置的 但是在webstorm配置中的Editor &gt; Emmet选项下没有发现任何有关模板的配置 只有一些选项的配置。</p>
-<span id="more"></span>
-
-<hr>
-<p><img data-src="/images/posts/20180327135651291.png" alt="webstorm Emmet相关配置"></p>
-<p>其实模板配置在Editor&gt;Live Templates 下 会找到有Zen字样开头的 Zen CSS、 Zen HTML、Zen XSL 分别是CSS、HTML、XSL的模板</p>
-<hr>
-<h2 id=""><a href="#" class="headerlink" title=""></a><img data-src="/images/posts/20180327140915194.png" alt="模板配置"></h2><p>*Emmet前身叫做ZenCoding 所以这里会用Zen开头 模板的配置方式与webstorm其他模板配置相同 这里不再赘述</p>
 <hr>
 ]]></content>
   </entry>
@@ -463,13 +463,6 @@ requestAnimationFrame(repeatOften);
     <title>一个Mui Demo仓库</title>
     <url>/9c287968e88d.html</url>
     <content><![CDATA[<p>链接 <a href="https://github.com/zhaomenghuan/mui-demo">https://github.com/zhaomenghuan/mui-demo</a></p>
-]]></content>
-  </entry>
-  <entry>
-    <title>为什么不要使用 ::before{content:url(&#39;xxx&#39;)} 设置图标</title>
-    <url>/5593fd82f23d.html</url>
-    <content><![CDATA[<p>项目中遇到 随手记录<br>::before ::after等伪类中使用content:url()中的图片无法设置宽高</p>
-<hr>
 ]]></content>
   </entry>
   <entry>
@@ -626,6 +619,13 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
+    <title>为什么不要使用 ::before{content:url(&#39;xxx&#39;)} 设置图标</title>
+    <url>/5593fd82f23d.html</url>
+    <content><![CDATA[<p>项目中遇到 随手记录<br>::before ::after等伪类中使用content:url()中的图片无法设置宽高</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
     <title>从V8引擎的工作流程看Javascript代码优化</title>
     <url>/1e0c091d29a1.html</url>
     <content><![CDATA[<h2 id="0-V8介绍"><a href="#0-V8介绍" class="headerlink" title="0. V8介绍"></a>0. V8介绍</h2><p>官方文档这么介绍：V8是谷歌开源高性能JavaScript和WebAssembly引擎，用C++编写。它主要用在Chrome和Node.js中，等等。</p>
@@ -714,12 +714,12 @@ requestAnimationFrame(repeatOften);
 <p>开始压缩</p>
 <span id="more"></span>
 <p>创建一个<code>compressImage</code>函数，将之图片的地址url作参数传入：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">compressImage (url) &#123;</span><br><span class="line">	<span class="keyword">let</span> cvs = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;canvas&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> ctx = cvs.<span class="title function_">getContext</span>(<span class="string">&#x27;2d&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> img = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Image</span>()</span><br><span class="line">	img.<span class="property">src</span> = url</span><br><span class="line">	img.<span class="property">onload</span> = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">		cvs.<span class="property">width</span> = img.<span class="property">width</span></span><br><span class="line">		cvs.<span class="property">height</span> = img.<span class="property">height</span></span><br><span class="line">		<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">			ctx.<span class="title function_">drawImage</span>(img, <span class="number">0</span>, <span class="number">0</span>, cvs.<span class="property">width</span>, cvs.<span class="property">height</span>)</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">newImageData</span> = cvs.<span class="title function_">toDataURL</span>(<span class="string">&#x27;image/jpeg&#x27;</span>, <span class="number">0.1</span>)</span><br><span class="line">	    &#125;, <span class="number">0</span>)</span><br><span class="line">	    <span class="variable language_">this</span>.<span class="property">showPreviewer</span> = <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">compressImage</span> (url) &#123;</span><br><span class="line">	<span class="keyword">let</span> cvs = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;canvas&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> ctx = cvs.<span class="title function_">getContext</span>(<span class="string">&#x27;2d&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> img = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Image</span>()</span><br><span class="line">	img.<span class="property">src</span> = url</span><br><span class="line">	img.<span class="property">onload</span> = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">		cvs.<span class="property">width</span> = img.<span class="property">width</span></span><br><span class="line">		cvs.<span class="property">height</span> = img.<span class="property">height</span></span><br><span class="line">		<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">			ctx.<span class="title function_">drawImage</span>(img, <span class="number">0</span>, <span class="number">0</span>, cvs.<span class="property">width</span>, cvs.<span class="property">height</span>)</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">newImageData</span> = cvs.<span class="title function_">toDataURL</span>(<span class="string">&#x27;image/jpeg&#x27;</span>, <span class="number">0.1</span>)</span><br><span class="line">	    &#125;, <span class="number">0</span>)</span><br><span class="line">	    <span class="variable language_">this</span>.<span class="property">showPreviewer</span> = <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这里说说</p>
 <p><code>canvas.toDataURL(type, encoderOptions)</code><br><code>HTMLCanvasElement.toDataURL()</code>方法接受两个参数，<code>type</code>和<code>encoderOptions</code></p>
 <p><code>type</code>是可选的，图片格式，默认是 <code>image/png</code>，<code>encoderOptions</code>表示图片质量， 在<code>type</code>为<code>image/jpeg</code> 或 <code>image/webp</code>时可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 <code>0.92</code>。其他参数会被忽略。</p>
 <p><code>toDataURL()</code>返回的是<code>base64</code>字符串，如果要转成2进制</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">convertToBinary (dataURI) &#123;</span><br><span class="line">	<span class="keyword">let</span> byteString = <span class="variable language_">window</span>.<span class="title function_">atob</span>(dataURI.<span class="title function_">split</span>(<span class="string">&#x27;,&#x27;</span>)[<span class="number">1</span>])</span><br><span class="line">	<span class="keyword">let</span> ab = <span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>(byteString.<span class="property">length</span>)</span><br><span class="line">	<span class="keyword">let</span> ia = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(ab)</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; byteString.<span class="property">length</span>; i++) &#123;</span><br><span class="line">		ia[i] = byteString.<span class="title function_">charCodeAt</span>(i)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">let</span> bb = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Blob</span>([ ab ])</span><br><span class="line">	<span class="keyword">return</span> bb</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">convertToBinary</span> (dataURI) &#123;</span><br><span class="line">	<span class="keyword">let</span> byteString = <span class="variable language_">window</span>.<span class="title function_">atob</span>(dataURI.<span class="title function_">split</span>(<span class="string">&#x27;,&#x27;</span>)[<span class="number">1</span>])</span><br><span class="line">	<span class="keyword">let</span> ab = <span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>(byteString.<span class="property">length</span>)</span><br><span class="line">	<span class="keyword">let</span> ia = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(ab)</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; byteString.<span class="property">length</span>; i++) &#123;</span><br><span class="line">		ia[i] = byteString.<span class="title function_">charCodeAt</span>(i)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">let</span> bb = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Blob</span>([ ab ])</span><br><span class="line">	<span class="keyword">return</span> bb</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>测试结果：由iphone6所拍摄的图片上传，由平均1.9M左右压缩至170k</p>
 <p><em>･゜ﾟ･</em>:.｡..｡.:<em>･’(<em>ﾟ▽ﾟ</em>)’･</em>:.｡. .｡.:<em>･゜ﾟ･</em></p>
 <p>再见<br>5月5日发布</p>
@@ -743,6 +743,32 @@ requestAnimationFrame(repeatOften);
       <tags>
         <tag>CI/CD</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>关于Ajax跨域访问 session不能保存或之后无法访问session取值为空等问题</title>
+    <url>/d6ed39098ad1.html</url>
+    <content><![CDATA[<h4 id="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"><a href="#根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。" class="headerlink" title="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"></a>根据浏览器的保护规则，<strong>跨域的时候我们创建的sessionId是不会被浏览器保存下来的</strong>，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。</h4><span id="more"></span>
+<p>在ajax 请求要加配置</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$.<span class="title function_">ajax</span>(&#123;</span><br><span class="line">	<span class="attr">url</span>:url,</span><br><span class="line">	<span class="comment">//加上 xhrFields及crossDomain</span></span><br><span class="line">	<span class="attr">xhrFields</span>: &#123;</span><br><span class="line">		<span class="comment">//允许带上凭据</span></span><br><span class="line">        <span class="attr">withCredentials</span>: <span class="literal">true</span></span><br><span class="line">	&#125;,</span><br><span class="line">       <span class="attr">crossDomain</span>: <span class="literal">true</span>,</span><br><span class="line">       <span class="comment">//以上</span></span><br><span class="line">	<span class="attr">success</span>:<span class="keyword">function</span>(<span class="params">result</span>)&#123;</span><br><span class="line">		<span class="title function_">alert</span>(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">error</span>:<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="关于-withCredentials"><a href="#关于-withCredentials" class="headerlink" title="关于 withCredentials"></a>关于 withCredentials</h3><blockquote>
+<p><strong>withCredentials：</strong><br>默认情况下，跨源请求不提供凭据(cookie、HTTP认证及客户端SSL证明等)。通过将withCredentials属性设置为true，可以指定某个请求应该发送凭据。如果服务器接收带凭据的请求，会用下面的HTTP头部来响应。</p>
+</blockquote>
+<blockquote>
+<p><em>“Access-Control-Allow-Credentials: true”</em></p>
+</blockquote>
+<blockquote>
+<p>如果发送的是带凭据的请求，但服务器的相应中没有包含上面这个头部，那么浏览器就不会把相应交给JavaScript(于是，responseText中将是空字符串，status的值为0，而且会调用onerror()事件处理程序)。另外，服务器还可以在Preflight响应中发送这个HTTP头部，表示允许源发送带凭据的请求。</p>
+</blockquote>
+<blockquote>
+<p>支持withCredentials属性的浏览器有Firefox 3.5+、Safari 4+和Chrome。IE10及更早版本都不支持。<br>同时</p>
+</blockquote>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>在添加基本的允许跨域响应头之后<br>需要添加 Access-Allow-Credentials:true<br>另外由于谷歌的安全策略<br>当withCredentials 为 true 时<br>ResponseHeader中的 Access-Allow-Origin 不能使用通配符 ‘*’<br>否则会提示</p>
+<blockquote>
+<p>A wildcard ‘*’ cannot be used in the ‘Access-Control-Allow-Origin’ header when the credentials flag is true. Origin ‘<a href="http://url/">http://url</a>‘ is therefore not allowed access.</p>
+</blockquote>
+<h2 id="其他浏览器待测试"><a href="#其他浏览器待测试" class="headerlink" title="其他浏览器待测试
+ "></a>其他浏览器待测试
+ </h2>]]></content>
   </entry>
   <entry>
     <title>关于CSS选择器书写正确浏览器却不认的一个原因</title>
@@ -775,32 +801,6 @@ requestAnimationFrame(repeatOften);
 <p>以上，如果有什么问题欢迎在下面评论，我会及时回复www</p>
 <hr>
 ]]></content>
-  </entry>
-  <entry>
-    <title>关于Ajax跨域访问 session不能保存或之后无法访问session取值为空等问题</title>
-    <url>/d6ed39098ad1.html</url>
-    <content><![CDATA[<h4 id="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"><a href="#根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。" class="headerlink" title="根据浏览器的保护规则，跨域的时候我们创建的sessionId是不会被浏览器保存下来的，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。"></a>根据浏览器的保护规则，<strong>跨域的时候我们创建的sessionId是不会被浏览器保存下来的</strong>，这样，当我们在进行跨域访问的时候，我们的sessionId就不会被保存下来，也就是说，每一次的请求，服务器就会以为是一个新的人，而不是同一个人，为了解决这样的办法，下面这种方法可以解决这种跨域的办法。</h4><span id="more"></span>
-<p>在ajax 请求要加配置</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$.<span class="title function_">ajax</span>(&#123;</span><br><span class="line">	<span class="attr">url</span>:url,</span><br><span class="line">	<span class="comment">//加上 xhrFields及crossDomain</span></span><br><span class="line">	<span class="attr">xhrFields</span>: &#123;</span><br><span class="line">		<span class="comment">//允许带上凭据</span></span><br><span class="line">        <span class="attr">withCredentials</span>: <span class="literal">true</span></span><br><span class="line">	&#125;,</span><br><span class="line">       <span class="attr">crossDomain</span>: <span class="literal">true</span>,</span><br><span class="line">       <span class="comment">//以上</span></span><br><span class="line">	<span class="attr">success</span>:<span class="keyword">function</span>(<span class="params">result</span>)&#123;</span><br><span class="line">		<span class="title function_">alert</span>(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">error</span>:<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h3 id="关于-withCredentials"><a href="#关于-withCredentials" class="headerlink" title="关于 withCredentials"></a>关于 withCredentials</h3><blockquote>
-<p><strong>withCredentials：</strong><br>默认情况下，跨源请求不提供凭据(cookie、HTTP认证及客户端SSL证明等)。通过将withCredentials属性设置为true，可以指定某个请求应该发送凭据。如果服务器接收带凭据的请求，会用下面的HTTP头部来响应。</p>
-</blockquote>
-<blockquote>
-<p><em>“Access-Control-Allow-Credentials: true”</em></p>
-</blockquote>
-<blockquote>
-<p>如果发送的是带凭据的请求，但服务器的相应中没有包含上面这个头部，那么浏览器就不会把相应交给JavaScript(于是，responseText中将是空字符串，status的值为0，而且会调用onerror()事件处理程序)。另外，服务器还可以在Preflight响应中发送这个HTTP头部，表示允许源发送带凭据的请求。</p>
-</blockquote>
-<blockquote>
-<p>支持withCredentials属性的浏览器有Firefox 3.5+、Safari 4+和Chrome。IE10及更早版本都不支持。<br>同时</p>
-</blockquote>
-<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>在添加基本的允许跨域响应头之后<br>需要添加 Access-Allow-Credentials:true<br>另外由于谷歌的安全策略<br>当withCredentials 为 true 时<br>ResponseHeader中的 Access-Allow-Origin 不能使用通配符 ‘*’<br>否则会提示</p>
-<blockquote>
-<p>A wildcard ‘*’ cannot be used in the ‘Access-Control-Allow-Origin’ header when the credentials flag is true. Origin ‘<a href="http://url/">http://url</a>‘ is therefore not allowed access.</p>
-</blockquote>
-<h2 id="其他浏览器待测试"><a href="#其他浏览器待测试" class="headerlink" title="其他浏览器待测试
- "></a>其他浏览器待测试
- </h2>]]></content>
   </entry>
   <entry>
     <title>关于For循环中进行异步操作索引不正确的处理方式</title>
@@ -883,6 +883,37 @@ requestAnimationFrame(repeatOften);
     <content><![CDATA[<h3 id="需要先触发touchstart事件（旧版本需要先触发mousedown事件）"><a href="#需要先触发touchstart事件（旧版本需要先触发mousedown事件）" class="headerlink" title="需要先触发touchstart事件（旧版本需要先触发mousedown事件）"></a>需要先触发touchstart事件（旧版本需要先触发mousedown事件）</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">mui.<span class="title function_">trigger</span>($(<span class="string">&#x27;.mui-tab-item&#x27;</span>).<span class="title function_">eq</span>(<span class="number">1</span>)[<span class="number">0</span>],<span class="string">&#x27;touchstart&#x27;</span>);</span><br><span class="line">mui.<span class="title function_">trigger</span>($(<span class="string">&#x27;.mui-tab-item&#x27;</span>).<span class="title function_">eq</span>(<span class="number">1</span>)[<span class="number">0</span>],<span class="string">&#x27;tap&#x27;</span>)</span><br></pre></td></tr></table></figure>
 <h3 id="源代码尚未研究-以上为解决方案"><a href="#源代码尚未研究-以上为解决方案" class="headerlink" title="源代码尚未研究 以上为解决方案"></a>源代码尚未研究 以上为解决方案</h3><h4 id="2018-3-30-PS-发现好像只要改一下mui-active就行了？（扶额）"><a href="#2018-3-30-PS-发现好像只要改一下mui-active就行了？（扶额）" class="headerlink" title="2018-3-30 PS: 发现好像只要改一下mui-active就行了？（扶额）"></a>2018-3-30 PS: 发现好像只要改一下mui-active就行了？（扶额）</h4><h4 id="2018-4-25-PS-最简单的方式是改变item和切换目标的mui-active"><a href="#2018-4-25-PS-最简单的方式是改变item和切换目标的mui-active" class="headerlink" title="2018-4-25 PS: 最简单的方式是改变item和切换目标的mui-active"></a>2018-4-25 PS: 最简单的方式是改变item和切换目标的mui-active</h4><hr>
 ]]></content>
+  </entry>
+  <entry>
+    <title>关于ssh修改端口后无法开机启动的问题</title>
+    <url>/de9c00245da0.html</url>
+    <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>更改<code>/etc/ssh/sshd_config</code>的端口号之后，发现<code>systemctl enable ssh</code>无效，开机后ssh服务不会自动启动，且ssh也连不上</p>
+<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>ssh默认以socket-activated方式启动而不是传统的service方式</p>
+<h2 id="什么是socket-activated"><a href="#什么是socket-activated" class="headerlink" title="什么是socket-activated"></a>什么是socket-activated</h2><p>Socket Activation是systemd一种提供的系统服务管理方式。它允许系统在实际需要时启动服务，从而节省资源和提高启动速度。</p>
+<p>也就是说，在ssh以socket-activated启动的情况下，当有客户端尝试连接 SSH 的端口（默认为 22）时，systemd 会监听这个端口并激活相应的 SSH 服务。</p>
+<p>而socket所监听的接口并不会读取<code>/etc/ssh/sshd_config</code>而是存储在ssh.socket当中，所以当我们修改了<code>/etc/ssh/sshd_config</code>中的端口号之后，就无法触发ssh.socket了</p>
+<h2 id="验证-排查"><a href="#验证-排查" class="headerlink" title="验证&amp;排查"></a>验证&amp;排查</h2><ol>
+<li><p>检查ssh是否为socket-activated方式启动</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl status ssh.socket </span><br></pre></td></tr></table></figure>
+<p><img data-src="/../images/posts/20240927105500.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>如图所示，状态为active，说明当前的ssh是socket-activated方式启动，且正在监听22接口</p>
+<p>解决方式有两种，一种是修改ssh.socket所监听的端口号，另一种是恢复传统的service方式启动，这里我们选择第二种</p>
+</blockquote>
+</li>
+<li><p>关闭ssh.socket</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl disable ssh.socket </span><br></pre></td></tr></table></figure></li>
+<li><p>启用ssh.service</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl enable ssh.service </span><br></pre></td></tr></table></figure></li>
+<li><p>重启解决</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>ssh</tag>
+        <tag>linux</tag>
+        <tag>socket-activated</tag>
+      </tags>
   </entry>
   <entry>
     <title>关于vue-cli4无法配置自定义devtool选项的问题</title>
@@ -1236,11 +1267,6 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
-    <title>获取元素到页面顶部的距离</title>
-    <url>/13c3ceb89ee0.html</url>
-    <content><![CDATA[<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> offsetTop = targetElement.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span> + <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span></span><br></pre></td></tr></table></figure>]]></content>
-  </entry>
-  <entry>
     <title>群晖使用BGmi+Aria2+Emby完成蜜柑的番剧订阅与自动下载</title>
     <url>/a62049a2e79b.html</url>
     <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>已经在群晖部署了Emby+Aria2，但是番剧一直是手动下载，比较麻烦。想着能不能订阅自动下载之类的，翻了一遍Github看到了<a href="https://github.com/BGmi/BGmi">BGmi</a>这个仓库，尝试下来体验还算不错。</p>
@@ -1310,5 +1336,10 @@ requestAnimationFrame(repeatOften);
         <tag>Aria2</tag>
         <tag>Emby</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>获取元素到页面顶部的距离</title>
+    <url>/13c3ceb89ee0.html</url>
+    <content><![CDATA[<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> offsetTop = targetElement.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span> + <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span></span><br></pre></td></tr></table></figure>]]></content>
   </entry>
 </search>

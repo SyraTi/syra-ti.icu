@@ -3,6 +3,8 @@
   --content-bg-color: #fff;
   --card-bg-color: #f5f5f5;
   --text-color: #555;
+  --selection-bg: #262a30;
+  --selection-color: #eee;
   --blockquote-color: #666;
   --link-color: #555;
   --link-hover-color: #222;
@@ -30,6 +32,8 @@
     --content-bg-color: #333;
     --card-bg-color: #555;
     --text-color: #ccc;
+    --selection-bg: #bbb;
+    --selection-color: #333;
     --blockquote-color: #bbb;
     --link-color: #ccc;
     --link-hover-color: #eee;
@@ -210,8 +214,8 @@ template {
   display: none;
 }
 ::selection {
-  background: #262a30;
-  color: #eee;
+  background: var(--selection-bg);
+  color: var(--selection-color);
 }
 html,
 body {
@@ -370,7 +374,8 @@ td {
   left: 0;
   position: relative;
   top: 0;
-  transition: all 0.4s;
+  transition: 0.4s;
+  transition-property: left, opacity, top, transform, width;
   width: 100%;
 }
 .toggle .toggle-line:first-child {
@@ -1460,7 +1465,8 @@ pre code {
     overflow-y: auto;
     position: fixed;
     top: 0;
-    transition: all 0.2s ease-out;
+    transition: 0.2s ease-out;
+    transition-property: left, right;
     width: 320px;
     z-index: 20;
   }
@@ -1483,7 +1489,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #c3fcff;
+    background: #98c728;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -2383,7 +2389,6 @@ pre code {
   border: 2px solid #fc6423;
   border-radius: 2px;
   outline: 0;
-  transition: all 0.2s ease-in-out;
   vertical-align: text-top;
 }
 .reward-container button:hover {
@@ -2734,11 +2739,14 @@ ul.breadcrumb li:last-child {
   display: none;
 }
 .search-popup .search-result-container {
+  display: flex;
+  flex-direction: column;
   height: calc(100% - 55px);
   overflow: auto;
   padding: 5px 25px;
 }
 .search-popup .search-result-container hr {
+  flex-shrink: 0;
   margin: 5px 0 10px;
 }
 .search-popup .search-result-container hr:first-child {
@@ -2758,12 +2766,6 @@ ul.breadcrumb li:last-child {
 .search-popup .search-input-container {
   flex-grow: 1;
   padding: 2px;
-}
-.search-popup .no-result {
-  display: flex;
-}
-.search-popup .search-result-list {
-  width: 100%;
 }
 .search-popup .search-result-icon {
   color: #ccc;
@@ -2899,6 +2901,7 @@ header.header {
 }
 .menu .menu-item a {
   padding: 5px 20px;
+  position: relative;
   transition-property: background-color;
   display: flex;
   align-items: center;
@@ -2998,6 +3001,7 @@ header.header {
   .back-to-top {
     background: var(--body-bg-color);
     margin: -4px -10px -18px;
+    transition-property: bottom, margin-top;
   }
   .back-to-top.back-to-top-on {
     margin-top: 16px;

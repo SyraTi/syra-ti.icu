@@ -62,14 +62,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>Jquery的each里用return true或false代替break或continue</title>
-    <url>/c3db294497b4.html</url>
-    <content><![CDATA[<h2 id="在each代码块内不能使用break和continue-要实现break和continue的功能的话，要使用return-true-false"><a href="#在each代码块内不能使用break和continue-要实现break和continue的功能的话，要使用return-true-false" class="headerlink" title="在each代码块内不能使用break和continue,要实现break和continue的功能的话，要使用return true&#x2F;false"></a>在each代码块内不能使用break和continue,要实现break和continue的功能的话，要使用return true&#x2F;false</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$(<span class="variable constant_">DOM</span>).<span class="title function_">each</span>(<span class="keyword">function</span>(<span class="params">index,el</span>)&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>; <span class="comment">//break </span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>; <span class="comment">//continue </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-  </entry>
-  <entry>
     <title>JS实现点击按钮，复制文本框中的的内容</title>
     <url>/f71004f0347f.html</url>
     <content><![CDATA[<h3 id="Html"><a href="#Html" class="headerlink" title="Html"></a>Html</h3><hr>
@@ -85,6 +77,14 @@
     alert(&quot;已复制好，可贴粘。&quot;);
 &#125;
 </code></pre>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>Jquery的each里用return true或false代替break或continue</title>
+    <url>/c3db294497b4.html</url>
+    <content><![CDATA[<h2 id="在each代码块内不能使用break和continue-要实现break和continue的功能的话，要使用return-true-false"><a href="#在each代码块内不能使用break和continue-要实现break和continue的功能的话，要使用return-true-false" class="headerlink" title="在each代码块内不能使用break和continue,要实现break和continue的功能的话，要使用return true&#x2F;false"></a>在each代码块内不能使用break和continue,要实现break和continue的功能的话，要使用return true&#x2F;false</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$(<span class="variable constant_">DOM</span>).<span class="title function_">each</span>(<span class="keyword">function</span>(<span class="params">index,el</span>)&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>; <span class="comment">//break </span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>; <span class="comment">//continue </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <hr>
 ]]></content>
   </entry>
@@ -176,12 +176,6 @@
     <content><![CDATA[<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt-get -o Acquire::http::proxy=&quot;http://host:port/&quot; install xxx</span><br></pre></td></tr></table></figure>]]></content>
   </entry>
   <entry>
-    <title>css椭圆轨迹运动动画</title>
-    <url>/d6a52fea9420.html</url>
-    <content><![CDATA[<p>朋友问我一个球沿着斜的椭圆轨迹运动怎么实现 实现之后随手记录<br><a href="https://codepen.io/KissekiAkaru/pen/GbxXzz">demo地址</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>Windows 使用 ssh-agent 添加多个ssh key后，git依旧无权限的解决方法</title>
     <url>/162b476ff9bf.html</url>
     <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在windows安装完ssh-agent，添加多个ssh key之后,git clone依旧提示Permission Denied。</p>
@@ -198,6 +192,12 @@
 <p>Run the following command to update the environment variable:<br>在PowerShell中运行以下命令添加环境变量：</p>
 </blockquote>
 <figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> &gt;  [<span class="type">Environment</span>]::SetEnvironmentVariable(<span class="string">&quot;GIT_SSH&quot;</span>, <span class="string">&quot;<span class="variable">$</span>((Get-Command ssh).Source)&quot;</span>, [<span class="type">System.EnvironmentVariableTarget</span>]::User)</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
+    <title>css椭圆轨迹运动动画</title>
+    <url>/d6a52fea9420.html</url>
+    <content><![CDATA[<p>朋友问我一个球沿着斜的椭圆轨迹运动怎么实现 实现之后随手记录<br><a href="https://codepen.io/KissekiAkaru/pen/GbxXzz">demo地址</a></p>
 ]]></content>
   </entry>
   <entry>
@@ -381,6 +381,15 @@ Base.call(o1)
 ]]></content>
   </entry>
   <entry>
+    <title>window.location.replace和window.location.href区别</title>
+    <url>/5850aa2f8c65.html</url>
+    <content><![CDATA[<p>###有3个页面 a,b,c<br>如果当前页面是c页面，并且c页面是这样跳转过来的：a-&gt;b-&gt;c</p>
+<p>1: b-&gt;c 是通过window.location.replace(“..xx&#x2F;c”)   此时b页面的url会被c页面代替，并且点击后退按钮时会回退到a页面（最开始的页面）</p>
+<p>2: b-&gt;c是通过window.location.href(“..xx&#x2F;c”)    此时b页面的路径会被c页面代替，但是点击回按钮后页面回退的是b页面</p>
+<p>两者的区别: 两者后退时所回退的页面不一样</p>
+]]></content>
+  </entry>
+  <entry>
     <title>webstorm中 emmet 模板的修改步骤</title>
     <url>/180cb4d78d79.html</url>
     <content><![CDATA[<p>之前用atom、sublime的时候 Emmet 的模板是可配置的 但是在webstorm配置中的Editor &gt; Emmet选项下没有发现任何有关模板的配置 只有一些选项的配置。</p>
@@ -392,21 +401,6 @@ Base.call(o1)
 <hr>
 <h2 id=""><a href="#" class="headerlink" title=""></a><img data-src="/images/posts/20180327140915194.png" alt="模板配置"></h2><p>*Emmet前身叫做ZenCoding 所以这里会用Zen开头 模板的配置方式与webstorm其他模板配置相同 这里不再赘述</p>
 <hr>
-]]></content>
-  </entry>
-  <entry>
-    <title>window.location.replace和window.location.href区别</title>
-    <url>/5850aa2f8c65.html</url>
-    <content><![CDATA[<p>###有3个页面 a,b,c<br>如果当前页面是c页面，并且c页面是这样跳转过来的：a-&gt;b-&gt;c</p>
-<p>1: b-&gt;c 是通过window.location.replace(“..xx&#x2F;c”)   此时b页面的url会被c页面代替，并且点击后退按钮时会回退到a页面（最开始的页面）</p>
-<p>2: b-&gt;c是通过window.location.href(“..xx&#x2F;c”)    此时b页面的路径会被c页面代替，但是点击回按钮后页面回退的是b页面</p>
-<p>两者的区别: 两者后退时所回退的页面不一样</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>一个Mui Demo仓库</title>
-    <url>/9c287968e88d.html</url>
-    <content><![CDATA[<p>链接 <a href="https://github.com/zhaomenghuan/mui-demo">https://github.com/zhaomenghuan/mui-demo</a></p>
 ]]></content>
   </entry>
   <entry>
@@ -463,6 +457,12 @@ requestAnimationFrame(repeatOften);
 <pre><code>window.cancelAnimationFrame(requestID);
 </code></pre>
 <hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>一个Mui Demo仓库</title>
+    <url>/9c287968e88d.html</url>
+    <content><![CDATA[<p>链接 <a href="https://github.com/zhaomenghuan/mui-demo">https://github.com/zhaomenghuan/mui-demo</a></p>
 ]]></content>
   </entry>
   <entry>
@@ -771,6 +771,20 @@ requestAnimationFrame(repeatOften);
  </h2>]]></content>
   </entry>
   <entry>
+    <title>关于For循环中进行异步操作索引不正确的处理方式</title>
+    <url>/665cae66e591.html</url>
+    <content><![CDATA[<h3 id="code-问题代码"><a href="#code-问题代码" class="headerlink" title="code 问题代码"></a>code 问题代码</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) &#123;</span><br><span class="line">        <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;index is :&quot;</span>, i);</span><br><span class="line">        &#125;, <span class="number">1000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">test</span>();</span><br></pre></td></tr></table></figure>
+<h3 id="output-问题输出"><a href="#output-问题输出" class="headerlink" title="output 问题输出"></a>output 问题输出</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="solution-使用自执行函数"><a href="#solution-使用自执行函数" class="headerlink" title="solution 使用自执行函数"></a>solution 使用自执行函数</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) &#123;</span><br><span class="line">        (<span class="keyword">function</span>(<span class="params">i</span>)&#123;</span><br><span class="line">	        <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">	            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;index is :&quot;</span>, i);</span><br><span class="line">	        &#125;, <span class="number">1000</span>)</span><br><span class="line">        &#125;)(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">test</span>();</span><br></pre></td></tr></table></figure>
+
+<h3 id="output-正确输出"><a href="#output-正确输出" class="headerlink" title="output 正确输出"></a>output 正确输出</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">index is : <span class="number">0</span></span><br><span class="line">index is : <span class="number">1</span></span><br><span class="line">index is : <span class="number">2</span></span><br><span class="line">index is : <span class="number">3</span></span><br><span class="line">index is : <span class="number">4</span></span><br></pre></td></tr></table></figure>
+
+
+<hr>
+]]></content>
+  </entry>
+  <entry>
     <title>关于CSS选择器书写正确浏览器却不认的一个原因</title>
     <url>/8b7049303f42.html</url>
     <content><![CDATA[<blockquote>
@@ -799,20 +813,6 @@ requestAnimationFrame(repeatOften);
 <hr>
 <h2 id="所以-解决方案就是：→删掉选择器末尾空格←"><a href="#所以-解决方案就是：→删掉选择器末尾空格←" class="headerlink" title="所以 解决方案就是：→删掉选择器末尾空格←"></a>所以 解决方案就是：→删掉选择器末尾空格←</h2><h5 id="PS：不一定是花括号前面那个，理论上每个空格都有可能出现这个问题，如果删去花括号前面的还有问题，可以尝试把前面的空格都重新打一遍。"><a href="#PS：不一定是花括号前面那个，理论上每个空格都有可能出现这个问题，如果删去花括号前面的还有问题，可以尝试把前面的空格都重新打一遍。" class="headerlink" title="PS：不一定是花括号前面那个，理论上每个空格都有可能出现这个问题，如果删去花括号前面的还有问题，可以尝试把前面的空格都重新打一遍。"></a>PS：不一定是花括号前面那个，理论上每个空格都有可能出现这个问题，如果删去花括号前面的还有问题，可以尝试把前面的空格都重新打一遍。</h5><p><br><br><br></p>
 <p>以上，如果有什么问题欢迎在下面评论，我会及时回复www</p>
-<hr>
-]]></content>
-  </entry>
-  <entry>
-    <title>关于For循环中进行异步操作索引不正确的处理方式</title>
-    <url>/665cae66e591.html</url>
-    <content><![CDATA[<h3 id="code-问题代码"><a href="#code-问题代码" class="headerlink" title="code 问题代码"></a>code 问题代码</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) &#123;</span><br><span class="line">        <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;index is :&quot;</span>, i);</span><br><span class="line">        &#125;, <span class="number">1000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">test</span>();</span><br></pre></td></tr></table></figure>
-<h3 id="output-问题输出"><a href="#output-问题输出" class="headerlink" title="output 问题输出"></a>output 问题输出</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br><span class="line">index is : <span class="number">5</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="solution-使用自执行函数"><a href="#solution-使用自执行函数" class="headerlink" title="solution 使用自执行函数"></a>solution 使用自执行函数</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) &#123;</span><br><span class="line">        (<span class="keyword">function</span>(<span class="params">i</span>)&#123;</span><br><span class="line">	        <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">	            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;index is :&quot;</span>, i);</span><br><span class="line">	        &#125;, <span class="number">1000</span>)</span><br><span class="line">        &#125;)(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">test</span>();</span><br></pre></td></tr></table></figure>
-
-<h3 id="output-正确输出"><a href="#output-正确输出" class="headerlink" title="output 正确输出"></a>output 正确输出</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">index is : <span class="number">0</span></span><br><span class="line">index is : <span class="number">1</span></span><br><span class="line">index is : <span class="number">2</span></span><br><span class="line">index is : <span class="number">3</span></span><br><span class="line">index is : <span class="number">4</span></span><br></pre></td></tr></table></figure>
-
-
 <hr>
 ]]></content>
   </entry>
@@ -885,6 +885,26 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
+    <title>关于vue-cli4无法配置自定义devtool选项的问题</title>
+    <url>/32502d134cc1.html</url>
+    <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在<code>vue.config.js</code>中无法配置自定义<code>devtool</code>选项，无论是使用<code>configureWebpack</code>还是<code>chainWebpack</code>都无法改变<code>source-map</code>的类型。官方文档也没有提供相关的说明。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// vue.config.js</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Components</span> = <span class="built_in">require</span>(<span class="string">&#x27;unplugin-vue-components/webpack&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">ElementPlusResolver</span> &#125; = <span class="built_in">require</span>(<span class="string">&#x27;unplugin-vue-components/resolvers&#x27;</span>)</span><br><span class="line"><span class="comment">// 两种方式均无法更改devtool</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">configureWebpack</span>: &#123;</span><br><span class="line">    <span class="attr">devtool</span>: <span class="string">&quot;source-map&quot;</span>,</span><br><span class="line">    <span class="comment">// 2021.10.26更新 ↓罪魁祸首</span></span><br><span class="line">    <span class="attr">plugins</span>: [</span><br><span class="line">      <span class="title class_">Components</span>(&#123;</span><br><span class="line">        <span class="attr">resolvers</span>: [<span class="title class_">ElementPlusResolver</span>()]</span><br><span class="line">      &#125;)</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">chainWebpack</span>: <span class="function"><span class="params">config</span> =&gt;</span> &#123;</span><br><span class="line">    config</span><br><span class="line">      .<span class="title function_">devtool</span>(<span class="string">&#x27;source-map&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p><strong>2021.10.26更新</strong>： 问题产生的原因不是<code>vue-cli</code>，而是<code>element-ui</code>提供的按需加载插件<code>unplugin-vue-components/resolvers</code>破坏了sourcemap，具体的原因不清楚，似乎插件作者也不是很有<code>sourcemap</code>方面的开发意愿。 总之遇到这个问题的话看一看有没有这个玩应吧。<br><img data-src="/../images/posts/e7165c44fff043758752a54008586582.png" alt="在这里插入图片描述"></p>
+<hr>
+<h3 id="本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x-下面的都可以不用看了"><a href="#本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x-下面的都可以不用看了" class="headerlink" title="本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x 下面的都可以不用看了"></a>本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x 下面的都可以不用看了</h3><p><del><code>vue-cli</code>在<code>npm run serve</code>时强制使用了<code>&#39;eval-cheap-module-source-map&#39;</code></del></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @vue/cli-service/lib/commands/serve.js</span></span><br><span class="line"><span class="comment">// line: 51</span></span><br><span class="line"> api.<span class="title function_">chainWebpack</span>(<span class="function"><span class="params">webpackConfig</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (process.<span class="property">env</span>.<span class="property">NODE_ENV</span> !== <span class="string">&#x27;production&#x27;</span> &amp;&amp; process.<span class="property">env</span>.<span class="property">NODE_ENV</span> !== <span class="string">&#x27;test&#x27;</span>) &#123;</span><br><span class="line">       <span class="comment">// 注意这里：在npm run serve时强制使用了&#x27;eval-cheap-module-source-map&#x27;</span></span><br><span class="line">        webpackConfig</span><br><span class="line">          .<span class="title function_">devtool</span>(<span class="string">&#x27;eval-cheap-module-source-map&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        webpackConfig</span><br><span class="line">          .<span class="title function_">plugin</span>(<span class="string">&#x27;hmr&#x27;</span>)</span><br><span class="line">            .<span class="title function_">use</span>(<span class="built_in">require</span>(<span class="string">&#x27;webpack/lib/HotModuleReplacementPlugin&#x27;</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment">// https://github.com/webpack/webpack/issues/6642</span></span><br><span class="line">        <span class="comment">// https://github.com/vuejs/vue-cli/issues/3539</span></span><br><span class="line">        webpackConfig</span><br><span class="line">          .<span class="property">output</span></span><br><span class="line">            .<span class="title function_">globalObject</span>(<span class="string">`(typeof self !== &#x27;undefined&#x27; ? self : this)`</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!process.<span class="property">env</span>.<span class="property">VUE_CLI_TEST</span> &amp;&amp; options.<span class="property">devServer</span>.<span class="property">progress</span> !== <span class="literal">false</span>) &#123;</span><br><span class="line">          webpackConfig</span><br><span class="line">            .<span class="title function_">plugin</span>(<span class="string">&#x27;progress&#x27;</span>)</span><br><span class="line">            .<span class="title function_">use</span>(<span class="built_in">require</span>(<span class="string">&#x27;webpack/lib/ProgressPlugin&#x27;</span>))</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<p><del>截止目前（2021年10月26日），<code>vue-cli</code>的最新<code>realese</code>版本（v4.5.14）中，依旧存在这个问题。但是github的开源代码的<code>dev</code>分支已经修复此问题（<a href="https://github.com/vuejs/vue-cli/blob/dev/packages/%40vue/cli-service/lib/commands/serve.js">查看代码</a>），不知道什么时候会发布到正式版本中去。</del></p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a><del>解决方案</del></h2><p><del><strong>方案一：</strong> 手动修改<code>node_modules/@vue/cli-service/lib/commands/serve.js:54</code>， 将<code>&#39;eval-cheap-module-source-map&#39;</code>改为想要的模式。弊端是install之后可能需要再改一下，如果不在意<code>source-map</code>的话还是权衡一下利弊。</del></p>
+<p><del><strong>方案二：</strong> 使用<code>vue-cli</code>的<code>dev</code>分支源代码编译一份最新的来使用。</del></p>
+<br>
+
+<p>以上！まいど～</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
     <title>关于ssh修改端口后无法开机启动的问题</title>
     <url>/de9c00245da0.html</url>
     <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>更改<code>/etc/ssh/sshd_config</code>的端口号之后，发现<code>systemctl enable ssh</code>无效，开机后ssh服务不会自动启动，且ssh也连不上</p>
@@ -914,26 +934,6 @@ requestAnimationFrame(repeatOften);
         <tag>linux</tag>
         <tag>socket-activated</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>关于vue-cli4无法配置自定义devtool选项的问题</title>
-    <url>/32502d134cc1.html</url>
-    <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>在<code>vue.config.js</code>中无法配置自定义<code>devtool</code>选项，无论是使用<code>configureWebpack</code>还是<code>chainWebpack</code>都无法改变<code>source-map</code>的类型。官方文档也没有提供相关的说明。</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// vue.config.js</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Components</span> = <span class="built_in">require</span>(<span class="string">&#x27;unplugin-vue-components/webpack&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">ElementPlusResolver</span> &#125; = <span class="built_in">require</span>(<span class="string">&#x27;unplugin-vue-components/resolvers&#x27;</span>)</span><br><span class="line"><span class="comment">// 两种方式均无法更改devtool</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">configureWebpack</span>: &#123;</span><br><span class="line">    <span class="attr">devtool</span>: <span class="string">&quot;source-map&quot;</span>,</span><br><span class="line">    <span class="comment">// 2021.10.26更新 ↓罪魁祸首</span></span><br><span class="line">    <span class="attr">plugins</span>: [</span><br><span class="line">      <span class="title class_">Components</span>(&#123;</span><br><span class="line">        <span class="attr">resolvers</span>: [<span class="title class_">ElementPlusResolver</span>()]</span><br><span class="line">      &#125;)</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">chainWebpack</span>: <span class="function"><span class="params">config</span> =&gt;</span> &#123;</span><br><span class="line">    config</span><br><span class="line">      .<span class="title function_">devtool</span>(<span class="string">&#x27;source-map&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<span id="more"></span>
-<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p><strong>2021.10.26更新</strong>： 问题产生的原因不是<code>vue-cli</code>，而是<code>element-ui</code>提供的按需加载插件<code>unplugin-vue-components/resolvers</code>破坏了sourcemap，具体的原因不清楚，似乎插件作者也不是很有<code>sourcemap</code>方面的开发意愿。 总之遇到这个问题的话看一看有没有这个玩应吧。<br><img data-src="/../images/posts/e7165c44fff043758752a54008586582.png" alt="在这里插入图片描述"></p>
-<hr>
-<h3 id="本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x-下面的都可以不用看了"><a href="#本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x-下面的都可以不用看了" class="headerlink" title="本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x 下面的都可以不用看了"></a>本来下面这里写了一大通，最后发现不是这个原因，错怪尤老师了，对不起x 下面的都可以不用看了</h3><p><del><code>vue-cli</code>在<code>npm run serve</code>时强制使用了<code>&#39;eval-cheap-module-source-map&#39;</code></del></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// @vue/cli-service/lib/commands/serve.js</span></span><br><span class="line"><span class="comment">// line: 51</span></span><br><span class="line"> api.<span class="title function_">chainWebpack</span>(<span class="function"><span class="params">webpackConfig</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (process.<span class="property">env</span>.<span class="property">NODE_ENV</span> !== <span class="string">&#x27;production&#x27;</span> &amp;&amp; process.<span class="property">env</span>.<span class="property">NODE_ENV</span> !== <span class="string">&#x27;test&#x27;</span>) &#123;</span><br><span class="line">       <span class="comment">// 注意这里：在npm run serve时强制使用了&#x27;eval-cheap-module-source-map&#x27;</span></span><br><span class="line">        webpackConfig</span><br><span class="line">          .<span class="title function_">devtool</span>(<span class="string">&#x27;eval-cheap-module-source-map&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        webpackConfig</span><br><span class="line">          .<span class="title function_">plugin</span>(<span class="string">&#x27;hmr&#x27;</span>)</span><br><span class="line">            .<span class="title function_">use</span>(<span class="built_in">require</span>(<span class="string">&#x27;webpack/lib/HotModuleReplacementPlugin&#x27;</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment">// https://github.com/webpack/webpack/issues/6642</span></span><br><span class="line">        <span class="comment">// https://github.com/vuejs/vue-cli/issues/3539</span></span><br><span class="line">        webpackConfig</span><br><span class="line">          .<span class="property">output</span></span><br><span class="line">            .<span class="title function_">globalObject</span>(<span class="string">`(typeof self !== &#x27;undefined&#x27; ? self : this)`</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!process.<span class="property">env</span>.<span class="property">VUE_CLI_TEST</span> &amp;&amp; options.<span class="property">devServer</span>.<span class="property">progress</span> !== <span class="literal">false</span>) &#123;</span><br><span class="line">          webpackConfig</span><br><span class="line">            .<span class="title function_">plugin</span>(<span class="string">&#x27;progress&#x27;</span>)</span><br><span class="line">            .<span class="title function_">use</span>(<span class="built_in">require</span>(<span class="string">&#x27;webpack/lib/ProgressPlugin&#x27;</span>))</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
-
-<p><del>截止目前（2021年10月26日），<code>vue-cli</code>的最新<code>realese</code>版本（v4.5.14）中，依旧存在这个问题。但是github的开源代码的<code>dev</code>分支已经修复此问题（<a href="https://github.com/vuejs/vue-cli/blob/dev/packages/%40vue/cli-service/lib/commands/serve.js">查看代码</a>），不知道什么时候会发布到正式版本中去。</del></p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a><del>解决方案</del></h2><p><del><strong>方案一：</strong> 手动修改<code>node_modules/@vue/cli-service/lib/commands/serve.js:54</code>， 将<code>&#39;eval-cheap-module-source-map&#39;</code>改为想要的模式。弊端是install之后可能需要再改一下，如果不在意<code>source-map</code>的话还是权衡一下利弊。</del></p>
-<p><del><strong>方案二：</strong> 使用<code>vue-cli</code>的<code>dev</code>分支源代码编译一份最新的来使用。</del></p>
-<br>
-
-<p>以上！まいど～</p>
-<hr>
-]]></content>
   </entry>
   <entry>
     <title>关于百度地图 DrivingRoute moreResultsUrl为“未能找到相应结果，请您:返回上一步操作..” 以及 WalkingRoute moreResultsUrl为空 的解决方案</title>
@@ -999,6 +999,29 @@ requestAnimationFrame(repeatOften);
 <p>以上！まいど～</p>
 <hr>
 ]]></content>
+  </entry>
+  <entry>
+    <title>如何区分鼠标滚轮/触控板双指缩放事件</title>
+    <url>/1323de0d18f6.html</url>
+    <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p><strong>鼠标滚轮滚动&#x2F;触控板双指缩放</strong>都会触发<code>wheel</code>事件，在滚轮不需要触发缩放的场景下，需要对两种事件进行区分。</p>
+<h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><p><strong>双指缩放事件会被映射为按下ctrl键的wheel事件</strong></p>
+<p>即：由触控板缩放触发的<code>wheel</code>事件，<code>ev.ctrlKey</code>的值会为<code>true</code>，所以可以按照下面的代码进行区分：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$target.<span class="title function_">addEventListener</span>(<span class="string">&#x27;wheel&#x27;</span>, <span class="function">(<span class="params">ev</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> isTrackpadPinch = ev.<span class="property">ctrlKey</span> </span><br><span class="line">  <span class="keyword">if</span>(isTrackpadPinch)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;trackpad pinch&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;mousewheel&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="浏览器支持"><a href="#浏览器支持" class="headerlink" title="浏览器支持"></a>浏览器支持</h2><p><img data-src="/../images/posts/20240529102800.png" alt="浏览器支持（截至文章发布）"></p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>需要注意的是， <strong>Pinch-to-zoom maps to WheelEvent + ctrl key</strong> 行为并没有在W3C标准中进行规定，应当是公认的实现。好在主流的浏览器实现都是一致的，一般情况下不用做兼容性处理。</p>
+<h2 id="参考来源"><a href="#参考来源" class="headerlink" title="参考来源"></a>参考来源</h2><ul>
+<li><a href="https://www.w3.org/TR/uievents/#events-wheelevents">W3C关于WheelEvent的实现标准</a></li>
+<li><a href="https://caniuse.com/mdn-api_wheelevent_pinch_to_zoom_support">CanIUse中关于Pinch-to-zoom maps to WheelEvent + ctrl key行为的兼容性描述</a></li>
+<li><a href="https://stackoverflow.com/questions/68808218/how-to-capture-pinch-zoom-gestures-from-the-trackpad-in-a-desktop-browser-and-p">How to capture pinch-zoom gestures from the trackpad in a desktop browser (and prevent default)?</a></li>
+<li><a href="https://github.com/pmndrs/use-gesture/discussions/518">Pinch and wheel difference across browsers</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>javascript</tag>
+        <tag>前端</tag>
+        <tag>wheel事件</tag>
+      </tags>
   </entry>
   <entry>
     <title>前端代码规范</title>
@@ -1175,29 +1198,6 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
-    <title>如何区分鼠标滚轮/触控板双指缩放事件</title>
-    <url>/1323de0d18f6.html</url>
-    <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p><strong>鼠标滚轮滚动&#x2F;触控板双指缩放</strong>都会触发<code>wheel</code>事件，在滚轮不需要触发缩放的场景下，需要对两种事件进行区分。</p>
-<h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><p><strong>双指缩放事件会被映射为按下ctrl键的wheel事件</strong></p>
-<p>即：由触控板缩放触发的<code>wheel</code>事件，<code>ev.ctrlKey</code>的值会为<code>true</code>，所以可以按照下面的代码进行区分：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$target.<span class="title function_">addEventListener</span>(<span class="string">&#x27;wheel&#x27;</span>, <span class="function">(<span class="params">ev</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> isTrackpadPinch = ev.<span class="property">ctrlKey</span> </span><br><span class="line">  <span class="keyword">if</span>(isTrackpadPinch)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;trackpad pinch&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;mousewheel&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<h2 id="浏览器支持"><a href="#浏览器支持" class="headerlink" title="浏览器支持"></a>浏览器支持</h2><p><img data-src="/../images/posts/20240529102800.png" alt="浏览器支持（截至文章发布）"></p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>需要注意的是， <strong>Pinch-to-zoom maps to WheelEvent + ctrl key</strong> 行为并没有在W3C标准中进行规定，应当是公认的实现。好在主流的浏览器实现都是一致的，一般情况下不用做兼容性处理。</p>
-<h2 id="参考来源"><a href="#参考来源" class="headerlink" title="参考来源"></a>参考来源</h2><ul>
-<li><a href="https://www.w3.org/TR/uievents/#events-wheelevents">W3C关于WheelEvent的实现标准</a></li>
-<li><a href="https://caniuse.com/mdn-api_wheelevent_pinch_to_zoom_support">CanIUse中关于Pinch-to-zoom maps to WheelEvent + ctrl key行为的兼容性描述</a></li>
-<li><a href="https://stackoverflow.com/questions/68808218/how-to-capture-pinch-zoom-gestures-from-the-trackpad-in-a-desktop-browser-and-p">How to capture pinch-zoom gestures from the trackpad in a desktop browser (and prevent default)?</a></li>
-<li><a href="https://github.com/pmndrs/use-gesture/discussions/518">Pinch and wheel difference across browsers</a></li>
-</ul>
-]]></content>
-      <tags>
-        <tag>javascript</tag>
-        <tag>前端</tag>
-        <tag>wheel事件</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>微信浏览器中iframe srcdoc、src=data:text/html,xxxx 等无法使用情况下防止样式污染的解决方案</title>
     <url>/b0ba270a0600.html</url>
     <content><![CDATA[<h4 id="业务需求"><a href="#业务需求" class="headerlink" title="业务需求"></a>业务需求</h4><blockquote>
@@ -1249,21 +1249,6 @@ requestAnimationFrame(repeatOften);
 <p>0.2&#x3D;&#x3D;》0.2.toString(2)&#x3D;&#x3D;》0.001100110011(无限循环..)</p>
 <p>双精度浮点数的小数部分最多支持 52 位，所以两者相加之后得到这么一串 0.0100110011001100110011001100110011001100110011001100 因浮点数小数位的限制而截断的二进制数字，这时候，我们再把它转换为十进制，就成了 0.30000000000000004。<br>&#96;</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>十进制浮点数转二进制会无限循环，单双精度长度限制问题导致截断后出现误差</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>添加了~/.bash_profile之后，~/.bashrc失效以及bash失去高亮的原因及解决方案</title>
-    <url>/463d951c5853.html</url>
-    <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>添加<code>~/.bash_profile</code>之后，bash失去高亮，<code>~/.bashrc</code>中的逻辑不运行。<br><img data-src="/../images/posts/b49d241eeab14f43b53edb783eb9d8f1.png" alt="添加前"><br>添加前↑<br><img data-src="/../images/posts/fd0ce34e0824462fb70387c80a53c57f.png" alt="添加后"><br>添加后↑</p>
-<span id="more"></span>
-<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>在添加<code>~/.bash_profile</code>之后，<code>~/.profile</code>会被覆盖不再运行，而load bashrc的逻辑在<code>~/.profile</code>中，导致<code>~/.bashrc</code>也一并失效。<br><img data-src="/../images/posts/50f8cda872f34b57a3f9f7e7b3d1f48c.png" alt="~/.profile中加载bashrc的逻辑"></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">## 解决方案</span><br><span class="line">- 方案一：将```~/.bash_profile```中的逻辑移至```~/.profile```，并删除```~/.bash_profile```。</span><br><span class="line">- 方案二：在```~/.bash_profile```中添加以下代码保证```~/.profile```中的代码运行。</span><br><span class="line"> ```bash</span><br><span class="line"> source ~/.profile</span><br></pre></td></tr></table></figure>
-
-
-<br>
-以上！まいど～
-
-<hr>
 ]]></content>
   </entry>
   <entry>
@@ -1341,5 +1326,20 @@ requestAnimationFrame(repeatOften);
     <title>获取元素到页面顶部的距离</title>
     <url>/13c3ceb89ee0.html</url>
     <content><![CDATA[<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> offsetTop = targetElement.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span> + <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span></span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+  <entry>
+    <title>添加了~/.bash_profile之后，~/.bashrc失效以及bash失去高亮的原因及解决方案</title>
+    <url>/463d951c5853.html</url>
+    <content><![CDATA[<h2 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h2><p>添加<code>~/.bash_profile</code>之后，bash失去高亮，<code>~/.bashrc</code>中的逻辑不运行。<br><img data-src="/../images/posts/b49d241eeab14f43b53edb783eb9d8f1.png" alt="添加前"><br>添加前↑<br><img data-src="/../images/posts/fd0ce34e0824462fb70387c80a53c57f.png" alt="添加后"><br>添加后↑</p>
+<span id="more"></span>
+<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>在添加<code>~/.bash_profile</code>之后，<code>~/.profile</code>会被覆盖不再运行，而load bashrc的逻辑在<code>~/.profile</code>中，导致<code>~/.bashrc</code>也一并失效。<br><img data-src="/../images/posts/50f8cda872f34b57a3f9f7e7b3d1f48c.png" alt="~/.profile中加载bashrc的逻辑"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">## 解决方案</span><br><span class="line">- 方案一：将```~/.bash_profile```中的逻辑移至```~/.profile```，并删除```~/.bash_profile```。</span><br><span class="line">- 方案二：在```~/.bash_profile```中添加以下代码保证```~/.profile```中的代码运行。</span><br><span class="line"> ```bash</span><br><span class="line"> source ~/.profile</span><br></pre></td></tr></table></figure>
+
+
+<br>
+以上！まいど～
+
+<hr>
+]]></content>
   </entry>
 </search>

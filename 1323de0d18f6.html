@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
 <meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"syra-ti.icu","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="前情提要鼠标滚轮滚动&#x2F;触控板双指缩放都会触发wheel事件，在滚轮不需要触发缩放的场景下，需要对两种事件进行区分。 TL;DR双指缩放事件会被映射为按下ctrl键的wheel事件 即：由触控板缩放触发的wheel事件，ev.ctrlKey的值会为true，所以可以按照下面的代码进行区分： 123456789$target.addEventListener(&amp;#x27;wheel&amp;#x27">
+    <meta name="description" content="前情提要鼠标滚轮滚动&#x2F;触控板双指缩放都会触发wheel事件，在滚轮不需要触发缩放的场景下，需要对两种事件进行区分。 TL;DR双指缩放事件会被映射为按下ctrl键的wheel事件 即：由触控板缩放触发的wheel事件，ev.ctrlKey的值会为true，所以可以按照下面的代码进行区分： 123456789$target.addEventListener(&#x27;wheel&amp;#x27">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何区分鼠标滚轮&#x2F;触控板双指缩放事件">
 <meta property="og:url" content="https://syra-ti.icu/1323de0d18f6.html">
 <meta property="og:site_name" content="SyraTi.ICU">
-<meta property="og:description" content="前情提要鼠标滚轮滚动&#x2F;触控板双指缩放都会触发wheel事件，在滚轮不需要触发缩放的场景下，需要对两种事件进行区分。 TL;DR双指缩放事件会被映射为按下ctrl键的wheel事件 即：由触控板缩放触发的wheel事件，ev.ctrlKey的值会为true，所以可以按照下面的代码进行区分： 123456789$target.addEventListener(&amp;#x27;wheel&amp;#x27">
+<meta property="og:description" content="前情提要鼠标滚轮滚动&#x2F;触控板双指缩放都会触发wheel事件，在滚轮不需要触发缩放的场景下，需要对两种事件进行区分。 TL;DR双指缩放事件会被映射为按下ctrl键的wheel事件 即：由触控板缩放触发的wheel事件，ev.ctrlKey的值会为true，所以可以按照下面的代码进行区分： 123456789$target.addEventListener(&#x27;wheel&amp;#x27">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://syra-ti.icu/images/posts/20240529102800.png">
 <meta property="article:published_time" content="2024-05-29T01:59:42.000Z">

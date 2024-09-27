@@ -228,14 +228,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>input的disabled属性会导致无法上传</title>
-    <url>/220783a26dd7.html</url>
-    <content><![CDATA[<p>如题 很多人会用<code>disable</code>禁止用户修改<code>input</code>的值<br>但是同时会导致<code>form</code>提交时不包含这个文本框的值<br>（<code>disabled</code>本意即为禁用 所以自然不会上传）</p>
-<p><strong>需要实现禁止修改可以使用<code>readonly</code>属性</strong></p>
-<hr>
-]]></content>
-  </entry>
-  <entry>
     <title>ios中 input[readonly] 仍然可聚焦出现光标并弹出“完成”面板问题</title>
     <url>/a5dc920f2637.html</url>
     <content><![CDATA[<p>除readonly外 还需要添加</p>
@@ -269,6 +261,14 @@
 <pre><code>slider.stopped = false; //开启滑动切换
 slider.stopped = true; //关闭滑动切换
 </code></pre>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>input的disabled属性会导致无法上传</title>
+    <url>/220783a26dd7.html</url>
+    <content><![CDATA[<p>如题 很多人会用<code>disable</code>禁止用户修改<code>input</code>的值<br>但是同时会导致<code>form</code>提交时不包含这个文本框的值<br>（<code>disabled</code>本意即为禁用 所以自然不会上传）</p>
+<p><strong>需要实现禁止修改可以使用<code>readonly</code>属性</strong></p>
 <hr>
 ]]></content>
   </entry>
@@ -320,20 +320,6 @@ Base.call(o1)
 &lt; Obj &#123;&#125;
 </code></pre>
 <h2 id="——-得出结论-Object-create-Obj-prototype-将不会触发Obj的构造函数"><a href="#——-得出结论-Object-create-Obj-prototype-将不会触发Obj的构造函数" class="headerlink" title="—— 得出结论 Object.create(Obj.prototype)将不会触发Obj的构造函数"></a>—— 得出结论 Object.create(Obj.prototype)将不会触发Obj的构造函数</h2><hr>
-]]></content>
-  </entry>
-  <entry>
-    <title>webstorm中 emmet 模板的修改步骤</title>
-    <url>/180cb4d78d79.html</url>
-    <content><![CDATA[<p>之前用atom、sublime的时候 Emmet 的模板是可配置的 但是在webstorm配置中的Editor &gt; Emmet选项下没有发现任何有关模板的配置 只有一些选项的配置。</p>
-<span id="more"></span>
-
-<hr>
-<p><img data-src="/images/posts/20180327135651291.png" alt="webstorm Emmet相关配置"></p>
-<p>其实模板配置在Editor&gt;Live Templates 下 会找到有Zen字样开头的 Zen CSS、 Zen HTML、Zen XSL 分别是CSS、HTML、XSL的模板</p>
-<hr>
-<h2 id=""><a href="#" class="headerlink" title=""></a><img data-src="/images/posts/20180327140915194.png" alt="模板配置"></h2><p>*Emmet前身叫做ZenCoding 所以这里会用Zen开头 模板的配置方式与webstorm其他模板配置相同 这里不再赘述</p>
-<hr>
 ]]></content>
   </entry>
   <entry>
@@ -391,6 +377,20 @@ Base.call(o1)
 <hr>
 <p>接下来正式开始配置端口转发，进入openwrt,  菜单选择 <code>Network-&gt;Firewall-&gt;Port Forwards</code><br><img data-src="/images/posts/b76d34e11f01421aaf38f7c9a4c6c0cb.png" alt="在这里插入图片描述"><br>新增一条端口转发，按照下图填写<br><img data-src="/images/posts/2df447f9ae0a470c8d3a3f65c98dba4a.png" alt="在这里插入图片描述"><br>至此，应该就能够使用openwrt的端口转发达到内网穿透的目的了。</p>
 <p>以上！まいど～</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>webstorm中 emmet 模板的修改步骤</title>
+    <url>/180cb4d78d79.html</url>
+    <content><![CDATA[<p>之前用atom、sublime的时候 Emmet 的模板是可配置的 但是在webstorm配置中的Editor &gt; Emmet选项下没有发现任何有关模板的配置 只有一些选项的配置。</p>
+<span id="more"></span>
+
+<hr>
+<p><img data-src="/images/posts/20180327135651291.png" alt="webstorm Emmet相关配置"></p>
+<p>其实模板配置在Editor&gt;Live Templates 下 会找到有Zen字样开头的 Zen CSS、 Zen HTML、Zen XSL 分别是CSS、HTML、XSL的模板</p>
+<hr>
+<h2 id=""><a href="#" class="headerlink" title=""></a><img data-src="/images/posts/20180327140915194.png" alt="模板配置"></h2><p>*Emmet前身叫做ZenCoding 所以这里会用Zen开头 模板的配置方式与webstorm其他模板配置相同 这里不再赘述</p>
 <hr>
 ]]></content>
   </entry>
@@ -463,6 +463,13 @@ requestAnimationFrame(repeatOften);
     <title>一个Mui Demo仓库</title>
     <url>/9c287968e88d.html</url>
     <content><![CDATA[<p>链接 <a href="https://github.com/zhaomenghuan/mui-demo">https://github.com/zhaomenghuan/mui-demo</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>为什么不要使用 ::before{content:url(&#39;xxx&#39;)} 设置图标</title>
+    <url>/5593fd82f23d.html</url>
+    <content><![CDATA[<p>项目中遇到 随手记录<br>::before ::after等伪类中使用content:url()中的图片无法设置宽高</p>
+<hr>
 ]]></content>
   </entry>
   <entry>
@@ -619,9 +626,24 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
-    <title>为什么不要使用 ::before{content:url(&#39;xxx&#39;)} 设置图标</title>
-    <url>/5593fd82f23d.html</url>
-    <content><![CDATA[<p>项目中遇到 随手记录<br>::before ::after等伪类中使用content:url()中的图片无法设置宽高</p>
+    <title>使用canvas实现图片压缩</title>
+    <url>/e15015f00ecd.html</url>
+    <content><![CDATA[<h2 id="原文链接-https-segmentfault-com-a-1190000009308553"><a href="#原文链接-https-segmentfault-com-a-1190000009308553" class="headerlink" title="原文链接 https://segmentfault.com/a/1190000009308553"></a>原文链接 <a href="https://segmentfault.com/a/1190000009308553">https://segmentfault.com/a/1190000009308553</a></h2><p>那，首先通过<code>URL.createObjectURL(file)</code>从file对象直接取得了图片的地址</p>
+<p>前面就不详细说了，开始压缩咯 ( ´ ▽ &#96; )ﾉ</p>
+<p>噢，有个注意点:</p>
+<p>每次调用<code>createObjectURL</code>的时候，一个新的URL对象就被创建了，即使是同一个file对象，也会创建一个新对URL对象，所以，为了最佳性能和内存使用，当不再需要这个对象的时候要<code>URL.revokeObjectURL()</code>释放它。</p>
+<p>开始压缩</p>
+<span id="more"></span>
+<p>创建一个<code>compressImage</code>函数，将之图片的地址url作参数传入：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">compressImage</span> (url) &#123;</span><br><span class="line">	<span class="keyword">let</span> cvs = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;canvas&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> ctx = cvs.<span class="title function_">getContext</span>(<span class="string">&#x27;2d&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> img = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Image</span>()</span><br><span class="line">	img.<span class="property">src</span> = url</span><br><span class="line">	img.<span class="property">onload</span> = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">		cvs.<span class="property">width</span> = img.<span class="property">width</span></span><br><span class="line">		cvs.<span class="property">height</span> = img.<span class="property">height</span></span><br><span class="line">		<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">			ctx.<span class="title function_">drawImage</span>(img, <span class="number">0</span>, <span class="number">0</span>, cvs.<span class="property">width</span>, cvs.<span class="property">height</span>)</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">newImageData</span> = cvs.<span class="title function_">toDataURL</span>(<span class="string">&#x27;image/jpeg&#x27;</span>, <span class="number">0.1</span>)</span><br><span class="line">	    &#125;, <span class="number">0</span>)</span><br><span class="line">	    <span class="variable language_">this</span>.<span class="property">showPreviewer</span> = <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里说说</p>
+<p><code>canvas.toDataURL(type, encoderOptions)</code><br><code>HTMLCanvasElement.toDataURL()</code>方法接受两个参数，<code>type</code>和<code>encoderOptions</code></p>
+<p><code>type</code>是可选的，图片格式，默认是 <code>image/png</code>，<code>encoderOptions</code>表示图片质量， 在<code>type</code>为<code>image/jpeg</code> 或 <code>image/webp</code>时可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 <code>0.92</code>。其他参数会被忽略。</p>
+<p><code>toDataURL()</code>返回的是<code>base64</code>字符串，如果要转成2进制</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">convertToBinary</span> (dataURI) &#123;</span><br><span class="line">	<span class="keyword">let</span> byteString = <span class="variable language_">window</span>.<span class="title function_">atob</span>(dataURI.<span class="title function_">split</span>(<span class="string">&#x27;,&#x27;</span>)[<span class="number">1</span>])</span><br><span class="line">	<span class="keyword">let</span> ab = <span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>(byteString.<span class="property">length</span>)</span><br><span class="line">	<span class="keyword">let</span> ia = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(ab)</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; byteString.<span class="property">length</span>; i++) &#123;</span><br><span class="line">		ia[i] = byteString.<span class="title function_">charCodeAt</span>(i)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">let</span> bb = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Blob</span>([ ab ])</span><br><span class="line">	<span class="keyword">return</span> bb</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果：由iphone6所拍摄的图片上传，由平均1.9M左右压缩至170k</p>
+<p><em>･゜ﾟ･</em>:.｡..｡.:<em>･’(<em>ﾟ▽ﾟ</em>)’･</em>:.｡. .｡.:<em>･゜ﾟ･</em></p>
+<p>再见<br>5月5日发布</p>
 <hr>
 ]]></content>
   </entry>
@@ -703,28 +725,6 @@ requestAnimationFrame(repeatOften);
         <tag>node.js</tag>
         <tag>chrome</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>使用canvas实现图片压缩</title>
-    <url>/e15015f00ecd.html</url>
-    <content><![CDATA[<h2 id="原文链接-https-segmentfault-com-a-1190000009308553"><a href="#原文链接-https-segmentfault-com-a-1190000009308553" class="headerlink" title="原文链接 https://segmentfault.com/a/1190000009308553"></a>原文链接 <a href="https://segmentfault.com/a/1190000009308553">https://segmentfault.com/a/1190000009308553</a></h2><p>那，首先通过<code>URL.createObjectURL(file)</code>从file对象直接取得了图片的地址</p>
-<p>前面就不详细说了，开始压缩咯 ( ´ ▽ &#96; )ﾉ</p>
-<p>噢，有个注意点:</p>
-<p>每次调用<code>createObjectURL</code>的时候，一个新的URL对象就被创建了，即使是同一个file对象，也会创建一个新对URL对象，所以，为了最佳性能和内存使用，当不再需要这个对象的时候要<code>URL.revokeObjectURL()</code>释放它。</p>
-<p>开始压缩</p>
-<span id="more"></span>
-<p>创建一个<code>compressImage</code>函数，将之图片的地址url作参数传入：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">compressImage</span> (url) &#123;</span><br><span class="line">	<span class="keyword">let</span> cvs = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;canvas&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> ctx = cvs.<span class="title function_">getContext</span>(<span class="string">&#x27;2d&#x27;</span>)</span><br><span class="line">	<span class="keyword">let</span> img = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Image</span>()</span><br><span class="line">	img.<span class="property">src</span> = url</span><br><span class="line">	img.<span class="property">onload</span> = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">		cvs.<span class="property">width</span> = img.<span class="property">width</span></span><br><span class="line">		cvs.<span class="property">height</span> = img.<span class="property">height</span></span><br><span class="line">		<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">			ctx.<span class="title function_">drawImage</span>(img, <span class="number">0</span>, <span class="number">0</span>, cvs.<span class="property">width</span>, cvs.<span class="property">height</span>)</span><br><span class="line">			<span class="variable language_">this</span>.<span class="property">newImageData</span> = cvs.<span class="title function_">toDataURL</span>(<span class="string">&#x27;image/jpeg&#x27;</span>, <span class="number">0.1</span>)</span><br><span class="line">	    &#125;, <span class="number">0</span>)</span><br><span class="line">	    <span class="variable language_">this</span>.<span class="property">showPreviewer</span> = <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里说说</p>
-<p><code>canvas.toDataURL(type, encoderOptions)</code><br><code>HTMLCanvasElement.toDataURL()</code>方法接受两个参数，<code>type</code>和<code>encoderOptions</code></p>
-<p><code>type</code>是可选的，图片格式，默认是 <code>image/png</code>，<code>encoderOptions</code>表示图片质量， 在<code>type</code>为<code>image/jpeg</code> 或 <code>image/webp</code>时可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 <code>0.92</code>。其他参数会被忽略。</p>
-<p><code>toDataURL()</code>返回的是<code>base64</code>字符串，如果要转成2进制</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">convertToBinary</span> (dataURI) &#123;</span><br><span class="line">	<span class="keyword">let</span> byteString = <span class="variable language_">window</span>.<span class="title function_">atob</span>(dataURI.<span class="title function_">split</span>(<span class="string">&#x27;,&#x27;</span>)[<span class="number">1</span>])</span><br><span class="line">	<span class="keyword">let</span> ab = <span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>(byteString.<span class="property">length</span>)</span><br><span class="line">	<span class="keyword">let</span> ia = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(ab)</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; byteString.<span class="property">length</span>; i++) &#123;</span><br><span class="line">		ia[i] = byteString.<span class="title function_">charCodeAt</span>(i)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">let</span> bb = <span class="keyword">new</span> <span class="variable language_">window</span>.<span class="title class_">Blob</span>([ ab ])</span><br><span class="line">	<span class="keyword">return</span> bb</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>测试结果：由iphone6所拍摄的图片上传，由平均1.9M左右压缩至170k</p>
-<p><em>･゜ﾟ･</em>:.｡..｡.:<em>･’(<em>ﾟ▽ﾟ</em>)’･</em>:.｡. .｡.:<em>･゜ﾟ･</em></p>
-<p>再见<br>5月5日发布</p>
-<hr>
-]]></content>
   </entry>
   <entry>
     <title>修复gitCI中文件的创建时间与修改时间</title>
@@ -936,6 +936,31 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
+    <title>利用Overflow:Hidden实现自适应左右两列布局/填充父级元素剩余宽度</title>
+    <url>/18bd6f90cc3e.html</url>
+    <content><![CDATA[<h3 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h3><hr>
+<pre><code>&lt;div class=&quot;parent&quot;&gt;
+    &lt;div class=&quot;Left&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;Right&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3 id="左侧CSS"><a href="#左侧CSS" class="headerlink" title="左侧CSS"></a>左侧CSS</h3><hr>
+<pre><code>.Left&#123;
+    width:auto;/* 左侧宽度任意 */
+    float:left;
+&#125;
+</code></pre>
+<h3 id="右侧CSS"><a href="#右侧CSS" class="headerlink" title="右侧CSS"></a>右侧CSS</h3><hr>
+<pre><code>.Right&#123;
+    overflow:hidden;
+&#125;
+</code></pre>
+<hr>
+<p>以上！まいど～</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
     <title>关于百度地图 DrivingRoute moreResultsUrl为“未能找到相应结果，请您:返回上一步操作..” 以及 WalkingRoute moreResultsUrl为空 的解决方案</title>
     <url>/b8e315d25c83.html</url>
     <content><![CDATA[<h4 id="——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案"><a href="#——-因为百度地图极速版貌似正在关闭并且停止维护了-文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的-routeSearch-routeCall-没了-于是乎开始找代替方案" class="headerlink" title="—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案"></a>—— 因为百度地图极速版貌似正在关闭并且停止维护了 文档页面和介绍页面都跳转到了正式版的API，然而极速版中非常好用的 routeSearch.routeCall 没了 于是乎开始找代替方案</h4><h3 id="A-Few-Minutes-Later…"><a href="#A-Few-Minutes-Later…" class="headerlink" title="A Few Minutes Later….."></a><strong>A Few Minutes Later…..</strong></h3><p>经过一番Demo和文档的查找，惊喜的发现正式版中TransitRoute，WalkingRoute，以及DrivingRoute 的searchComplete回调中有个“moreResultsUrl” 打开正是百度地图的导航结果页！</p>
@@ -972,31 +997,6 @@ requestAnimationFrame(repeatOften);
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">href</span> = <span class="string">&#x27;http://api.map.baidu.com/direction&#x27;</span>+</span><br><span class="line">							<span class="string">&#x27;?region=&#x27;</span>+region+</span><br><span class="line">							<span class="string">&#x27;&amp;origin=&#x27;</span>+origin.<span class="property">lat</span>+<span class="string">&#x27;,&#x27;</span>+origin.<span class="property">lng</span>+</span><br><span class="line">							<span class="string">&#x27;&amp;destination=&#x27;</span>+dest.<span class="property">lat</span>+<span class="string">&#x27;,&#x27;</span>+dest.<span class="property">lng</span>+</span><br><span class="line">							<span class="string">&#x27;&amp;output=html&#x27;</span>+</span><br><span class="line">							<span class="string">&#x27;&amp;mode=&#x27;</span>+transit/walking/driving+</span><br><span class="line">							<span class="string">&#x27;&amp;src=baidu_map_jsapi&#x27;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
-<hr>
-]]></content>
-  </entry>
-  <entry>
-    <title>利用Overflow:Hidden实现自适应左右两列布局/填充父级元素剩余宽度</title>
-    <url>/18bd6f90cc3e.html</url>
-    <content><![CDATA[<h3 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h3><hr>
-<pre><code>&lt;div class=&quot;parent&quot;&gt;
-    &lt;div class=&quot;Left&quot;&gt;&lt;/div&gt;
-    &lt;div class=&quot;Right&quot;&gt;&lt;/div&gt;
-&lt;/div&gt;
-</code></pre>
-<h3 id="左侧CSS"><a href="#左侧CSS" class="headerlink" title="左侧CSS"></a>左侧CSS</h3><hr>
-<pre><code>.Left&#123;
-    width:auto;/* 左侧宽度任意 */
-    float:left;
-&#125;
-</code></pre>
-<h3 id="右侧CSS"><a href="#右侧CSS" class="headerlink" title="右侧CSS"></a>右侧CSS</h3><hr>
-<pre><code>.Right&#123;
-    overflow:hidden;
-&#125;
-</code></pre>
-<hr>
-<p>以上！まいど～</p>
 <hr>
 ]]></content>
   </entry>
@@ -1175,29 +1175,6 @@ requestAnimationFrame(repeatOften);
 ]]></content>
   </entry>
   <entry>
-    <title>如何区分鼠标滚轮/触控板双指缩放事件</title>
-    <url>/1323de0d18f6.html</url>
-    <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p><strong>鼠标滚轮滚动&#x2F;触控板双指缩放</strong>都会触发<code>wheel</code>事件，在滚轮不需要触发缩放的场景下，需要对两种事件进行区分。</p>
-<h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><p><strong>双指缩放事件会被映射为按下ctrl键的wheel事件</strong></p>
-<p>即：由触控板缩放触发的<code>wheel</code>事件，<code>ev.ctrlKey</code>的值会为<code>true</code>，所以可以按照下面的代码进行区分：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$target.<span class="title function_">addEventListener</span>(<span class="string">&#x27;wheel&#x27;</span>, <span class="function">(<span class="params">ev</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> isTrackpadPinch = ev.<span class="property">ctrlKey</span> </span><br><span class="line">  <span class="keyword">if</span>(isTrackpadPinch)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;trackpad pinch&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;mousewheel&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<h2 id="浏览器支持"><a href="#浏览器支持" class="headerlink" title="浏览器支持"></a>浏览器支持</h2><p><img data-src="/../images/posts/20240529102800.png" alt="浏览器支持（截至文章发布）"></p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>需要注意的是， <strong>Pinch-to-zoom maps to WheelEvent + ctrl key</strong> 行为并没有在W3C标准中进行规定，应当是公认的实现。好在主流的浏览器实现都是一致的，一般情况下不用做兼容性处理。</p>
-<h2 id="参考来源"><a href="#参考来源" class="headerlink" title="参考来源"></a>参考来源</h2><ul>
-<li><a href="https://www.w3.org/TR/uievents/#events-wheelevents">W3C关于WheelEvent的实现标准</a></li>
-<li><a href="https://caniuse.com/mdn-api_wheelevent_pinch_to_zoom_support">CanIUse中关于Pinch-to-zoom maps to WheelEvent + ctrl key行为的兼容性描述</a></li>
-<li><a href="https://stackoverflow.com/questions/68808218/how-to-capture-pinch-zoom-gestures-from-the-trackpad-in-a-desktop-browser-and-p">How to capture pinch-zoom gestures from the trackpad in a desktop browser (and prevent default)?</a></li>
-<li><a href="https://github.com/pmndrs/use-gesture/discussions/518">Pinch and wheel difference across browsers</a></li>
-</ul>
-]]></content>
-      <tags>
-        <tag>javascript</tag>
-        <tag>前端</tag>
-        <tag>wheel事件</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>微信浏览器中iframe srcdoc、src=data:text/html,xxxx 等无法使用情况下防止样式污染的解决方案</title>
     <url>/b0ba270a0600.html</url>
     <content><![CDATA[<h4 id="业务需求"><a href="#业务需求" class="headerlink" title="业务需求"></a>业务需求</h4><blockquote>
@@ -1219,6 +1196,29 @@ requestAnimationFrame(repeatOften);
 <h1 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h1><p>直接对iframe的contentWindow进行操作 使用document.write 最终解决问题 此方法应该兼容性最好<br> <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">&quot;about:blank;&quot;</span> <span class="attr">id</span>=<span class="string">&quot;target&quot;</span> <span class="attr">frameborder</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript">	</span></span><br><span class="line"><span class="language-javascript">	<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;target&#x27;</span>).<span class="property">contentWindow</span>.<span class="property">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;&lt;p&gt;这是HTML&lt;p&gt;&#x27;</span>) </span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure><br>*百谷一番都没有找到任何的解决方案 最终自己得出以下方案 记录一下 也为开发者们做一些微小的贡献（笑）</p>
 <hr>
 ]]></content>
+  </entry>
+  <entry>
+    <title>如何区分鼠标滚轮/触控板双指缩放事件</title>
+    <url>/1323de0d18f6.html</url>
+    <content><![CDATA[<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p><strong>鼠标滚轮滚动&#x2F;触控板双指缩放</strong>都会触发<code>wheel</code>事件，在滚轮不需要触发缩放的场景下，需要对两种事件进行区分。</p>
+<h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><p><strong>双指缩放事件会被映射为按下ctrl键的wheel事件</strong></p>
+<p>即：由触控板缩放触发的<code>wheel</code>事件，<code>ev.ctrlKey</code>的值会为<code>true</code>，所以可以按照下面的代码进行区分：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$target.<span class="title function_">addEventListener</span>(<span class="string">&#x27;wheel&#x27;</span>, <span class="function">(<span class="params">ev</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> isTrackpadPinch = ev.<span class="property">ctrlKey</span> </span><br><span class="line">  <span class="keyword">if</span>(isTrackpadPinch)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;trackpad pinch&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;mousewheel&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="浏览器支持"><a href="#浏览器支持" class="headerlink" title="浏览器支持"></a>浏览器支持</h2><p><img data-src="/../images/posts/20240529102800.png" alt="浏览器支持（截至文章发布）"></p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>需要注意的是， <strong>Pinch-to-zoom maps to WheelEvent + ctrl key</strong> 行为并没有在W3C标准中进行规定，应当是公认的实现。好在主流的浏览器实现都是一致的，一般情况下不用做兼容性处理。</p>
+<h2 id="参考来源"><a href="#参考来源" class="headerlink" title="参考来源"></a>参考来源</h2><ul>
+<li><a href="https://www.w3.org/TR/uievents/#events-wheelevents">W3C关于WheelEvent的实现标准</a></li>
+<li><a href="https://caniuse.com/mdn-api_wheelevent_pinch_to_zoom_support">CanIUse中关于Pinch-to-zoom maps to WheelEvent + ctrl key行为的兼容性描述</a></li>
+<li><a href="https://stackoverflow.com/questions/68808218/how-to-capture-pinch-zoom-gestures-from-the-trackpad-in-a-desktop-browser-and-p">How to capture pinch-zoom gestures from the trackpad in a desktop browser (and prevent default)?</a></li>
+<li><a href="https://github.com/pmndrs/use-gesture/discussions/518">Pinch and wheel difference across browsers</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>javascript</tag>
+        <tag>前端</tag>
+        <tag>wheel事件</tag>
+      </tags>
   </entry>
   <entry>
     <title>拒绝假空心！纯css实现 真·空心带边框直角三角形和空心带边框直角梯形！</title>

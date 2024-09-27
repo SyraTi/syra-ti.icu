@@ -1257,10 +1257,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hexo-theme-next@npm:^8.18.0":
-  version: 8.18.0
-  resolution: "hexo-theme-next@npm:8.18.0"
-  checksum: 63b36da619048a8c5219cddece73d1a8ff271e286a33c8e2461d14e32e7c4e2a1480663961f2d229ae7c74a0b779150c897a261d9aaecf52389fa923cad9eadf
+"hexo-theme-next@npm:^8.19.1":
+  version: 8.21.0
+  resolution: "hexo-theme-next@npm:8.21.0"
+  checksum: 99bf9165aa49c503cd0a1d212269707dcda652fcae28ae3ccdfa08b2ed2cbaeb19d3ce6f06a75e7f035485e5d3665b2d5106bc425fbe54294b526dc0c403322c
   languageName: node
   linkType: hard
 
@@ -2704,7 +2704,7 @@ __metadata:
     hexo-renderer-marked: "npm:^6.2.0"
     hexo-renderer-stylus: "npm:^3.0.0"
     hexo-server: "npm:^3.0.0"
-    hexo-theme-next: "npm:^8.18.0"
+    hexo-theme-next: "npm:^8.19.1"
     hexo-word-counter: "npm:^0.1.0"
   languageName: unknown
   linkType: soft
